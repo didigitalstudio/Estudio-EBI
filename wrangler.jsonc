@@ -5,10 +5,10 @@
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
     {
-      // Artículos de Actualidad Migratoria. Crear la base con `npx wrangler d1 create ebi`
-      // y pegar acá el database_id que devuelve (ver README).
+      // Artículos de Actualidad Migratoria (base D1 "ebi", ya creada y con la tabla armada)
       "binding": "DB",
       "database_name": "ebi",
+      "database_id": "e805abc9-93c0-4df1-945a-f5fdfa28e361",
       "migrations_dir": "migrations"
     }
   ],

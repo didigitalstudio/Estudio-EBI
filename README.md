@@ -43,11 +43,10 @@ Tests: `npm test`.
 
 ## Publicar en Cloudflare
 
-1. Crear la base de artículos: `npx wrangler d1 create ebi` y pegar el `database_id` que devuelve en `wrangler.jsonc`.
-2. Crear la tabla: `npm run db:migrate`.
-3. Cargar las variables (ver la tabla de abajo) con `npx wrangler secret put NOMBRE`, o desde el panel de Cloudflare en Workers → estudio-ebi → Settings → Variables and Secrets.
-4. Publicar con `npm run deploy`. También se puede conectar el repo en Workers → Create → Import a repository, con `npm run build` como comando de build y `npx wrangler deploy` como comando de deploy: así cada push publica solo.
-5. Asignar el dominio en Workers → estudio-ebi → Settings → Domains & Routes. La caché de reseñas y noticias funciona en el dominio propio, no en la dirección `workers.dev`.
+1. La base de artículos (`ebi`) ya está creada en la cuenta de Cloudflare, con la tabla armada, y su `database_id` está en `wrangler.jsonc`. Si el sitio se publica en otra cuenta, crearla ahí con `npx wrangler d1 create ebi`, reemplazar el `database_id` y correr `npm run db:migrate`. Las tablas nuevas que se agreguen en `migrations/` se aplican con ese mismo comando.
+2. Cargar las variables (ver la tabla de abajo) con `npx wrangler secret put NOMBRE`, o desde el panel de Cloudflare en Workers → estudio-ebi → Settings → Variables and Secrets.
+3. Publicar con `npm run deploy`. También se puede conectar el repo en Workers → Create → Import a repository, con `npm run build` como comando de build y `npx wrangler deploy` como comando de deploy: así cada push publica solo.
+4. Asignar el dominio en Workers → estudio-ebi → Settings → Domains & Routes. La caché de reseñas y noticias funciona en el dominio propio, no en la dirección `workers.dev`.
 
 En el build conviene definir `SITE_URL` con el dominio final (por ejemplo `https://estudioebi.com.ar`) para que las páginas tengan su URL canónica y las alternativas por idioma.
 
