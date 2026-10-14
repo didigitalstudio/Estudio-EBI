@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseRss, decode } from '../api/_rss.js';
+import { parseRss, decode, categorize } from '../api/_rss.js';
 
 const xml = `<?xml version="1.0"?><rss><channel>
 <item><title>Cambios en la residencia Mercosur - Infobae</title><link>https://news.google.com/a</link><pubDate>Mon, 12 Oct 2026 10:00:00 GMT</pubDate><source url="https://infobae.com">Infobae</source></item>
@@ -12,8 +12,17 @@ const xml = `<?xml version="1.0"?><rss><channel>
 test('parsea, limpia el medio del título, ordena y deduplica', () => {
   const items = parseRss(xml);
   assert.equal(items.length, 2);
-  assert.deepEqual(items[0], { title: 'Migraciones & DNI: nuevos turnos', link: 'https://news.google.com/b', source: 'La Nación', date: '2026-10-13T09:00:00.000Z' });
+  assert.deepEqual(items[0], { title: 'Migraciones & DNI: nuevos turnos', link: 'https://news.google.com/b', source: 'La Nación', date: '2026-10-13T09:00:00.000Z', category: 'residencias' });
   assert.equal(items[1].title, 'Cambios en la residencia Mercosur');
+});
+
+test('clasifica las notas por área según el título', () => {
+  assert.equal(categorize('El Gobierno publicó el DNU que modifica la Ley de Migraciones'), 'normativa');
+  assert.equal(categorize('Migraciones ordenó la expulsión de un ciudadano extranjero'), 'expulsiones');
+  assert.equal(categorize('Cómo tramitar la ciudadanía argentina en 2026'), 'ciudadania');
+  assert.equal(categorize('Récord de permisos de trabajo para profesionales extranjeros'), 'trabajo');
+  assert.equal(categorize('Nuevos turnos para el DNI de extranjeros'), 'residencias');
+  assert.equal(categorize('Crece la llegada de turistas brasileños'), null);
 });
 
 test('respeta el límite', () => {

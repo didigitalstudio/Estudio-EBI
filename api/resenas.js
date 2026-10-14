@@ -25,6 +25,7 @@ export default async function handler(req, res) {
         rating: v.rating,
         text: v.text.text,
         when: v.relativePublishTimeDescription || '',
+        date: v.publishTime || null,
       }));
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     res.status(200).json({

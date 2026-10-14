@@ -24,6 +24,20 @@ function cleanTitle(title, source) {
   return source && title.endsWith(suffix) ? title.slice(0, -suffix.length) : title;
 }
 
+// Área de cada nota según el título. Gana la primera que coincide; sin coincidencia queda en null.
+const CATEGORIES = [
+  ['normativa', /\bdnu\b|decreto|bolet[ií]n oficial|\bley\b|resoluci[oó]n|disposici[oó]n|reforma migratoria|normativa/i],
+  ['expulsiones', /expuls|deportad|deportaci|prohibici[oó]n de (ingreso|reingreso)/i],
+  ['ciudadania', /ciudadan[ií]a|naturalizaci/i],
+  ['trabajo', /permisos? de trabajo|visas? de trabajo|trabajadores (extranjeros|migrantes)|renure|n[oó]madas? digital/i],
+  ['residencias', /residencia|radicaci[oó]n|\bdni\b|regularizaci[oó]n/i],
+];
+
+export function categorize(title) {
+  const hit = CATEGORIES.find(([, re]) => re.test(title));
+  return hit ? hit[0] : null;
+}
+
 export function parseRss(xml, { limit = 6 } = {}) {
   const items = [];
   const seen = new Set();
@@ -35,7 +49,7 @@ export function parseRss(xml, { limit = 6 } = {}) {
     const key = title.toLowerCase();
     if (!title || !/^https?:\/\//.test(link) || seen.has(key)) continue;
     seen.add(key);
-    items.push({ title, link, source, date: isNaN(date) ? null : date.toISOString() });
+    items.push({ title, link, source, date: isNaN(date) ? null : date.toISOString(), category: categorize(title) });
   }
   items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   return items.slice(0, limit);
