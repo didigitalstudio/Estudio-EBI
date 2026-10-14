@@ -3,6 +3,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "node --test --disable-warning=ExperimentalWarning test/*.test.js",
+    "db:migrate:local": "wrangler d1 migrations apply ebi --local",
+    "db:migrate": "wrangler d1 migrations apply ebi --remote",
+    "deploy": "astro build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "14.3.3",
+    "astro": "7.3.5",
+    "marked": "18.0.14"
+  },
+  "devDependencies": {
+    "wrangler": "4.142.0"
   }
 }

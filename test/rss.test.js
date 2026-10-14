@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseRss, decode, categorize } from '../api/_rss.js';
+import { parseRss, decode, categorize } from '../src/lib/rss.js';
 
 const xml = `<?xml version="1.0"?><rss><channel>
 <item><title>Cambios en la residencia Mercosur - Infobae</title><link>https://news.google.com/a</link><pubDate>Mon, 12 Oct 2026 10:00:00 GMT</pubDate><source url="https://infobae.com">Infobae</source></item>

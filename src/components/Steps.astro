@@ -1,0 +1,13 @@
+---
+// Proceso en cuatro pasos sobre fondo verde
+const { title, cta, items, perfil, tipo } = Astro.props;
+---
+<div class="process">
+<div class="process-head">
+<h3>{title}</h3>
+<a href="#contacto" class="btn btn-light" data-perfil={perfil} data-tipo={tipo}>{cta}</a>
+</div>
+<ol class="steps">
+{items.map((s, i) => <li><span class="step-n">{String(i + 1).padStart(2, '0')}</span><span class="step-t">{s.title}</span><span class="step-d">{s.text}</span></li>)}
+</ol>
+</div>

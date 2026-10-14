@@ -1,0 +1,8 @@
+---
+import Landing from '../../components/Landing.astro';
+import { langPaths } from '../../i18n/index.js';
+
+export const prerender = true;
+export const getStaticPaths = langPaths;
+---
+<Landing lang={Astro.props.lang} page="empresas" perfil="empresa" tipo="renure" icons={['i-inst', 'i-brief', 'i-people']} cta="proposal" />

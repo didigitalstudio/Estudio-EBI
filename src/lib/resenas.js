@@ -1,14 +1,13 @@
+import { json } from './http.js';
+
 // Reseñas del perfil de Google del estudio (Places API New).
-// Requiere en Vercel: GOOGLE_PLACES_API_KEY y GOOGLE_PLACE_ID.
-export default async function handler(req, res) {
-  const key = process.env.GOOGLE_PLACES_API_KEY;
-  const placeId = process.env.GOOGLE_PLACE_ID;
-  if (!key || !placeId) {
-    res.setHeader('Cache-Control', 'no-store');
-    return res.status(503).json({ configured: false });
-  }
+// Requiere GOOGLE_PLACES_API_KEY y GOOGLE_PLACE_ID.
+export async function getResenas(env, fetchImpl = fetch) {
+  const key = env.GOOGLE_PLACES_API_KEY;
+  const placeId = env.GOOGLE_PLACE_ID;
+  if (!key || !placeId) return json({ configured: false }, 503, { 'Cache-Control': 'no-store' });
   try {
-    const r = await fetch(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}?languageCode=es&regionCode=AR`, {
+    const r = await fetchImpl(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}?languageCode=es&regionCode=AR`, {
       headers: {
         'X-Goog-Api-Key': key,
         'X-Goog-FieldMask': 'rating,userRatingCount,reviews,googleMapsUri',
@@ -27,8 +26,7 @@ export default async function handler(req, res) {
         when: v.relativePublishTimeDescription || '',
         date: v.publishTime || null,
       }));
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
-    res.status(200).json({
+    return json({
       configured: true,
       rating: p.rating ?? null,
       total: p.userRatingCount ?? 0,
@@ -37,7 +35,6 @@ export default async function handler(req, res) {
       reviews,
     });
   } catch (e) {
-    res.setHeader('Cache-Control', 'no-store');
-    res.status(502).json({ configured: true, error: 'No se pudieron obtener las reseñas' });
+    return json({ configured: true, error: 'No se pudieron obtener las reseñas' }, 502, { 'Cache-Control': 'no-store' });
   }
 }

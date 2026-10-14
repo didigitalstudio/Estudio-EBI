@@ -1,0 +1,15 @@
+---
+import { DICTS } from '../i18n/index.js';
+const { lang, items, band = true } = Astro.props;
+const t = DICTS[lang].common;
+---
+<section id="faq" class={band ? 'band' : undefined}>
+<div class="wrap faq-wrap">
+<h2 class="h2">{t.faqTitle}</h2>
+<div class="faqs">
+{items.map((f, i) => (
+  <details class="faq" open={i === 0}><summary><span>{f.q}</span><span class="sign" aria-hidden="true"></span></summary><div class="ans">{f.a}</div></details>
+))}
+</div>
+</div>
+</section>

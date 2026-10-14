@@ -1,0 +1,119 @@
+---
+import '../styles/site.css';
+import Sprite from '../components/Sprite.astro';
+import Flag from '../components/Flag.astro';
+import { DICTS, LANGS, langInfo, localePath } from '../i18n/index.js';
+import { SITIO, waLink } from '../data/sitio.js';
+
+const {
+  lang = 'es',
+  path = '/',
+  translated = true,
+  title,
+  description,
+  hasContact = true,
+  noindex = false,
+  ogType = 'website',
+  jsonLd = null,
+} = Astro.props;
+
+const t = DICTS[lang];
+const info = langInfo(lang);
+const site = Astro.site;
+const abs = (p) => (site ? new URL(p, site).href : null);
+const canonical = translated ? localePath(lang, path) : Astro.url.pathname;
+const home = localePath(lang, '/');
+const actualidad = lang === 'es' ? '/actualidad' : `${home}#actualidad`;
+const nav = [
+  { href: `${home}#servicios`, label: t.nav.servicios },
+  { href: localePath(lang, '/empresas'), label: t.nav.empresas, key: '/empresas' },
+  { href: `${home}#nosotros`, label: t.nav.nosotros },
+  { href: actualidad, label: t.nav.actualidad, key: '/actualidad' },
+];
+const contactHref = hasContact ? '#contacto' : `${home}#contacto`;
+const langHref = (code) => localePath(code, translated ? path : '/');
+// Textos y datos que usa el script del navegador
+const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsapp[0].numero, menuOpen: t.nav.menuOpen, menuClose: t.nav.menuClose, page: Astro.url.pathname };
+---
+<!doctype html>
+<html lang={info.hreflang}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content={description}>
+{noindex && <meta name="robots" content="noindex, nofollow">}
+{abs(canonical) && <link rel="canonical" href={abs(canonical)}>}
+{site && translated && LANGS.map((l) => <link rel="alternate" hreflang={l.hreflang} href={abs(localePath(l.code, path))}>)}
+{site && translated && <link rel="alternate" hreflang="x-default" href={abs(path)}>}
+<meta property="og:type" content={ogType}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:locale" content={info.locale.replace('-', '_')}>
+<meta property="og:site_name" content="Estudio EBI">
+{abs(canonical) && <meta property="og:url" content={abs(canonical)}>}
+<meta name="theme-color" content="#123F2F">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23123F2F'/%3E%3Ctext x='32' y='41' font-family='Georgia' font-weight='700' font-size='24' fill='%23F4F0E6' text-anchor='middle'%3EEBI%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+<slot name="head" />
+</head>
+<body>
+<Sprite />
+<header class="top">
+<div class="top-in">
+<a href={home} class="logo" aria-label="Estudio EBI">
+<span class="logo-mark">EBI</span>
+<span class="logo-rule"></span>
+<span class="logo-sub">ESTUDIO JURÍDICO</span>
+</a>
+<div class="tools">
+<details class="lang-menu">
+<summary aria-label={`${t.nav.language}: ${info.name}`}><Flag code={info.flag} /><span class="lang-code">{lang.toUpperCase()}</span><svg class="ic ic-sm" aria-hidden="true"><use href="#i-chevron" /></svg></summary>
+<div class="lang-list">
+<ul>
+{LANGS.map((l) => (
+  <li><a href={langHref(l.code)} lang={l.hreflang} hreflang={l.hreflang} aria-current={l.code === lang ? 'true' : undefined}><Flag code={l.flag} />{l.name}</a></li>
+))}
+</ul>
+<button type="button" class="gt-open" data-gt-lang={info.hreflang}><svg class="ic" aria-hidden="true"><use href="#i-globe" /></svg><span>{t.nav.moreLanguages}<small>{t.nav.moreLanguagesNote}</small></span></button>
+<div id="gt" class="gt" hidden></div>
+</div>
+</details>
+<button type="button" class="menu-btn" aria-label={t.nav.menuOpen} aria-expanded="false" aria-controls="menu"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
+</div>
+<nav id="menu" class="main-nav" aria-label={t.nav.main}>
+{nav.map((n) => <a href={n.href} aria-current={n.key && n.key === path ? 'page' : undefined}>{n.label}</a>)}
+<a href={contactHref} class="nav-cta">{t.nav.consultar}</a>
+</nav>
+</div>
+</header>
+
+<main>
+<slot />
+</main>
+
+<footer class="foot">
+<div class="foot-in">
+<div class="foot-brand">
+<b>EBI</b>
+<span>{t.footer.tagline}</span>
+</div>
+<nav class="foot-links" aria-label={t.footer.nav}>
+{nav.slice(1, 2).map((n) => <a href={n.href}>{n.label}</a>)}
+<a href={actualidad}>{t.nav.actualidad}</a>
+<a href={SITIO.facebook} target="_blank" rel="noopener">Facebook</a>
+{SITIO.linkedin && <a href={SITIO.linkedin} target="_blank" rel="noopener">LinkedIn</a>}
+</nav>
+</div>
+</footer>
+
+<a class="wa-float" href={waLink()} aria-label={t.common.whatsapp}><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg></a>
+<script type="application/json" id="ui" set:html={JSON.stringify(ui).replace(/</g, '\\u003c')} />
+<script>
+import '../scripts/site.js';
+</script>
+</body>
+</html>

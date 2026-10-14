@@ -1,0 +1,35 @@
+---
+import { DICTS } from '../i18n/index.js';
+const { lang } = Astro.props;
+const t = DICTS[lang].personas;
+---
+<section id="personas">
+<div class="wrap stack">
+<div class="head">
+<p class="eyebrow">{t.eyebrow}</p>
+<h2 class="h2">{t.title}</h2>
+<p class="lead">{t.lead}</p>
+</div>
+<div class="grid-sit">
+{t.items.map((it) => (
+  <article class="sit">
+    <h3>{it.title}</h3>
+    <p>{it.text}</p>
+  </article>
+))}
+<a class="sit" href="#contacto" data-perfil="persona">
+<h3>{t.other.title}</h3>
+<p>{t.other.text}</p>
+<span class="sit-more">{t.other.more}</span>
+</a>
+</div>
+<div class="urgent">
+<div class="urgent-txt">
+<span class="tag">{t.urgent.tag}</span>
+<h3>{t.urgent.title}</h3>
+<p>{t.urgent.text}</p>
+</div>
+<a href="#contacto" class="btn btn-light" data-perfil="persona" data-tipo="expulsion">{t.urgent.cta}</a>
+</div>
+</div>
+</section>

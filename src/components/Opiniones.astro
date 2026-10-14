@@ -1,0 +1,24 @@
+---
+import { DICTS } from '../i18n/index.js';
+import { SITIO } from '../data/sitio.js';
+const { lang } = Astro.props;
+const t = DICTS[lang].opiniones;
+---
+<section id="opiniones" class="band">
+<div class="wrap stack">
+<div class="rev-top">
+<div class="head">
+<p class="eyebrow">{t.eyebrow}</p>
+<h2 class="h2">{t.title}</h2>
+<div id="rev-summary" class="rev-summary" hidden></div>
+</div>
+<div class="ctas">
+<a id="rev-all" class="btn btn-out" href={SITIO.googleMaps} target="_blank" rel="noopener">{t.all}</a>
+<a id="rev-write" class="btn btn-fill" href="#" target="_blank" rel="noopener" hidden>{t.write}</a>
+</div>
+</div>
+<div id="rev-list" class="grid-auto" aria-live="polite">
+<div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
+</div>
+</div>
+</section>

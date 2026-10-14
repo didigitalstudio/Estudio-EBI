@@ -1,0 +1,64 @@
+---
+import { env } from 'cloudflare:workers';
+import Base from '../../layouts/Base.astro';
+import { getPublished } from '../../lib/articulos.js';
+import { renderMarkdown } from '../../lib/markdown.js';
+import { fechaLarga } from '../../lib/fechas.js';
+import es from '../../i18n/es.js';
+
+export const prerender = false;
+
+let a = null;
+try {
+  a = await getPublished(env.DB, Astro.params.slug);
+} catch (e) {
+  console.error('articulo', e);
+}
+if (!a) Astro.response.status = 404;
+else Astro.response.headers.set('Cache-Control', 'public, max-age=60');
+
+const url = Astro.url.href;
+const enc = encodeURIComponent;
+const jsonLd = a && {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: a.titulo,
+  description: a.resumen || undefined,
+  datePublished: a.publicado_en,
+  dateModified: a.actualizado_en,
+  author: { '@type': a.autor && a.autor !== 'Estudio EBI' ? 'Person' : 'Organization', name: a.autor || 'Estudio EBI' },
+  publisher: { '@type': 'Organization', name: 'Estudio EBI' },
+  mainEntityOfPage: url,
+};
+---
+{a ? (
+  <Base lang="es" path={`/actualidad/${a.slug}`} translated={false} hasContact={false} ogType="article" title={`${a.titulo} | Actualidad Migratoria`} description={a.resumen || a.titulo} jsonLd={jsonLd}>
+    <meta slot="head" property="article:published_time" content={a.publicado_en} />
+    <article class="article">
+      <p class="crumbs"><a href="/actualidad">Actualidad Migratoria</a> · <span class="art-cat">{es.cats[a.categoria] || es.cats.general}</span></p>
+      <h1>{a.titulo}</h1>
+      {a.resumen && <p class="article-sum">{a.resumen}</p>}
+      <p class="byline">{a.autor && <span>Por <strong>{a.autor}</strong></span>}{a.publicado_en && <time datetime={a.publicado_en}>{fechaLarga(a.publicado_en)}</time>}</p>
+      <div class="prose" set:html={renderMarkdown(a.cuerpo)} />
+      <div class="share">
+        <span class="share-t">Compartir</span>
+        <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`} target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-linkedin" /></svg>LinkedIn</a>
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`} target="_blank" rel="noopener">Facebook</a>
+        <a href={`https://wa.me/?text=${enc(`${a.titulo} ${url}`)}`} target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg>WhatsApp</a>
+        <button type="button" data-copy data-copied="Link copiado"><svg class="ic" aria-hidden="true"><use href="#i-share" /></svg>Copiar link</button>
+      </div>
+      <div class="cta-box">
+        <p>¿Esta novedad afecta tu caso o a tu empresa?</p>
+        <a href="/#contacto" class="btn btn-light">{es.common.consult}</a>
+      </div>
+    </article>
+  </Base>
+) : (
+  <Base lang="es" path="/actualidad" translated={false} hasContact={false} noindex title="Publicación no encontrada | Estudio EBI" description="La publicación no existe o ya no está disponible.">
+    <article class="article">
+      <h1>No encontramos esta publicación</h1>
+      <p class="article-sum">Puede que se haya despublicado o que el link esté incompleto.</p>
+      <p><a class="btn btn-fill" href="/actualidad">Ver todas las publicaciones</a></p>
+    </article>
+  </Base>
+)}

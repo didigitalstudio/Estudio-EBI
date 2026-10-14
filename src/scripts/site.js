@@ -1,0 +1,283 @@
+// Script común a todas las páginas. Los textos vienen del JSON #ui que arma el layout en cada idioma.
+const ui = JSON.parse(document.getElementById('ui').textContent);
+const lang = ui.lang;
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+function el(tag, cls, txt) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+const safe = (u) => (/^https:\/\//.test(u || '') ? u : null);
+const num = (r) => r.toLocaleString(ui.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const getJSON = (u) => fetch(u).then((r) => r.json().then((d) => { if (!r.ok) throw d; return d; }));
+
+// Menú mobile
+const menuBtn = $('.menu-btn');
+const nav = $('#menu');
+function menu(open) {
+  nav.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menuBtn.setAttribute('aria-label', open ? ui.menuClose : ui.menuOpen);
+}
+menuBtn.addEventListener('click', () => menu(!nav.classList.contains('open')));
+nav.addEventListener('click', (e) => { if (e.target.closest('a')) menu(false); });
+
+// Selector de idiomas: se cierra al tocar afuera o con Escape
+const langMenu = $('.lang-menu');
+document.addEventListener('click', (e) => { if (langMenu.open && !langMenu.contains(e.target)) langMenu.open = false; });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && langMenu.open) { langMenu.open = false; $('summary', langMenu).focus(); } });
+
+// "Más idiomas": el traductor de Google se carga recién cuando alguien lo pide
+const gtBtn = $('.gt-open');
+gtBtn.addEventListener('click', () => {
+  const box = $('#gt');
+  box.hidden = false;
+  gtBtn.hidden = true;
+  if (window.google?.translate) return;
+  window.ebiTranslateInit = () => {
+    new window.google.translate.TranslateElement({ pageLanguage: gtBtn.dataset.gtLang, autoDisplay: false }, 'gt');
+  };
+  const s = document.createElement('script');
+  s.src = 'https://translate.google.com/translate_a/element.js?cb=ebiTranslateInit';
+  document.head.appendChild(s);
+});
+
+// Botón para copiar el link de un artículo
+$$('[data-copy]').forEach((b) => b.addEventListener('click', () => {
+  navigator.clipboard?.writeText(location.href).then(() => { b.textContent = b.dataset.copied; });
+}));
+
+// Formulario de consultas: persona o empresa, por email si está configurado y si no por WhatsApp
+const form = $('#form');
+if (form) {
+  const msgEl = $('#form-msg');
+  const sendMail = $('#send-email');
+  const sendWa = $('#send-wa');
+  let mailOn = false;
+
+  const setPerfil = (p) => {
+    $$('input[name="perfil"]', form).forEach((r) => { r.checked = r.value === p; r.parentNode.classList.toggle('on', r.checked); });
+    $$('[data-only]', form).forEach((e) => {
+      const on = e.dataset.only === p;
+      e.hidden = !on;
+      $$('input,select,textarea', e).forEach((c) => { c.disabled = !on; });
+    });
+  };
+  form.addEventListener('change', (e) => { if (e.target.name === 'perfil') setPerfil(e.target.value); });
+  // Los botones con data-perfil / data-tipo dejan el formulario listo para ese caso
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('[data-perfil]');
+    if (!a) return;
+    const p = a.dataset.perfil;
+    setPerfil(p);
+    const opt = a.dataset.tipo && $(`#tipo-${p} option[data-key="${a.dataset.tipo}"]`);
+    if (opt) opt.selected = true;
+  });
+
+  const data = () => {
+    const fd = new FormData(form);
+    const d = { lang, pagina: ui.page };
+    ['perfil', 'nombre', 'empresa', 'cargo', 'email', 'tel', 'pais', 'personas', 'tipo', 'msg', 'website'].forEach((k) => { d[k] = String(fd.get(k) || '').trim(); });
+    return d;
+  };
+  // Para WhatsApp va el texto visible de cada opción, en el idioma de la página
+  const shown = (name) => {
+    const s = $(`select[name="${name}"]:not(:disabled)`, form);
+    return s && s.selectedIndex >= 0 ? s.options[s.selectedIndex].textContent : '';
+  };
+  const waLink = (d) => {
+    let s = `${ui.waHello} ${d.nombre}${d.pais ? ` (${d.pais})` : ''}.`;
+    if (d.perfil === 'empresa') s += `\n${ui.waCompany}: ${d.empresa}${d.cargo ? ` (${d.cargo})` : ''} · ${ui.waPeople}: ${shown('personas')}`;
+    s += `\n${ui.waTopic}: ${shown('tipo')}\n${d.msg}`;
+    if (d.email) s += `\nEmail: ${d.email}`;
+    if (d.tel) s += `\n${ui.waPhone}: ${d.tel}`;
+    return `https://wa.me/${ui.wa}?text=${encodeURIComponent(s)}`;
+  };
+  const say = (txt, ok) => { msgEl.textContent = txt; msgEl.classList.toggle('ok', !!ok); };
+  const invalid = (name, key) => {
+    const f = form.elements[name];
+    f.setAttribute('aria-invalid', 'true');
+    f.focus();
+    say(ui[key]);
+  };
+  form.addEventListener('input', (e) => e.target.removeAttribute('aria-invalid'));
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const via = e.submitter?.value === 'wa' || !mailOn ? 'wa' : 'email';
+    const d = data();
+    $$('[aria-invalid]', form).forEach((f) => f.removeAttribute('aria-invalid'));
+    if (!d.nombre) return invalid('nombre', 'errRequired');
+    if (d.perfil === 'empresa' && !d.empresa) return invalid('empresa', 'errEmpresa');
+    if (!d.msg) return invalid('msg', 'errRequired');
+    if (via === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return invalid('email', 'errEmail');
+    if (via === 'wa') {
+      say('');
+      window.open(waLink(d), '_blank');
+      return;
+    }
+    sendMail.disabled = sendWa.disabled = true;
+    say(ui.sending, true);
+    fetch('/api/consulta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
+      .then((r) => {
+        if (!r.ok) throw r;
+        form.reset();
+        setPerfil(d.perfil);
+        say(ui.sent, true);
+      })
+      .catch(() => {
+        say(ui.sendError);
+        const a = el('a', null, ui.sendErrorLink);
+        a.href = waLink(d);
+        a.target = '_blank';
+        a.rel = 'noopener';
+        msgEl.append(a, '.');
+      })
+      .finally(() => { sendMail.disabled = sendWa.disabled = false; });
+  });
+  getJSON('/api/consulta').then((d) => {
+    if (!d.configured) return;
+    mailOn = true;
+    sendMail.hidden = false;
+    sendWa.className = 'btn btn-out';
+  }).catch(() => {});
+}
+
+// Opiniones de Google
+const STAR = 'M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z';
+function stars(r) {
+  const w = el('span', 'stars');
+  w.setAttribute('role', 'img');
+  w.setAttribute('aria-label', num(r) + ui.stars);
+  for (let i = 0; i < 5; i++) {
+    const f = Math.max(0, Math.min(1, r - i));
+    const id = `s${Math.random().toString(36).slice(2)}`;
+    w.insertAdjacentHTML('beforeend', `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="${id}"><stop offset="${f}" stop-color="#C9A86B"/><stop offset="${f}" stop-color="#DDD5C3"/></linearGradient></defs><path d="${STAR}" fill="url(#${id})"/></svg>`);
+  }
+  return w;
+}
+// Antigüedad de la reseña en el idioma de la página; si no hay fecha, el texto que manda Google
+function when(v) {
+  const d = new Date(v.date);
+  if (!v.date || Number.isNaN(+d) || !window.Intl?.RelativeTimeFormat) return v.when || '';
+  const s = (d - Date.now()) / 1000;
+  const f = new Intl.RelativeTimeFormat(ui.locale, { numeric: 'auto' });
+  for (const [unit, secs] of [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600]]) {
+    if (Math.abs(s) >= secs) return f.format(Math.round(s / secs), unit);
+  }
+  return f.format(Math.round(s / 60), 'minute');
+}
+
+const revList = $('#rev-list');
+if (revList) {
+  const summary = $('#rev-summary');
+  getJSON('/api/resenas').then((d) => {
+    if (!d.reviews?.length) throw d;
+    if (safe(d.mapsUrl)) $('#rev-all').href = d.mapsUrl;
+    const wr = $('#rev-write');
+    wr.href = d.writeReviewUrl;
+    wr.hidden = false;
+    revList.textContent = '';
+    if (d.rating) {
+      summary.append(el('span', 'rev-num', num(d.rating)), stars(d.rating), el('span', null, d.total + ui.reviews));
+      summary.hidden = false;
+    }
+    d.reviews.slice(0, 6).forEach((v) => {
+      const c = el('article', 'rev');
+      const h = el('div', 'rev-head');
+      const av = el('div', 'rev-av');
+      const who = el('div');
+      if (safe(v.photo)) {
+        const im = el('img');
+        im.src = v.photo;
+        im.alt = '';
+        im.loading = 'lazy';
+        im.referrerPolicy = 'no-referrer';
+        av.appendChild(im);
+      } else av.textContent = (v.author || '?').charAt(0).toUpperCase();
+      const n = el(safe(v.authorUrl) ? 'a' : 'span', 'rev-name', v.author);
+      if (n.tagName === 'A') { n.href = v.authorUrl; n.target = '_blank'; n.rel = 'noopener'; }
+      who.append(n, el('div', 'rev-when', when(v)));
+      h.append(av, who);
+      c.appendChild(h);
+      if (v.rating) c.appendChild(stars(v.rating));
+      c.appendChild(el('p', 'rev-text', v.text));
+      revList.appendChild(c);
+    });
+  }).catch(() => {
+    revList.textContent = '';
+    const c = el('div', 'rev');
+    c.style.gridColumn = '1/-1';
+    c.appendChild(el('p', 'rev-text', ui.revFallback));
+    revList.appendChild(c);
+  });
+}
+
+const dateTxt = (iso) => new Date(iso).toLocaleDateString(ui.locale, { day: 'numeric', month: 'long', year: 'numeric' });
+
+// Publicaciones del estudio (CMS)
+const studioList = $('#studio-list');
+if (studioList) {
+  getJSON('/api/articulos?limit=3').then((d) => {
+    if (!d.articulos?.length) return;
+    d.articulos.forEach((a) => {
+      const card = el('a', 'art');
+      card.href = `/actualidad/${encodeURIComponent(a.slug)}`;
+      if (lang !== 'es') card.hreflang = 'es';
+      const meta = el('span', 'art-meta');
+      meta.appendChild(el('span', 'art-cat', ui.cats[a.categoria] || ui.catDefault));
+      if (a.publicado_en) { const t = el('time', null, dateTxt(a.publicado_en)); t.dateTime = a.publicado_en; meta.appendChild(t); }
+      if (ui.inSpanish) meta.appendChild(el('span', null, ui.inSpanish));
+      const title = el('span', 'art-title', a.titulo);
+      if (lang !== 'es') title.lang = 'es';
+      card.append(meta, title);
+      if (a.resumen) { const s = el('span', 'art-sum', a.resumen); if (lang !== 'es') s.lang = 'es'; card.appendChild(s); }
+      card.appendChild(el('span', 'art-more', ui.read));
+      studioList.appendChild(card);
+    });
+    $('#studio').hidden = false;
+  }).catch(() => {});
+}
+
+// Noticias de medios (Google News)
+const newsList = $('#news-list');
+if (newsList) {
+  getJSON('/api/noticias').then((d) => {
+    if (!d.items?.length) throw d;
+    newsList.textContent = '';
+    d.items.forEach((n) => {
+      if (!safe(n.link)) return;
+      const a = el('a', 'pub');
+      const b = el('span', 'pub-body');
+      const m = el('span', 'pub-meta');
+      const dt = new Date(n.date);
+      a.href = n.link;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      if (n.date && !Number.isNaN(+dt)) {
+        const tm = el('time', 'pub-date');
+        tm.dateTime = n.date;
+        tm.append(el('span', 'pub-day', String(dt.getDate())), el('span', 'pub-mon', dt.toLocaleDateString(ui.locale, { month: 'short' }).replace('.', '')));
+        a.appendChild(tm);
+      } else a.appendChild(el('span', 'pub-date'));
+      m.appendChild(el('span', 'pub-cat', ui.cats[n.category] || ui.catDefault));
+      if (n.source) m.appendChild(el('span', null, n.source));
+      const title = el('span', 'pub-title', n.title);
+      if (lang !== 'es') title.lang = 'es';
+      b.append(m, title, el('span', 'pub-more', ui.more));
+      a.appendChild(b);
+      newsList.appendChild(a);
+    });
+  }).catch(() => {
+    newsList.textContent = '';
+    const a = el('a', 'pub pub-wide');
+    const b = el('span', 'pub-body');
+    a.href = 'https://www.argentina.gob.ar/interior/migraciones';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    b.append(el('span', 'pub-title', ui.newsFallback), el('span', 'pub-more', ui.newsFallbackLink));
+    a.appendChild(b);
+    newsList.appendChild(a);
+  });
+}

@@ -1,0 +1,51 @@
+---
+import { env } from 'cloudflare:workers';
+import Base from '../../layouts/Base.astro';
+import { listPublished } from '../../lib/articulos.js';
+import { fechaLarga } from '../../lib/fechas.js';
+import es from '../../i18n/es.js';
+
+export const prerender = false;
+
+let articulos = [];
+try {
+  articulos = await listPublished(env.DB, { limit: 60 });
+} catch (e) {
+  console.error('actualidad', e);
+}
+Astro.response.headers.set('Cache-Control', 'public, max-age=60');
+---
+<Base lang="es" path="/actualidad" translated={false} hasContact={false} title="Actualidad Migratoria | Estudio EBI" description="Newsletter semanal y análisis del Estudio EBI sobre normativa migratoria, residencias, ciudadanía y trámites ante la Dirección Nacional de Migraciones.">
+<section>
+<div class="wrap stack">
+<div class="head">
+<p class="eyebrow">{es.actualidad.eyebrow}</p>
+<h1 class="h2">Actualidad Migratoria</h1>
+<p class="lead">{es.actualidad.lead}</p>
+</div>
+{articulos.length ? (
+  <div class="art-list">
+    {articulos.map((a) => (
+      <a class="art" href={`/actualidad/${a.slug}`}>
+        <span class="art-meta"><span class="art-cat">{es.cats[a.categoria] || es.cats.general}</span>{a.publicado_en && <time datetime={a.publicado_en}>{fechaLarga(a.publicado_en)}</time>}{a.autor && <span>{a.autor}</span>}</span>
+        <span class="art-title">{a.titulo}</span>
+        {a.resumen && <span class="art-sum">{a.resumen}</span>}
+        <span class="art-more">{es.ui.read}</span>
+      </a>
+    ))}
+  </div>
+) : (
+  <p class="empty">Muy pronto vas a encontrar acá las ediciones de Actualidad Migratoria.</p>
+)}
+</div>
+</section>
+<section class="band">
+<div class="wrap stack">
+<h2 class="sub-title">{es.actualidad.media}</h2>
+<div id="news-list" class="pubs" aria-live="polite">
+<div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
+</div>
+<p class="note"><span>{es.actualidad.note}</span> <a href="https://www.argentina.gob.ar/interior/migraciones" target="_blank" rel="noopener">argentina.gob.ar/migraciones</a>.</p>
+</div>
+</section>
+</Base>

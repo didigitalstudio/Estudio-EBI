@@ -1,0 +1,38 @@
+---
+// Subpágina para campañas (por ahora, empresas). Las próximas se arman con la misma estructura.
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Cards from './Cards.astro';
+import Steps from './Steps.astro';
+import Why from './Why.astro';
+import Faq from './Faq.astro';
+import Contacto from './Contacto.astro';
+import { DICTS } from '../i18n/index.js';
+import { waLink } from '../data/sitio.js';
+
+const { lang, page, perfil, tipo, icons, cta = 'proposal' } = Astro.props;
+const t = DICTS[lang];
+const p = t.pages[page];
+---
+<Base lang={lang} path={`/${page}`} title={t.meta[page].title} description={t.meta[page].description}>
+<Hero
+  eyebrow={p.hero.eyebrow}
+  title={p.hero.title}
+  lead={p.hero.lead}
+  primary={{ href: '#contacto', label: t.common.consult, perfil, tipo }}
+  wa={{ href: waLink(p.hero.wa), label: t.common.whatsapp }}
+  trust={t.hero.trust}
+>
+<p class="panel-title">{t.common.solves}</p>
+<ul class="panel-list">
+{p.hero.bullets.map((b) => <li><svg class="ic" aria-hidden="true"><use href="#i-check" /></svg><span>{b}</span></li>)}
+</ul>
+</Hero>
+<Cards eyebrow={p.cards.eyebrow} title={p.cards.title} lead={p.cards.lead} items={p.cards.items} icons={icons}>
+<Steps title={p.steps.title} cta={t.common[cta]} items={p.steps.items} perfil={perfil} tipo={tipo} />
+{p.callout && <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-shield" /></svg><span>{p.callout}</span></p>}
+</Cards>
+<Why lang={lang} />
+<Faq lang={lang} items={p.faq} />
+<Contacto lang={lang} perfil={perfil} tipo={tipo} />
+</Base>

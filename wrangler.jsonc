@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "estudio-ebi",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      // Artículos de Actualidad Migratoria. Crear la base con `npx wrangler d1 create ebi`
+      // y pegar acá el database_id que devuelve (ver README).
+      "binding": "DB",
+      "database_name": "ebi",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "observability": { "enabled": true }
+}
