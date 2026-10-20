@@ -3,7 +3,7 @@ import { DICTS } from '../i18n/index.js';
 const { lang } = Astro.props;
 const t = DICTS[lang].personas;
 ---
-<section id="personas">
+<section id="personas" data-guide={DICTS[lang].guide.personas} data-nav="servicios">
 <div class="wrap stack">
 <div class="head">
 <p class="eyebrow">{t.eyebrow}</p>

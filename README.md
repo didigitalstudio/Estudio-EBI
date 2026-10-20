@@ -2,23 +2,34 @@
 
 Sitio del estudio hecho con [Astro](https://astro.build) y publicado en Cloudflare Workers.
 
-- Las páginas (inicio y `/empresas`, en cinco idiomas) se generan en el build como HTML estático.
+- Las páginas (inicio, `/empresas` y `/quienes-somos`, en cinco idiomas) se generan en el build como HTML estático.
 - Actualidad Migratoria (`/actualidad`), el panel de los socios (`/admin`) y la API (`/api/*`) corren en el Worker.
-- Los artículos se guardan en Cloudflare D1. El panel queda protegido con Cloudflare Access: cada socio entra con un código que le llega por email, así que no hay contraseñas que mantener.
+- Los artículos y el repositorio jurídico se guardan en Cloudflare D1. El panel queda protegido con Cloudflare Access: cada socio entra con un código que le llega por email, así que no hay contraseñas que mantener.
 
 ## Dónde está cada cosa
 
 | Qué | Dónde |
 | --- | --- |
 | Textos del sitio | `src/i18n/es.js` y sus traducciones `en.js`, `pt.js`, `zh.js`, `ru.js` |
-| WhatsApp, email, Facebook, LinkedIn, socios y fotos | `src/data/sitio.js` |
+| WhatsApp del formulario, email, redes, logo, foto de portada y apellidos | `src/data/sitio.js` |
 | Secciones | `src/components/` |
 | Páginas | `src/pages/` (`[...lang]/` son las páginas traducidas) |
 | Estilos | `src/styles/site.css` |
-| Script del navegador (formulario, reseñas, noticias) | `src/scripts/site.js` |
-| Base de artículos | `migrations/` |
+| Script del navegador (guía de sección, carrusel, formulario, reseñas, repositorio) | `src/scripts/site.js` |
+| Base de artículos y normas | `migrations/` |
 
-Lo que todavía no pasó el estudio queda con un marcador entre corchetes ([FOTO], [EMAIL], [Formación académica y matrícula profesional]). El email, el LinkedIn institucional y los LinkedIn de los socios se cargan en `src/data/sitio.js`. Mientras estén vacíos, la página muestra el marcador o no muestra el botón.
+Lo que todavía no pasó el estudio queda con un marcador entre corchetes ([EMAIL], [Reseña profesional del estudio…]). En `src/data/sitio.js` se cargan:
+
+- `email`: casilla de contacto (se muestra en Contacto y en el pie).
+- `facebook`, `facebookGrupo`, `linkedin`: los íconos del pie aparecen solo si tienen dirección.
+- `logo`: archivo en `public/` (ej. `'/logo.png'`). Mientras esté vacío, el encabezado muestra el logo de texto.
+- `portada`: foto de fondo de la portada en `public/` (ej. `'/portada.jpg'`, idealmente 2000 px de ancho). Se muestra difuminada bajo un velo verde; mientras esté vacía se ve una silueta de Buenos Aires.
+
+Por pedido del estudio, el sitio no menciona el paso de los socios por organismos públicos o internacionales y en Quiénes somos muestra solo los apellidos, sin fotos ni currículums. `test/contenido.test.js` lo controla en los cinco idiomas.
+
+## Recorrido del inicio
+
+Portada → Servicios → Personas y familias → Empresas → Actualidad (carrusel de publicaciones y noticias) → Opiniones de Google → Preguntas frecuentes → Contacto. Quiénes somos tiene su página propia. Mientras se recorre la página, el menú marca la sección y una franja debajo del encabezado muestra su nombre (cada sección lo define con `data-guide`). El sitio no tiene botones directos a WhatsApp: las consultas entran por el formulario, que filtra los contactos y ordena la información.
 
 ## Idiomas
 
@@ -78,7 +89,11 @@ Para habilitar el acceso de los socios, en Cloudflare Zero Trust:
 
 Además de Access, la API verifica en cada pedido el token que firma Cloudflare, así que si alguien entra por otra dirección del Worker no puede leer ni modificar nada.
 
+El panel tiene dos pestañas: Publicaciones y Repositorio jurídico.
+
 Para publicar: entrar a `/admin`, poner el email y el código que llega, tocar "Nueva publicación", completar título, categoría, autor, resumen y contenido, y "Publicar". "Guardar borrador" la guarda sin mostrarla en el sitio. El contenido se escribe en Markdown y al lado se ve cómo va a quedar. Cada publicación tiene botones para compartir en LinkedIn, Facebook y WhatsApp.
+
+Repositorio jurídico: leyes, decretos, DNU, disposiciones y resoluciones con su enlace a la fuente oficial (tiene que empezar con `https://`). Se muestran en `/actualidad#repositorio` apenas se guardan, ordenadas por fecha, con filtro por tipo y buscador. La migración `0002_normas.sql` carga las normas base (Ley 25.871, Decreto 616/2010, DNU 366/2025, Ley 346 y el Boletín Oficial).
 
 ## Formulario de consultas (`/api/consulta`)
 

@@ -1,0 +1,45 @@
+---
+// Quiénes somos: reseña del estudio y origen del nombre con los apellidos, sin fotos ni currículums
+// (pedido del estudio). Solo se ve en su propia página, no en el recorrido del inicio.
+import { DICTS } from '../i18n/index.js';
+import { APELLIDOS } from '../data/sitio.js';
+
+const { lang } = Astro.props;
+const t = DICTS[lang];
+const n = t.nosotros;
+const modeIcons = ['i-people', 'i-chat', 'i-person', 'i-globe'];
+---
+<section id="nosotros" data-guide={t.guide.nosotros} data-nav="nosotros">
+<div class="wrap about">
+<div class="about-copy">
+<p class="resena">{n.resena}</p>
+<div class="name-line">
+<p class="name-title">{n.nameTitle}</p>
+<p class="names" aria-label={APELLIDOS.join(', ')}>
+{APELLIDOS.map((ap, i) => <>{i > 0 && <span class="sep" aria-hidden="true">·</span>}<span><b>{ap[0]}</b>{ap.slice(1)}</span></>)}
+</p>
+<p class="name-text">{n.nameText}</p>
+</div>
+</div>
+<div class="enfoque" data-guide={t.guide.enfoque}>
+<h2 class="h3">{n.enfoqueTitle}</h2>
+<ul class="checks">
+{n.checks.map((c) => <li><svg class="ic" aria-hidden="true"><use href="#i-check" /></svg><span>{c}</span></li>)}
+</ul>
+<p class="rights"><svg class="ic" aria-hidden="true"><use href="#i-shield" /></svg><span>{t.why.rights}</span></p>
+</div>
+</div>
+</section>
+<section class="band" data-guide={n.modesTitle}>
+<div class="wrap stack">
+<h2 class="h3">{n.modesTitle}</h2>
+<div class="modes">
+{n.modes.map((m, i) => (
+  <div class="mode">
+    <span class="ico-badge"><svg class="ic" aria-hidden="true"><use href={`#${modeIcons[i]}`} /></svg></span>
+    <div><p class="mode-t">{m.title}</p><p class="mode-d">{m.text}</p></div>
+  </div>
+))}
+</div>
+</div>
+</section>

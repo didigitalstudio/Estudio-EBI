@@ -3,7 +3,7 @@ import '../styles/site.css';
 import Sprite from '../components/Sprite.astro';
 import Flag from '../components/Flag.astro';
 import { DICTS, LANGS, langInfo, localePath } from '../i18n/index.js';
-import { SITIO, waLink } from '../data/sitio.js';
+import { SITIO } from '../data/sitio.js';
 
 const {
   lang = 'es',
@@ -23,17 +23,32 @@ const site = Astro.site;
 const abs = (p) => (site ? new URL(p, site).href : null);
 const canonical = translated ? localePath(lang, path) : Astro.url.pathname;
 const home = localePath(lang, '/');
-const actualidad = lang === 'es' ? '/actualidad' : `${home}#actualidad`;
+// Servicios, Empresas y Actualidad son secciones del inicio: el script marca la que se está viendo (data-nav).
+// key marca la página propia de cada una con aria-current="page".
 const nav = [
-  { href: `${home}#servicios`, label: t.nav.servicios },
-  { href: localePath(lang, '/empresas'), label: t.nav.empresas, key: '/empresas' },
-  { href: `${home}#nosotros`, label: t.nav.nosotros },
-  { href: actualidad, label: t.nav.actualidad, key: '/actualidad' },
+  { href: `${home}#servicios`, label: t.nav.servicios, sec: 'servicios' },
+  { href: `${home}#empresas`, label: t.nav.empresas, sec: 'empresas', key: '/empresas' },
+  { href: localePath(lang, '/quienes-somos'), label: t.nav.nosotros, sec: 'nosotros', key: '/quienes-somos' },
+  { href: `${home}#actualidad`, label: t.nav.actualidad, sec: 'actualidad', key: '/actualidad' },
 ];
 const contactHref = hasContact ? '#contacto' : `${home}#contacto`;
+// Índice del pie: repite el recorrido completo del sitio
+const index = [
+  { href: `${home}#servicios`, label: t.guide.servicios },
+  { href: `${home}#personas`, label: t.guide.personas },
+  { href: `${home}#empresas`, label: t.guide.empresas },
+  { href: `${home}#actualidad`, label: t.guide.actualidad },
+  { href: `${home}#faq`, label: t.guide.faq },
+  { href: localePath(lang, '/quienes-somos'), label: t.nav.nosotros },
+];
+const social = [
+  { href: SITIO.facebook, label: 'Facebook', icon: 'i-facebook' },
+  { href: SITIO.facebookGrupo, label: t.footer.group, icon: 'i-people' },
+  { href: SITIO.linkedin, label: 'LinkedIn', icon: 'i-linkedin-fill' },
+].filter((s) => s.href);
 const langHref = (code) => localePath(code, translated ? path : '/');
 // Textos y datos que usa el script del navegador
-const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsapp[0].numero, menuOpen: t.nav.menuOpen, menuClose: t.nav.menuClose, page: Astro.url.pathname };
+const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsapp, menuOpen: t.nav.menuOpen, menuClose: t.nav.menuClose, page: Astro.url.pathname };
 ---
 <!doctype html>
 <html lang={info.hreflang}>
@@ -52,11 +67,13 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <meta property="og:locale" content={info.locale.replace('-', '_')}>
 <meta property="og:site_name" content="Estudio EBI">
 {abs(canonical) && <meta property="og:url" content={abs(canonical)}>}
-<meta name="theme-color" content="#123F2F">
+{SITIO.portada && abs(SITIO.portada) && <meta property="og:image" content={abs(SITIO.portada)}>}
+<meta name="theme-color" content="#FAF6EC">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23123F2F'/%3E%3Ctext x='32' y='41' font-family='Georgia' font-weight='700' font-size='24' fill='%23F4F0E6' text-anchor='middle'%3EEBI%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+{SITIO.portada && path === '/' && <link rel="preload" as="image" href={SITIO.portada}>}
 {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 <slot name="head" />
 </head>
@@ -64,10 +81,14 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <Sprite />
 <header class="top">
 <div class="top-in">
-<a href={home} class="logo" aria-label="Estudio EBI">
-<span class="logo-mark">EBI</span>
-<span class="logo-rule"></span>
-<span class="logo-sub">ESTUDIO JURÍDICO</span>
+<a href={home} class:list={['logo', { 'logo-has-img': SITIO.logo }]} aria-label="Estudio EBI">
+{SITIO.logo
+  ? <img src={SITIO.logo} alt="" class="logo-img" width="200" height="64">
+  : <>
+    <span class="logo-mark">EBI</span>
+    <span class="logo-rule"></span>
+    <span class="logo-sub">ESTUDIO JURÍDICO</span>
+  </>}
 </a>
 <div class="tools">
 <details class="lang-menu">
@@ -85,9 +106,13 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <button type="button" class="menu-btn" aria-label={t.nav.menuOpen} aria-expanded="false" aria-controls="menu"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
 </div>
 <nav id="menu" class="main-nav" aria-label={t.nav.main}>
-{nav.map((n) => <a href={n.href} aria-current={n.key && n.key === path ? 'page' : undefined}>{n.label}</a>)}
+{nav.map((n) => <a href={n.href} data-sec={n.sec} aria-current={n.key && n.key === path ? 'page' : undefined}>{n.label}</a>)}
 <a href={contactHref} class="nav-cta">{t.nav.consultar}</a>
 </nav>
+</div>
+<div id="guide" class="guide" aria-hidden="true">
+<div class="guide-in"><span class="guide-label"></span></div>
+<span class="guide-bar"><i></i></span>
 </div>
 </header>
 
@@ -98,19 +123,35 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <footer class="foot">
 <div class="foot-in">
 <div class="foot-brand">
-<b>EBI</b>
-<span>{t.footer.tagline}</span>
+<a href={home} class="foot-logo" aria-label="Estudio EBI"><b>EBI</b><span>ESTUDIO JURÍDICO</span></a>
+<p>{t.footer.tagline}</p>
+{social.length > 0 && (
+  <div class="foot-social">
+    <p class="foot-t">{t.footer.social}</p>
+    <ul>
+      {social.map((s) => <li><a href={s.href} target="_blank" rel="noopener" aria-label={s.label} title={s.label}><svg class="ic" aria-hidden="true"><use href={`#${s.icon}`} /></svg></a></li>)}
+    </ul>
+  </div>
+)}
 </div>
-<nav class="foot-links" aria-label={t.footer.nav}>
-{nav.slice(1, 2).map((n) => <a href={n.href}>{n.label}</a>)}
-<a href={actualidad}>{t.nav.actualidad}</a>
-<a href={SITIO.facebook} target="_blank" rel="noopener">Facebook</a>
-{SITIO.linkedin && <a href={SITIO.linkedin} target="_blank" rel="noopener">LinkedIn</a>}
+<nav class="foot-col" aria-label={t.footer.nav}>
+<p class="foot-t">{t.footer.sections}</p>
+<ul>{index.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
 </nav>
+<div class="foot-col">
+<p class="foot-t">{t.footer.contact}</p>
+<ul>
+<li><a href={`${home}#contacto`}>{t.footer.formLink}</a></li>
+{SITIO.email && <li><a href={`mailto:${SITIO.email}`}>{SITIO.email}</a></li>}
+{social.map((s) => <li><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>)}
+</ul>
+</div>
+</div>
+<div class="foot-base">
+<p>© {new Date().getFullYear()} Estudio EBI. {t.footer.rights}</p>
 </div>
 </footer>
 
-<a class="wa-float" href={waLink()} aria-label={t.common.whatsapp}><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg></a>
 <script type="application/json" id="ui" set:html={JSON.stringify(ui).replace(/</g, '\\u003c')} />
 <script>
 import '../scripts/site.js';

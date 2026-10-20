@@ -24,6 +24,37 @@ function menu(open) {
 menuBtn.addEventListener('click', () => menu(!nav.classList.contains('open')));
 nav.addEventListener('click', (e) => { if (e.target.closest('a')) menu(false); });
 
+// Guía de sección y menú: marcan la parte de la página que se está viendo
+const topBar = $('.top');
+const guide = $('#guide');
+const guideLabel = $('.guide-label', guide);
+const guideBar = $('.guide-bar i', guide);
+const spied = $$('[data-guide]');
+const navLinks = $$('#menu a[data-sec]');
+let spyQueued = false;
+function spy() {
+  spyQueued = false;
+  const line = topBar.getBoundingClientRect().bottom + 48;
+  let cur = null;
+  // El último que cruza la línea es el más interno (ej. Nuestro enfoque dentro de Quiénes somos)
+  for (const s of spied) {
+    const r = s.getBoundingClientRect();
+    if (r.top <= line && r.bottom > line) cur = s;
+  }
+  const label = cur?.dataset.guide || '';
+  if (label && guideLabel.textContent !== label) guideLabel.textContent = label;
+  guide.classList.toggle('on', !!label);
+  const sec = cur?.closest('[data-nav]')?.dataset.nav;
+  navLinks.forEach((a) => a.classList.toggle('is-active', a.dataset.sec === sec));
+  const max = document.documentElement.scrollHeight - innerHeight;
+  guideBar.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+  topBar.classList.toggle('scrolled', scrollY > 4);
+}
+const queueSpy = () => { if (!spyQueued) { spyQueued = true; requestAnimationFrame(spy); } };
+addEventListener('scroll', queueSpy, { passive: true });
+addEventListener('resize', queueSpy);
+spy();
+
 // Selector de idiomas: se cierra al tocar afuera o con Escape
 const langMenu = $('.lang-menu');
 document.addEventListener('click', (e) => { if (langMenu.open && !langMenu.contains(e.target)) langMenu.open = false; });
@@ -216,28 +247,74 @@ if (revList) {
 
 const dateTxt = (iso) => new Date(iso).toLocaleDateString(ui.locale, { day: 'numeric', month: 'long', year: 'numeric' });
 
-// Publicaciones del estudio (CMS)
-const studioList = $('#studio-list');
-if (studioList) {
-  getJSON('/api/articulos?limit=3').then((d) => {
-    if (!d.articulos?.length) return;
-    d.articulos.forEach((a) => {
-      const card = el('a', 'art');
-      card.href = `/actualidad/${encodeURIComponent(a.slug)}`;
-      if (lang !== 'es') card.hreflang = 'es';
-      const meta = el('span', 'art-meta');
-      meta.appendChild(el('span', 'art-cat', ui.cats[a.categoria] || ui.catDefault));
-      if (a.publicado_en) { const t = el('time', null, dateTxt(a.publicado_en)); t.dateTime = a.publicado_en; meta.appendChild(t); }
-      if (ui.inSpanish) meta.appendChild(el('span', null, ui.inSpanish));
-      const title = el('span', 'art-title', a.titulo);
-      if (lang !== 'es') title.lang = 'es';
-      card.append(meta, title);
-      if (a.resumen) { const s = el('span', 'art-sum', a.resumen); if (lang !== 'es') s.lang = 'es'; card.appendChild(s); }
-      card.appendChild(el('span', 'art-more', ui.read));
-      studioList.appendChild(card);
+// Carrusel de Actualidad en el inicio: publicaciones del estudio primero y después noticias de medios
+const track = $('#news-track');
+if (track) {
+  const card = (href, own, cat, date, extra, title, sum, external) => {
+    const a = el('a', own ? 'news own' : 'news');
+    a.href = href;
+    if (external) { a.target = '_blank'; a.rel = 'noopener'; } else if (lang !== 'es') a.hreflang = 'es';
+    if (own) a.appendChild(el('span', 'news-badge', ui.studio));
+    const meta = el('span', 'news-meta');
+    meta.appendChild(el('span', 'news-cat', cat));
+    const dt = new Date(date);
+    if (date && !Number.isNaN(+dt)) { const t = el('time', null, dateTxt(date)); t.dateTime = date; meta.appendChild(t); }
+    if (extra) meta.appendChild(el('span', null, extra));
+    const h = el('span', 'news-title', title);
+    if (lang !== 'es') h.lang = 'es';
+    a.append(meta, h);
+    if (sum) { const s = el('span', 'news-sum', sum); if (lang !== 'es') s.lang = 'es'; a.appendChild(s); }
+    a.appendChild(el('span', 'news-more', own ? ui.read : ui.more));
+    return a;
+  };
+  Promise.allSettled([getJSON('/api/articulos?limit=6'), getJSON('/api/noticias')]).then(([pubs, media]) => {
+    const cards = [];
+    (pubs.value?.articulos || []).forEach((a) => {
+      cards.push(card(`/actualidad/${encodeURIComponent(a.slug)}`, true, ui.cats[a.categoria] || ui.catDefault, a.publicado_en, ui.inSpanish, a.titulo, a.resumen));
     });
-    $('#studio').hidden = false;
-  }).catch(() => {});
+    (media.value?.items || []).forEach((n) => {
+      if (safe(n.link)) cards.push(card(n.link, false, ui.cats[n.category] || ui.catDefault, n.date, n.source, n.title, '', true));
+    });
+    if (!cards.length) cards.push(card('https://www.argentina.gob.ar/interior/migraciones', false, ui.catDefault, '', '', ui.newsFallback, '', true));
+    track.textContent = '';
+    track.append(...cards);
+    carousel(track);
+  });
+}
+
+// Avanza solo cada 6 segundos (salvo movimiento reducido) y se pausa con el mouse, el foco o fuera de pantalla
+function carousel(tr) {
+  const prev = $('[data-car="prev"]');
+  const next = $('[data-car="next"]');
+  const step = () => (tr.firstElementChild ? tr.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(tr).columnGap || 0) : tr.clientWidth);
+  const atEnd = () => tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4;
+  const sync = () => {
+    const over = tr.scrollWidth > tr.clientWidth + 4;
+    prev.parentNode.hidden = !over;
+    prev.disabled = tr.scrollLeft <= 4;
+  };
+  const go = (dir) => {
+    if (dir > 0 && atEnd()) tr.scrollTo({ left: 0 });
+    else tr.scrollBy({ left: dir * step() });
+  };
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
+  tr.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+  window.addEventListener('resize', sync);
+  sync();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let hold = false;
+  let seen = false;
+  const box = tr.closest('section') || tr;
+  box.addEventListener('mouseenter', () => { hold = true; });
+  box.addEventListener('mouseleave', () => { hold = false; });
+  box.addEventListener('focusin', () => { hold = true; });
+  box.addEventListener('focusout', () => { hold = false; });
+  box.addEventListener('touchstart', () => { hold = true; }, { passive: true });
+  new IntersectionObserver(([e]) => { seen = e.isIntersecting; }).observe(tr);
+  setInterval(() => {
+    if (!hold && seen && !document.hidden && tr.scrollWidth > tr.clientWidth + 4) go(1);
+  }, 6000);
 }
 
 // Noticias de medios (Google News)
@@ -280,4 +357,30 @@ if (newsList) {
     a.appendChild(b);
     newsList.appendChild(a);
   });
+}
+
+// Repositorio jurídico (página de Actualidad): filtro por tipo de norma y búsqueda
+const repo = $('#repo');
+if (repo) {
+  const plain = (v) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const items = $$('.norma', repo).map((it) => [it, plain(it.textContent)]);
+  const q = $('#repo-q', repo);
+  const chips = $$('.chip', repo);
+  let tipo = '';
+  const apply = () => {
+    const s = plain(q.value.trim());
+    let n = 0;
+    items.forEach(([it, txt]) => {
+      const on = (!tipo || it.dataset.tipo === tipo) && (!s || txt.includes(s));
+      it.hidden = !on;
+      if (on) n++;
+    });
+    $('#repo-empty', repo).hidden = n > 0;
+  };
+  chips.forEach((c) => c.addEventListener('click', () => {
+    tipo = c.dataset.tipo;
+    chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+    apply();
+  }));
+  q.addEventListener('input', apply);
 }

@@ -1,38 +1,33 @@
 ---
-// Subpágina para campañas (por ahora, empresas). Las próximas se arman con la misma estructura.
+// Subpágina /empresas para campañas: misma información que la sección del inicio, con portada propia,
+// por qué EBI y preguntas para empresas.
 import Base from '../layouts/Base.astro';
 import Hero from './Hero.astro';
-import Cards from './Cards.astro';
-import Steps from './Steps.astro';
+import EmpresasSection from './EmpresasSection.astro';
 import Why from './Why.astro';
 import Faq from './Faq.astro';
 import Contacto from './Contacto.astro';
-import { DICTS } from '../i18n/index.js';
-import { waLink } from '../data/sitio.js';
+import { DICTS, localePath } from '../i18n/index.js';
 
-const { lang, page, perfil, tipo, icons, cta = 'proposal' } = Astro.props;
+const { lang } = Astro.props;
 const t = DICTS[lang];
-const p = t.pages[page];
+const p = t.pages.empresas;
 ---
-<Base lang={lang} path={`/${page}`} title={t.meta[page].title} description={t.meta[page].description}>
+<Base lang={lang} path="/empresas" title={t.meta.empresas.title} description={t.meta.empresas.description}>
 <Hero
   eyebrow={p.hero.eyebrow}
   title={p.hero.title}
   lead={p.hero.lead}
-  primary={{ href: '#contacto', label: t.common.consult, perfil, tipo }}
-  wa={{ href: waLink(p.hero.wa), label: t.common.whatsapp }}
-  trust={t.hero.trust}
+  primary={{ href: '#contacto', label: t.common.proposal, perfil: 'empresa', tipo: 'renure' }}
+  links={[{ href: `${localePath(lang, '/')}#servicios`, label: t.nav.servicios }]}
 >
 <p class="panel-title">{t.common.solves}</p>
 <ul class="panel-list">
 {p.hero.bullets.map((b) => <li><svg class="ic" aria-hidden="true"><use href="#i-check" /></svg><span>{b}</span></li>)}
 </ul>
 </Hero>
-<Cards eyebrow={p.cards.eyebrow} title={p.cards.title} lead={p.cards.lead} items={p.cards.items} icons={icons}>
-<Steps title={p.steps.title} cta={t.common[cta]} items={p.steps.items} perfil={perfil} tipo={tipo} />
-{p.callout && <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-shield" /></svg><span>{p.callout}</span></p>}
-</Cards>
+<EmpresasSection lang={lang} intro={false} />
 <Why lang={lang} />
 <Faq lang={lang} items={p.faq} />
-<Contacto lang={lang} perfil={perfil} tipo={tipo} />
+<Contacto lang={lang} perfil="empresa" tipo="renure" />
 </Base>

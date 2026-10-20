@@ -1,12 +1,16 @@
 export default {
   meta: {
     home: {
-      title: 'Estudio EBI — Direito migratório na Argentina',
-      description: 'Escritório de direito migratório com experiência na Direção Nacional de Migrações da Argentina e na OIM. Residências, DNI, cidadania, imigração corporativa e recursos contra expulsões.',
+      title: 'Estudio EBI — Escritório de advocacia especializado em direito migratório',
+      description: 'Escritório de advocacia especializado em direito migratório na Argentina. Residências, DNI, cidadania, trâmites para empresas e recursos contra expulsões e negativas de residência.',
     },
     empresas: {
-      title: 'Imigração corporativa na Argentina: RENURE e funcionários estrangeiros | Estudio EBI',
-      description: 'Assessoria completa para empresas que contratam ou transferem funcionários estrangeiros para a Argentina: inscrição no RENURE, residência por trabalho, transferências e trâmites da família.',
+      title: 'Imigração para empresas: RENURE, residências e trâmite VIP | Estudio EBI',
+      description: 'Assessoria completa para empresas que contratam ou transferem funcionários estrangeiros para a Argentina: RENURE, residência por trabalho, trâmite VIP, plano de acompanhamento e trâmites para a família.',
+    },
+    quienes: {
+      title: 'Quem somos | Estudio EBI',
+      description: 'Escritório de advocacia especializado em direito migratório. Assistência e assessoria jurídica a estrangeiros, empresas e instituições na Argentina.',
     },
   },
 
@@ -24,36 +28,56 @@ export default {
     moreLanguagesNote: 'Tradução automática do Google',
   },
 
+  guide: {
+    servicios: 'Serviços',
+    personas: 'Pessoas e famílias',
+    empresas: 'Empresas',
+    porque: 'Por que a EBI',
+    actualidad: 'Atualidade migratória',
+    opiniones: 'Avaliações',
+    faq: 'Perguntas frequentes',
+    nosotros: 'Quem somos',
+    enfoque: 'Nossa abordagem',
+    contacto: 'Contato',
+  },
+
   common: {
     consult: 'Solicitar uma consulta',
-    whatsapp: 'Fale conosco pelo WhatsApp',
     proposal: 'Solicitar proposta',
     solves: 'O que resolvemos',
     faqTitle: 'Perguntas frequentes',
   },
 
   hero: {
-    eyebrow: 'Escritório de advocacia · Direito migratório',
-    title: 'Direito migratório com experiência institucional',
-    lead: 'Somos um escritório de advocacia especializado em migrações. Nossos sócios trabalharam na Direção Nacional de Migrações (DNM) da Argentina e na Organização Internacional para as Migrações (OIM): conhecemos as normas e os procedimentos por dentro e acompanhamos cada caso com um serviço sério e responsável.',
-    trust: ['Experiência na DNM e na OIM', 'Presencial e on-line', 'Mercosul e internacional'],
-    panelTitle: 'Como podemos ajudar?',
-    entries: {
-      personas: { title: 'Pessoas e famílias', text: 'Residência, DNI, cidadania e defesa contra expulsões' },
-      empresas: { title: 'Empresas', text: 'RENURE, autorizações de trabalho e transferência de funcionários estrangeiros' },
-    },
+    title: 'Escritório de advocacia especializado em direito migratório',
+    lead: 'Assessoramos pessoas, famílias e empresas em seus trâmites migratórios e de cidadania na Argentina, com informação clara e acompanhamento de cada caso.',
+    links: { personas: 'Pessoas e famílias', empresas: 'Empresas' },
   },
 
   why: {
     eyebrow: 'Por que a EBI',
-    title: 'Experiência técnica, institucional e acadêmica',
+    title: 'Um escritório de advocacia dedicado ao direito migratório',
     lead: 'Todo trâmite migratório tem consequências legais. Por isso o tratamos como um escritório de advocacia, e não como um despachante: analisamos o seu caso, explicamos as opções e cuidamos de todo o processo.',
     items: [
-      { title: 'Conhecemos a Migração por dentro', text: 'Dois dos nossos sócios integraram a Direção Nacional de Migrações. Sabemos como um processo é analisado e do que ele precisa para avançar.' },
-      { title: 'Visão internacional', text: '25 anos de trabalho na Organização Internacional para as Migrações (OIM), agência das Nações Unidas, em segurança de fronteiras e projetos migratórios.' },
-      { title: 'Um serviço responsável', text: 'Informação clara sobre requisitos, prazos e custos, e acompanhamento real de cada caso, longe dos despachantes informais.' },
+      { title: 'Especialização', text: 'Nós nos dedicamos ao direito migratório: residências, cidadania, trâmites para empresas e defesa contra decisões da Migração.' },
+      { title: 'Informação clara', text: 'Antes de começar, você já sabe quais são os requisitos, os prazos e os custos do seu trâmite.' },
+      { title: 'Acompanhamento real', text: 'Acompanhamos cada processo até a sua resolução e avisamos você de cada novidade, longe dos despachantes informais.' },
     ],
     rights: 'Trabalhamos com uma abordagem técnica e de proteção dos direitos humanos, a partir de uma posição profissional e independente.',
+  },
+
+  servicios: {
+    eyebrow: 'Serviços',
+    title: 'Trâmites migratórios para pessoas, famílias e empresas',
+    lead: 'Organizamos o nosso trabalho em seis áreas. Em cada uma, explicamos os requisitos, os prazos e os custos antes de começar e acompanhamos o processo até a sua resolução.',
+    areas: [
+      { title: 'Residências', text: 'Todas as categorias de residência perante a Direção Nacional de Migrações.', items: ['Residência Mercosul', 'Residência temporária e permanente', 'Renovação de residência', 'Mudança de categoria migratória'] },
+      { title: 'Autorizações de trabalho', text: 'Para empresas que contratam funcionários estrangeiros e profissionais que vêm trabalhar no país.', items: ['Inscrição no RENURE', 'Residência por contrato de trabalho', 'Transferências intragrupo', 'Vistos de negócios e cartas-convite'] },
+      { title: 'Cidadania e família', text: 'Cidadania argentina e trâmites para toda a família.', items: ['Cidadania argentina', 'Casos de vínculo familiar', 'Reunificação familiar'] },
+      { title: 'Recursos administrativos e judiciais', text: 'Defesa contra decisões infundadas ou arbitrárias da Migração.', items: ['Ordens de expulsão', 'Negativas e cancelamentos de residência', 'Proibições de ingresso', 'Recursos perante a DNM e a justiça federal'] },
+      { title: 'DNI e documentação', text: 'Seus documentos pessoais completos e em dia.', items: ['Obtenção do DNI para estrangeiros', 'Atualização de documentos', 'Revisão de certidões e atestados', 'Documentação incompleta ou vencida', 'Agendamentos e uso de plataformas digitais'] },
+      { title: 'Gestão perante a Migração', text: 'Acompanhamos cada processo até a sua resolução.', items: ['Orientação e acompanhamento nos trâmites', 'Acompanhamento de processos', 'Atrasos ou exigências pendentes'] },
+    ],
   },
 
   personas: {
@@ -76,41 +100,19 @@ export default {
     },
   },
 
-  servicios: {
-    eyebrow: 'Serviços',
-    title: 'Residências, trabalho, cidadania e defesa perante a Migração',
-    lead: 'Todos os trâmites migratórios, organizados por área e atendidos pela mesma equipe do início ao fim.',
-    areas: [
-      { title: 'Residências', text: 'Todas as categorias de residência perante a Direção Nacional de Migrações.', items: ['Residência Mercosul', 'Residência temporária e permanente', 'Renovação de residência', 'Mudança de categoria migratória'] },
-      { title: 'Autorizações de trabalho', text: 'Para empresas que contratam funcionários estrangeiros e profissionais que vêm trabalhar no país.', items: ['Inscrição no RENURE', 'Residência por contrato de trabalho', 'Transferências intragrupo', 'Vistos de negócios e cartas-convite'] },
-      { title: 'Cidadania e família', text: 'Cidadania argentina e trâmites para toda a família.', items: ['Cidadania argentina', 'Casos de vínculo familiar', 'Reunificação familiar'] },
-      { title: 'Recursos administrativos e judiciais', text: 'Defesa contra decisões infundadas ou arbitrárias da Migração.', items: ['Ordens de expulsão', 'Negativas e cancelamentos de residência', 'Proibições de ingresso', 'Recursos perante a DNM e a justiça federal'] },
-      { title: 'DNI e documentação', text: 'Seus documentos pessoais completos e em dia.', items: ['DNI para estrangeiros', 'Atualização de documentos', 'Revisão de certidões e atestados', 'Documentação incompleta ou vencida', 'Agendamentos e plataformas digitais'] },
-      { title: 'Acompanhamento perante a Migração', text: 'Acompanhamos cada processo até a sua resolução.', items: ['Orientação e acompanhamento nos trâmites', 'Acompanhamento de processos', 'Atrasos ou exigências pendentes'] },
-    ],
-  },
-
   nosotros: {
     eyebrow: 'Quem somos',
-    title: 'Três trajetórias, um mesmo compromisso',
-    lead: 'A EBI reúne experiência na Direção Nacional de Migrações da Argentina e na Organização Internacional para as Migrações. Oferecemos assistência e assessoria jurídica a estrangeiros e às empresas e instituições que os convocam, para visitar o país, trabalhar, estudar, morar ou defender os seus direitos diante de decisões arbitrárias.',
-    nameTitle: 'O nome EBI',
-    nameText: 'Reúne as iniciais dos sobrenomes dos sócios: Estomba, Boquicio e Izura.',
-    partner: 'Sócia',
-    partnerM: 'Sócio',
-    photo: '[FOTO]',
-    credentials: '[Formação acadêmica e registro profissional]',
-    linkedin: 'Perfil no LinkedIn',
-    socios: {
-      estomba: '25 anos de trajetória na Organização Internacional para as Migrações (OIM), agência das Nações Unidas, em segurança de fronteiras e projetos migratórios.',
-      boquicio: 'Ex-integrante da Direção Nacional de Migrações (DNM) da Argentina, com ampla trajetória no órgão.',
-      izura: 'Ex-integrante da Direção Nacional de Migrações (DNM) da Argentina, com ampla trajetória no órgão.',
-    },
+    title: 'Assessoria migratória e acesso a direitos',
+    lead: 'Somos um escritório de advocacia especializado em direito migratório. Oferecemos assistência e assessoria jurídica a estrangeiros e às empresas e instituições que os convocam, para visitar o país, trabalhar, estudar, morar ou defender os seus direitos diante de decisões arbitrárias.',
+    resena: '[Apresentação profissional do escritório: enviada pela equipe]',
+    nameTitle: 'Nosso nome',
+    nameText: 'EBI reúne as iniciais dos sobrenomes dos sócios.',
+    enfoqueTitle: 'Nossa abordagem',
     checks: ['Atendimento claro e personalizado', 'Acompanhamento durante todo o processo', 'Informação transparente sobre requisitos, prazos e custos', 'Acompanhamento real de cada caso', 'Comunicação simples e direta'],
     modesTitle: 'Formas de atendimento',
     modes: [
       { title: 'Consultas presenciais e on-line', text: 'Em reuniões agendadas ou por videochamada, onde você estiver' },
-      { title: 'Atendimento pelo WhatsApp', text: 'Respostas rápidas e sem complicação' },
+      { title: 'Acompanhamento pelo WhatsApp', text: 'Depois de recebermos a sua consulta, seguimos em contato com respostas rápidas' },
       { title: 'Acompanhamento personalizado', text: 'Avisamos cada novidade do seu processo' },
       { title: 'Atendimento em espanhol e inglês', text: 'Para pessoas, equipes de RH e empresas internacionais' },
     ],
@@ -119,34 +121,41 @@ export default {
   opiniones: {
     eyebrow: 'Avaliações no Google',
     title: 'O que dizem os clientes que confiaram em nós',
+    lead: 'As avaliações de quem já fez seus trâmites conosco, publicadas no nosso perfil do Google.',
     all: 'Ver avaliações no Google',
     write: 'Deixar uma avaliação',
   },
 
   actualidad: {
     eyebrow: 'Atualidade migratória',
-    title: 'Novidades e análises da nossa equipe',
-    lead: 'Toda semana publicamos a Actualidad Migratoria, com as mudanças nas normas e o impacto nos trâmites. Se uma novidade afeta o seu caso ou a sua empresa, fale conosco.',
-    studio: 'Publicações do escritório',
+    title: 'Novidades e análises',
+    lead: 'Toda semana publicamos a Actualidad Migratoria, com as mudanças nas normas e o impacto nos trâmites, além das notícias do setor. Se uma novidade afeta o seu caso ou a sua empresa, fale conosco.',
+    carousel: 'Novidades',
+    prev: 'Anterior',
+    next: 'Próximo',
     all: 'Ver todas as publicações',
-    media: 'Na imprensa',
-    note: 'Seleção automática de veículos em espanhol, atualizada a cada 30 minutos. Para informação oficial, acesse',
+    repositorio: 'Repositório jurídico',
+    repositorioText: 'Leis, decretos e disposições migratórias, com link para a fonte oficial.',
+    note: 'As notícias da imprensa são selecionadas automaticamente e atualizadas a cada 30 minutos. Para informação oficial, acesse',
   },
 
-  faq: [
-    { q: 'Vocês atendem pessoas de qualquer nacionalidade?', a: 'Sim. Assessoramos pessoas de países vizinhos, do Mercosul e de qualquer outra nacionalidade, cada uma com seus requisitos e opções de residência.' },
-    { q: 'Qual é a diferença entre vocês e um despachante?', a: 'Somos um escritório de advocacia: analisamos cada caso do ponto de vista legal, explicamos as opções e seus riscos e podemos defender você se a Migração recusar um trâmite. Além disso, nossos sócios têm experiência na DNM e na OIM.' },
-    { q: 'O que faço se fui notificado de uma expulsão ou tive a residência negada?', a: 'Fale conosco o quanto antes. Os prazos para apresentar recursos administrativos e judiciais são curtos, e é fundamental revisar o processo logo.' },
-    { q: 'Quanto tempo demora uma residência ou o DNI?', a: 'Os prazos variam conforme a categoria e a demanda da Migração. Na consulta damos uma estimativa concreta para o seu caso, junto com os requisitos e custos.' },
-    { q: 'Vocês assessoram empresas que contratam funcionários estrangeiros?', a: 'Sim. Cuidamos da inscrição da empresa no RENURE, das residências por trabalho e dos trâmites da família de cada trabalhador. Você encontra os detalhes na seção Empresas.' },
-    { q: 'Em quais idiomas vocês atendem?', a: 'Atendemos em espanhol e inglês. O site também está em português, chinês e russo para que você conheça nossos serviços no seu idioma.' },
-    { q: 'Posso fazer a consulta do exterior?', a: 'Sim. Podemos analisar o seu caso por videochamada antes da viagem e ajudar a reunir a documentação que você precisa trazer.' },
-  ],
+  faq: {
+    lead: 'Respostas às dúvidas mais comuns de pessoas, famílias e empresas. Se não encontrar a sua, escreva para nós.',
+    items: [
+      { q: 'Vocês atendem pessoas de qualquer nacionalidade?', a: 'Sim. Assessoramos pessoas de países vizinhos, do Mercosul e de qualquer outra nacionalidade, cada uma com seus requisitos e opções de residência.' },
+      { q: 'Qual é a diferença entre vocês e um despachante?', a: 'Somos um escritório de advocacia: analisamos cada caso do ponto de vista legal, explicamos as opções e seus riscos e podemos defender você se a Migração recusar um trâmite.' },
+      { q: 'O que faço se fui notificado de uma expulsão ou tive a residência negada?', a: 'Fale conosco o quanto antes. Os prazos para apresentar recursos administrativos e judiciais são curtos, e é fundamental revisar o processo logo.' },
+      { q: 'Quanto tempo demora uma residência ou o DNI?', a: 'Os prazos variam conforme a categoria e a demanda da Migração. Na consulta damos uma estimativa concreta para o seu caso, junto com os requisitos e custos.' },
+      { q: 'Vocês assessoram empresas que contratam funcionários estrangeiros?', a: 'Sim. Cuidamos da inscrição da empresa no RENURE, das residências por trabalho e dos trâmites da família de cada trabalhador. Você encontra os detalhes na seção Empresas.' },
+      { q: 'Em quais idiomas vocês atendem?', a: 'Atendemos em espanhol e inglês. O site também está em português, chinês e russo para que você conheça nossos serviços no seu idioma.' },
+      { q: 'Posso fazer a consulta do exterior?', a: 'Sim. Podemos analisar o seu caso por videochamada antes da viagem e ajudar a reunir a documentação que você precisa trazer.' },
+    ],
+  },
 
   contacto: {
     eyebrow: 'Contato',
     title: 'Estamos aqui para acompanhar você em cada passo',
-    lead: 'Rumo à sua tranquilidade e aos seus direitos. Escreva pelo WhatsApp ou por e-mail, ou preencha o formulário e responderemos em breve.',
+    lead: 'Rumo à sua tranquilidade e aos seus direitos. Preencha o formulário com a sua consulta e responderemos em breve.',
     emailPending: '[E-MAIL]',
   },
 
@@ -176,6 +185,8 @@ export default {
     tiposEmpresa: {
       renure: 'Inscrição no RENURE',
       trabajo: 'Residência por trabalho',
+      vip: 'Trâmite VIP',
+      seguimiento: 'Plano de acompanhamento',
       traslado: 'Transferência de funcionários e família',
       negocios: 'Vistos de negócios ou cartas-convite',
       cumplimiento: 'Conformidade migratória e vencimentos',
@@ -194,6 +205,7 @@ export default {
     revFallback: 'Veja as avaliações de quem já fez seus trâmites conosco diretamente no nosso perfil do Google.',
     more: 'Ler matéria →',
     read: 'Ler →',
+    studio: 'Estudio EBI',
     newsFallback: 'Confira as últimas novidades oficiais da Direção Nacional de Migrações',
     newsFallbackLink: 'Ir para argentina.gob.ar →',
     catDefault: 'Migração',
@@ -223,18 +235,23 @@ export default {
   },
 
   footer: {
-    tagline: 'Estudio EBI · Assessoria migratória e acesso a direitos',
+    tagline: 'Escritório de advocacia especializado em direito migratório.',
     nav: 'Rodapé',
+    sections: 'Seções',
+    contact: 'Contato',
+    formLink: 'Formulário de consulta',
+    social: 'Siga-nos',
+    group: 'Grupo no Facebook',
+    rights: 'Todos os direitos reservados.',
   },
 
   pages: {
     empresas: {
       hero: {
-        eyebrow: 'Empresas · Migração qualificada',
+        eyebrow: 'Empresas',
         title: 'Assessoria migratória completa para empresas e seus funcionários estrangeiros',
-        lead: 'Acompanhamos empresas e instituições que contratam ou transferem trabalhadores e especialistas para a Argentina: desde a inscrição no RENURE até a residência de cada pessoa e da sua família, com uma equipe que conhece a Direção Nacional de Migrações por dentro.',
-        wa: 'Olá, quero consultar sobre trâmites migratórios para funcionários da minha empresa.',
-        bullets: ['Inscrição e atualização no RENURE', 'Residência por trabalho e transferências intragrupo', 'Trâmites para toda a família', 'Controle de vencimentos de todos os funcionários'],
+        lead: 'Atendemos empresas e instituições que contratam ou transferem trabalhadores e especialistas para a Argentina: desde a inscrição no RENURE até a residência de cada pessoa e da sua família, com acompanhamento de cada processo.',
+        bullets: ['Inscrição e atualização no RENURE', 'Residências, autorizações de ingresso e vistos de trabalho, com opção de trâmite VIP', 'Trâmites para toda a família', 'Acompanhamento de processos e vencimentos de todos os funcionários'],
       },
       cards: {
         eyebrow: 'Assessoria completa',
@@ -242,8 +259,18 @@ export default {
         lead: 'Uma única equipe para todo o processo, com informação clara de prazos e requisitos para cada cargo.',
         items: [
           { title: 'Para a empresa', items: ['Inscrição e atualização no RENURE', 'Estratégia migratória para cada cargo', 'Cartas-convite e vistos de negócios', 'Controle de vencimentos e conformidade migratória'] },
-          { title: 'Para o trabalhador', items: ['Residência por contrato de trabalho', 'Transferências intragrupo', 'Técnicos e profissionais em estadias curtas', 'DNI, CUIL e documentação'] },
+          { title: 'Para o trabalhador', items: ['Residências, autorizações de ingresso e vistos de trabalho', 'Transferências intragrupo', 'Técnicos e profissionais em estadias curtas', 'DNI, CUIL e documentação'] },
           { title: 'Para a família', items: ['Residência para cônjuge e filhos', 'Reunificação familiar', 'DNI e documentação da família', 'Renovações e residência permanente'] },
+        ],
+      },
+      modalidades: {
+        eyebrow: 'Formas de contratação',
+        title: 'Por trâmite, com plano de acompanhamento ou pela via VIP',
+        lead: 'Escolha como trabalhar conosco de acordo com o número de pessoas e a urgência de cada caso.',
+        items: [
+          { title: 'Por trâmite', text: 'Você contrata a gestão de cada pessoa separadamente. Ideal para uma transferência pontual ou uma contratação isolada.' },
+          { title: 'Plano de acompanhamento', text: 'Um plano que cobre o monitoramento permanente dos processos e vencimentos de todos os seus funcionários estrangeiros, com avisos antecipados e um relatório periódico da situação de cada caso.' },
+          { title: 'Trâmite VIP', text: 'Cuidamos da modalidade de atendimento prioritário oferecida pela Direção Nacional de Migrações, para os casos que precisam ser resolvidos com urgência.' },
         ],
       },
       steps: {
@@ -252,12 +279,14 @@ export default {
           { title: 'Diagnóstico', text: 'Analisamos o perfil, o cargo e os prazos de cada transferência.' },
           { title: 'Documentação', text: 'Inscrição no RENURE, contratos, legalizações e apostilas.' },
           { title: 'Apresentação', text: 'Iniciamos e acompanhamos cada trâmite perante a Direção Nacional de Migrações.' },
-          { title: 'Acompanhamento', text: 'Controlamos vencimentos e renovações de todos os funcionários estrangeiros.' },
+          { title: 'Acompanhamento', text: 'Monitoramos cada processo e os vencimentos de todos os funcionários estrangeiros, por caso ou com um plano de acompanhamento.' },
         ],
       },
       callout: '',
       faq: [
         { q: 'O que é o RENURE?', a: 'É o Registro Nacional Único de Requirentes de Extranjeros da Direção Nacional de Migrações. As empresas e instituições que querem convocar funcionários estrangeiros precisam estar inscritas para poder iniciar as residências.' },
+        { q: 'O que é o trâmite VIP?', a: 'É a modalidade de atendimento prioritário oferecida pela Direção Nacional de Migrações. Informamos se o caso pode ser tramitado por essa via e cuidamos da gestão.' },
+        { q: 'Como funciona o plano de acompanhamento?', a: 'Com o plano, monitoramos de forma permanente os processos e os vencimentos de todos os seus funcionários estrangeiros e enviamos um relatório periódico. É a opção mais prática para empresas com várias pessoas em trâmite.' },
         { q: 'O cônjuge e os filhos podem viajar com o trabalhador?', a: 'Sim. A família pode solicitar a residência por reunificação familiar. Coordenamos os trâmites de toda a família junto com os do trabalhador.' },
         { q: 'Quanto tempo demora a residência de um trabalhador?', a: 'Depende da categoria, da nacionalidade e da documentação. Na primeira reunião damos um cronograma estimado para cada caso.' },
         { q: 'Um visitante de negócios pode trabalhar no país?', a: 'Não. Uma visita de negócios permite reuniões e atividades comerciais, mas tarefas técnicas ou profissionais exigem outra categoria migratória. Ajudamos você a escolher a correta para evitar sanções.' },

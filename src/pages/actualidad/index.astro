@@ -1,35 +1,46 @@
 ---
 import { env } from 'cloudflare:workers';
 import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
 import { listPublished } from '../../lib/articulos.js';
+import { listNormas, TIPOS } from '../../lib/normas.js';
 import { fechaLarga } from '../../lib/fechas.js';
 import es from '../../i18n/es.js';
 
 export const prerender = false;
 
-let articulos = [];
-try {
-  articulos = await listPublished(env.DB, { limit: 60 });
-} catch (e) {
-  console.error('actualidad', e);
-}
+// Cada consulta por separado: si una falla, la otra parte de la página se muestra igual
+const [articulos, normas] = await Promise.all([
+  listPublished(env.DB, { limit: 60 }).catch((e) => { console.error('actualidad', e); return []; }),
+  listNormas(env.DB).catch((e) => { console.error('repositorio', e); return []; }),
+]);
+// Filtros solo para los tipos que tienen alguna norma cargada
+const tipos = Object.keys(TIPOS).filter((k) => normas.some((n) => n.tipo === k));
+const a = es.actualidad;
 Astro.response.headers.set('Cache-Control', 'public, max-age=60');
 ---
-<Base lang="es" path="/actualidad" translated={false} hasContact={false} title="Actualidad Migratoria | Estudio EBI" description="Newsletter semanal y análisis del Estudio EBI sobre normativa migratoria, residencias, ciudadanía y trámites ante la Dirección Nacional de Migraciones.">
-<section>
+<Base lang="es" path="/actualidad" translated={false} hasContact={false} title="Actualidad Migratoria | Estudio EBI" description="Newsletter semanal y análisis del Estudio EBI sobre normativa migratoria, repositorio jurídico con leyes y decretos, y noticias del sector.">
+<Hero
+  size="sm"
+  eyebrow={a.eyebrow}
+  title="Actualidad Migratoria"
+  lead={a.lead}
+  links={[{ href: '#repositorio', label: a.repositorio }, { href: '#noticias', label: 'Noticias de medios' }]}
+/>
+<section id="publicaciones" data-guide="Publicaciones del estudio" data-nav="actualidad">
 <div class="wrap stack">
 <div class="head">
-<p class="eyebrow">{es.actualidad.eyebrow}</p>
-<h1 class="h2">Actualidad Migratoria</h1>
-<p class="lead">{es.actualidad.lead}</p>
+<p class="eyebrow">Estudio EBI</p>
+<h2 class="h2">Publicaciones del estudio</h2>
+<p class="lead">Ediciones de Actualidad Migratoria y análisis de los cambios normativos que impactan en los trámites.</p>
 </div>
 {articulos.length ? (
   <div class="art-list">
-    {articulos.map((a) => (
-      <a class="art" href={`/actualidad/${a.slug}`}>
-        <span class="art-meta"><span class="art-cat">{es.cats[a.categoria] || es.cats.general}</span>{a.publicado_en && <time datetime={a.publicado_en}>{fechaLarga(a.publicado_en)}</time>}{a.autor && <span>{a.autor}</span>}</span>
-        <span class="art-title">{a.titulo}</span>
-        {a.resumen && <span class="art-sum">{a.resumen}</span>}
+    {articulos.map((x) => (
+      <a class="art" href={`/actualidad/${x.slug}`}>
+        <span class="art-meta"><span class="art-cat">{es.cats[x.categoria] || es.cats.general}</span>{x.publicado_en && <time datetime={x.publicado_en}>{fechaLarga(x.publicado_en)}</time>}{x.autor && <span>{x.autor}</span>}</span>
+        <span class="art-title">{x.titulo}</span>
+        {x.resumen && <span class="art-sum">{x.resumen}</span>}
         <span class="art-more">{es.ui.read}</span>
       </a>
     ))}
@@ -39,13 +50,55 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60');
 )}
 </div>
 </section>
-<section class="band">
+<section id="repositorio" class="band" data-guide={a.repositorio} data-nav="actualidad">
+<div id="repo" class="wrap stack">
+<div class="head">
+<p class="eyebrow">{a.repositorio}</p>
+<h2 class="h2">Normativa migratoria</h2>
+<p class="lead">{a.repositorioText} Antes de iniciar un trámite, verificá siempre la versión vigente en la fuente oficial.</p>
+</div>
+{normas.length ? (
+  <>
+    <div class="repo-tools">
+      <div class="chips" role="group" aria-label="Filtrar por tipo de norma">
+        <button type="button" class="chip" data-tipo="" aria-pressed="true">Todas</button>
+        {tipos.map((k) => <button type="button" class="chip" data-tipo={k} aria-pressed="false">{TIPOS[k]}</button>)}
+      </div>
+      <div class="repo-search">
+        <svg class="ic" aria-hidden="true"><use href="#i-search" /></svg>
+        <input id="repo-q" type="search" placeholder="Buscar por número o tema" aria-label="Buscar en el repositorio" autocomplete="off">
+      </div>
+    </div>
+    <ul class="normas" aria-live="polite">
+      {normas.map((n) => (
+        <li class="norma" data-tipo={n.tipo}>
+          <div class="norma-tipo"><b>{TIPOS[n.tipo] || TIPOS.otro}{n.numero && ` ${n.numero}`}</b>{n.fecha && <time datetime={n.fecha}>{fechaLarga(`${n.fecha}T12:00:00Z`)}</time>}</div>
+          <div class="norma-body">
+            <span class="norma-t">{n.titulo}</span>
+            {n.resumen && <span class="norma-r">{n.resumen}</span>}
+          </div>
+          <a class="norma-link" href={n.url} target="_blank" rel="noopener">Ver la norma<svg class="ic ic-sm" aria-hidden="true"><use href="#i-external" /></svg></a>
+        </li>
+      ))}
+    </ul>
+    <p id="repo-empty" class="empty" hidden>No hay normas que coincidan con la búsqueda.</p>
+  </>
+) : (
+  <p class="empty">Muy pronto vas a encontrar acá las principales normas migratorias, con enlace a la fuente oficial.</p>
+)}
+<p class="note">Los enlaces llevan a sitios oficiales del Estado argentino (argentina.gob.ar y Boletín Oficial). La información de este repositorio no reemplaza el asesoramiento profesional sobre tu caso.</p>
+</div>
+</section>
+<section id="noticias" data-guide="Noticias de medios" data-nav="actualidad">
 <div class="wrap stack">
-<h2 class="sub-title">{es.actualidad.media}</h2>
+<div class="head">
+<p class="eyebrow">Medios</p>
+<h2 class="h2">Noticias de medios</h2>
+</div>
 <div id="news-list" class="pubs" aria-live="polite">
 <div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
 </div>
-<p class="note"><span>{es.actualidad.note}</span> <a href="https://www.argentina.gob.ar/interior/migraciones" target="_blank" rel="noopener">argentina.gob.ar/migraciones</a>.</p>
+<p class="note"><span>{a.note}</span> <a href="https://www.argentina.gob.ar/interior/migraciones" target="_blank" rel="noopener">argentina.gob.ar/migraciones</a>.</p>
 </div>
 </section>
 </Base>

@@ -1,12 +1,16 @@
 export default {
   meta: {
     home: {
-      title: 'Estudio EBI — Immigration law in Argentina',
-      description: 'Immigration law firm with experience at Argentina’s National Immigration Office and the IOM. Residence permits, DNI, citizenship, corporate immigration and appeals against deportation.',
+      title: 'Estudio EBI — Law firm specializing in immigration law',
+      description: 'Law firm specializing in immigration law in Argentina. Residence permits, DNI, citizenship, corporate immigration and appeals against deportation orders and denials.',
     },
     empresas: {
-      title: 'Corporate immigration in Argentina: RENURE and foreign staff | Estudio EBI',
-      description: 'Comprehensive support for companies that hire or relocate foreign staff to Argentina: RENURE registration, work-based residence, intra-company transfers and family applications.',
+      title: 'Corporate immigration: RENURE, residence permits and VIP procedure | Estudio EBI',
+      description: 'Comprehensive support for companies that hire or relocate foreign staff to Argentina: RENURE, work-based residence, VIP procedure, monitoring retainer and applications for the family.',
+    },
+    quienes: {
+      title: 'About us | Estudio EBI',
+      description: 'Law firm specializing in immigration law. Legal assistance and advice for foreign nationals, companies and institutions in Argentina.',
     },
   },
 
@@ -24,36 +28,56 @@ export default {
     moreLanguagesNote: 'Google automatic translation',
   },
 
+  guide: {
+    servicios: 'Services',
+    personas: 'Individuals and families',
+    empresas: 'Companies',
+    porque: 'Why EBI',
+    actualidad: 'Immigration updates',
+    opiniones: 'Reviews',
+    faq: 'Frequently asked questions',
+    nosotros: 'About us',
+    enfoque: 'Our approach',
+    contacto: 'Contact',
+  },
+
   common: {
     consult: 'Request a consultation',
-    whatsapp: 'Message us on WhatsApp',
     proposal: 'Request a proposal',
     solves: 'What we handle',
     faqTitle: 'Frequently asked questions',
   },
 
   hero: {
-    eyebrow: 'Law firm · Immigration law',
-    title: 'Immigration law backed by institutional experience',
-    lead: 'We are a law firm specialized in immigration. Our partners worked at Argentina’s National Immigration Office (DNM) and at the International Organization for Migration (IOM): we know the rules and procedures from the inside, and we handle every case with a serious, responsible service.',
-    trust: ['Experience at the DNM and the IOM', 'In person and online', 'Mercosur and international'],
-    panelTitle: 'How can we help you?',
-    entries: {
-      personas: { title: 'Individuals and families', text: 'Residence, DNI, citizenship and defense against deportation' },
-      empresas: { title: 'Companies', text: 'RENURE, work authorizations and relocation of foreign staff' },
-    },
+    title: 'A law firm specializing in immigration law',
+    lead: 'We support individuals, families and companies with their immigration and citizenship procedures in Argentina, with clear information and follow-up on every case.',
+    links: { personas: 'Individuals and families', empresas: 'Companies' },
   },
 
   why: {
     eyebrow: 'Why EBI',
-    title: 'Technical, institutional and academic experience',
+    title: 'A law firm dedicated to immigration law',
     lead: 'Every immigration application has legal consequences. That is why we approach it as a law firm, not as a paperwork agency: we analyze your case, explain your options and take care of the whole process.',
     items: [
-      { title: 'We know the immigration office from the inside', text: 'Two of our partners were part of Argentina’s National Immigration Office. We know how a file is assessed and what it needs to move forward.' },
-      { title: 'An international perspective', text: '25 years at the International Organization for Migration (IOM), the United Nations agency, working on border security and migration projects.' },
-      { title: 'A responsible service', text: 'Clear information on requirements, timelines and fees, and real follow-up of every case, far from informal agencies.' },
+      { title: 'Specialization', text: 'We focus on immigration law: residence, citizenship, corporate immigration and defense against decisions by the immigration authorities.' },
+      { title: 'Clear information', text: 'Before you start, you know the requirements, timelines and fees of your application.' },
+      { title: 'Real follow-up', text: 'We follow each case until it is resolved and keep you posted on every update, unlike informal paperwork agencies.' },
     ],
     rights: 'We work with a technical, human-rights-based approach, from a professional and independent standpoint.',
+  },
+
+  servicios: {
+    eyebrow: 'Services',
+    title: 'Immigration procedures for individuals, families and companies',
+    lead: 'We organize our work into six areas. In each one, we explain the requirements, timelines and fees before we start, and we follow your case until it is resolved.',
+    areas: [
+      { title: 'Residence', text: 'Every residence category before the National Immigration Office.', items: ['Mercosur residence', 'Temporary and permanent residence', 'Residence renewal', 'Change of immigration category'] },
+      { title: 'Work authorizations', text: 'For companies hiring foreign staff and for professionals coming to work in Argentina.', items: ['RENURE registration', 'Residence based on an employment contract', 'Intra-company transfers', 'Business visas and invitation letters'] },
+      { title: 'Citizenship and family', text: 'Argentine citizenship and applications for the whole family.', items: ['Argentine citizenship', 'Family ties cases', 'Family reunification'] },
+      { title: 'Administrative and judicial appeals', text: 'Defense against unfounded or arbitrary decisions by the immigration authorities.', items: ['Deportation orders', 'Residence denials and cancellations', 'Entry bans', 'Appeals before the DNM and federal courts'] },
+      { title: 'DNI and documentation', text: 'Your personal documents, complete and up to date.', items: ['DNI for foreign nationals', 'Updating documents', 'Review of birth certificates and records', 'Incomplete or expired documents', 'Appointments and online platforms'] },
+      { title: 'Case management', text: 'We follow each case until it is resolved.', items: ['Guidance and support throughout the process', 'Case tracking', 'Delays or pending requirements'] },
+    ],
   },
 
   personas: {
@@ -63,7 +87,7 @@ export default {
     items: [
       { title: 'You want to settle in Argentina', text: 'Mercosur, temporary or permanent residence, depending on your nationality and your activity.' },
       { title: 'You work or run a business', text: 'Your residence and DNI in order to work as an employee, be self-employed or run your own business.' },
-      { title: 'Your residence expired or your case is delayed', text: 'Regularization, renewals, changes of category and responses to pending requirements.' },
+      { title: 'Your residence expired or your case is delayed', text: 'Regularization of your immigration status, renewals, changes of category and responses to pending requirements.' },
       { title: 'You want to be with your family', text: 'Family reunification and residence for your spouse, children or parents.' },
       { title: 'You want Argentine citizenship', text: 'We prepare your file and support you until you receive your citizenship certificate.' },
     ],
@@ -76,77 +100,62 @@ export default {
     },
   },
 
-  servicios: {
-    eyebrow: 'Services',
-    title: 'Residence, work, citizenship and defense before the immigration authorities',
-    lead: 'Every immigration procedure, organized by area and handled by the same team from start to finish.',
-    areas: [
-      { title: 'Residence', text: 'Every residence category before the National Immigration Office.', items: ['Mercosur residence', 'Temporary and permanent residence', 'Residence renewal', 'Change of immigration category'] },
-      { title: 'Work authorizations', text: 'For companies hiring foreign staff and for professionals coming to work in Argentina.', items: ['RENURE registration', 'Residence based on an employment contract', 'Intra-company transfers', 'Business visas and invitation letters'] },
-      { title: 'Citizenship and family', text: 'Argentine citizenship and applications for the whole family.', items: ['Argentine citizenship', 'Family ties cases', 'Family reunification'] },
-      { title: 'Administrative and judicial appeals', text: 'Defense against unfounded or arbitrary decisions by the immigration authorities.', items: ['Deportation orders', 'Residence denials and cancellations', 'Entry bans', 'Appeals before the DNM and federal courts'] },
-      { title: 'DNI and documentation', text: 'Your personal documents, complete and up to date.', items: ['DNI for foreign nationals', 'Updating documents', 'Review of birth certificates and records', 'Incomplete or expired documents', 'Appointments and online platforms'] },
-      { title: 'Case management', text: 'We follow each case until it is resolved.', items: ['Guidance and support throughout the process', 'Case tracking', 'Delays or pending requirements'] },
-    ],
-  },
-
   nosotros: {
     eyebrow: 'About us',
-    title: 'Three careers, one shared commitment',
-    lead: 'EBI brings together experience at Argentina’s National Immigration Office and at the International Organization for Migration. We provide legal assistance and advice to foreign nationals and to the companies and institutions that bring them to Argentina, whether they want to visit, work, study, settle or defend their rights against arbitrary decisions.',
-    nameTitle: 'The name EBI',
-    nameText: 'It brings together the initials of the partners’ surnames: Estomba, Boquicio and Izura.',
-    partner: 'Partner',
-    partnerM: 'Partner',
-    photo: '[PHOTO]',
-    credentials: '[Academic background and bar registration]',
-    linkedin: 'LinkedIn profile',
-    socios: {
-      estomba: '25 years at the International Organization for Migration (IOM), the United Nations agency, working on border security and migration projects.',
-      boquicio: 'Former member of Argentina’s National Immigration Office (DNM), with extensive experience at the agency.',
-      izura: 'Former member of Argentina’s National Immigration Office (DNM), with extensive experience at the agency.',
-    },
+    title: 'Immigration counsel and access to rights',
+    lead: 'We are a law firm specializing in immigration law. We provide legal assistance and advice to foreign nationals and to the companies and institutions that bring them to Argentina, whether they want to visit, work, study, settle or defend their rights against arbitrary decisions.',
+    resena: '[Professional profile of the firm: to be provided by the team]',
+    nameTitle: 'Our name',
+    nameText: 'EBI brings together the initials of the partners’ surnames.',
+    enfoqueTitle: 'Our approach',
     checks: ['Clear and personalized advice', 'Support throughout the whole process', 'Transparent information on requirements, timelines and fees', 'Real follow-up of every case', 'Simple and direct communication'],
     modesTitle: 'How we work',
     modes: [
       { title: 'In-person and online consultations', text: 'Scheduled meetings or video calls, wherever you are' },
-      { title: 'WhatsApp support', text: 'Quick, straightforward answers' },
+      { title: 'WhatsApp follow-up', text: 'Once we receive your inquiry, we stay in touch with quick answers' },
       { title: 'Personalized follow-up', text: 'We keep you posted on every update in your case' },
-      { title: 'Spanish and English', text: 'For individuals, HR teams and international companies' },
+      { title: 'Service in Spanish and English', text: 'For individuals, HR teams and international companies' },
     ],
   },
 
   opiniones: {
     eyebrow: 'Google reviews',
     title: 'What our clients say',
+    lead: 'Reviews from people who have already completed their procedures with us, published on our Google profile.',
     all: 'See reviews on Google',
     write: 'Write a review',
   },
 
   actualidad: {
     eyebrow: 'Immigration updates',
-    title: 'News and analysis from our team',
-    lead: 'Every week we publish Actualidad Migratoria, our newsletter on regulatory changes and how they affect immigration procedures. If an update affects your case or your company, contact us.',
-    studio: 'Our publications',
+    title: 'News and analysis',
+    lead: 'Every week we publish Actualidad Migratoria, covering regulatory changes and how they affect immigration procedures, along with news from the sector. If an update affects your case or your company, contact us.',
+    carousel: 'Updates',
+    prev: 'Previous',
+    next: 'Next',
     all: 'See all publications',
-    media: 'In the media',
-    note: 'Automatic selection of Spanish-language media, updated every 30 minutes. For official information, visit',
+    repositorio: 'Legal repository',
+    repositorioText: 'Immigration laws, decrees and regulations, with links to the official source.',
+    note: 'Media news is selected automatically and updated every 30 minutes. For official information, visit',
   },
 
-  faq: [
-    { q: 'Do you work with people of any nationality?', a: 'Yes. We advise nationals of neighboring countries, Mercosur countries and any other nationality, each with its own requirements and residence options.' },
-    { q: 'How are you different from a paperwork agency?', a: 'We are a law firm: we analyze each case from a legal standpoint, explain your options and their risks, and can defend you if the immigration office rejects an application. Our partners also bring experience at the DNM and the IOM.' },
-    { q: 'What should I do if I received a deportation order or my residence was denied?', a: 'Contact us as soon as possible. Deadlines to file administrative and judicial appeals are short, and reviewing the file early is key.' },
-    { q: 'How long does a residence permit or a DNI take?', a: 'Timelines vary by category and by the immigration office’s workload. In the consultation we give you a concrete estimate for your case, together with requirements and fees.' },
-    { q: 'Do you advise companies that hire foreign staff?', a: 'Yes. We handle the company’s RENURE registration, work-based residence applications and the applications for each worker’s family. You will find the details in the Companies section.' },
-    { q: 'Which languages do you work in?', a: 'We work in Spanish and English. The site is also available in Portuguese, Chinese and Russian so you can learn about our services in your language.' },
-    { q: 'Can I consult you from abroad?', a: 'Yes. We can review your case by video call before you travel and help you gather the documents you need to bring.' },
-  ],
+  faq: {
+    lead: 'Answers to the most common questions from individuals, families and companies. If you can’t find yours, write to us.',
+    items: [
+      { q: 'Do you work with people of any nationality?', a: 'Yes. We advise nationals of neighboring countries, Mercosur countries and any other nationality, each with its own requirements and residence options.' },
+      { q: 'How are you different from a paperwork agency?', a: 'We are a law firm: we analyze each case from a legal standpoint, explain your options and their risks, and can defend you if the immigration office rejects an application.' },
+      { q: 'What should I do if I received a deportation order or my residence was denied?', a: 'Contact us as soon as possible. Deadlines to file administrative and judicial appeals are short, and reviewing the file early is key.' },
+      { q: 'How long does a residence permit or a DNI take?', a: 'Timelines vary by category and by the immigration office’s workload. In the consultation we give you a concrete estimate for your case, together with requirements and fees.' },
+      { q: 'Do you advise companies that hire foreign staff?', a: 'Yes. We handle the company’s RENURE registration, work-based residence applications and the applications for each worker’s family. You will find the details in the Companies section.' },
+      { q: 'Which languages do you work in?', a: 'We work in Spanish and English. The site is also available in Portuguese, Chinese and Russian so you can learn about our services in your language.' },
+      { q: 'Can I consult you from abroad?', a: 'Yes. We can review your case by video call before you travel and help you gather the documents you need to bring.' },
+    ],
+  },
 
   contacto: {
     eyebrow: 'Contact',
     title: 'We are here to support you at every step',
-    lead: 'Towards your peace of mind and your rights. Message us on WhatsApp or by email, or fill in the form and we will get back to you shortly.',
+    lead: 'Towards your peace of mind and your rights. Fill in the form with your inquiry and we will get back to you shortly.',
     emailPending: '[EMAIL]',
   },
 
@@ -176,6 +185,8 @@ export default {
     tiposEmpresa: {
       renure: 'RENURE registration',
       trabajo: 'Work-based residence',
+      vip: 'VIP procedure',
+      seguimiento: 'Monitoring retainer',
       traslado: 'Relocation of staff and their families',
       negocios: 'Business visas or invitation letters',
       cumplimiento: 'Immigration compliance and expiry dates',
@@ -194,6 +205,7 @@ export default {
     revFallback: 'Read what clients who already completed their applications with us say on our Google profile.',
     more: 'Read article →',
     read: 'Read →',
+    studio: 'Estudio EBI',
     newsFallback: 'Check the latest official updates from the National Immigration Office',
     newsFallbackLink: 'Go to argentina.gob.ar →',
     catDefault: 'Immigration',
@@ -223,18 +235,23 @@ export default {
   },
 
   footer: {
-    tagline: 'Estudio EBI · Immigration counsel and access to rights',
+    tagline: 'Law firm specializing in immigration law.',
     nav: 'Footer',
+    sections: 'Sections',
+    contact: 'Contact',
+    formLink: 'Inquiry form',
+    social: 'Follow us',
+    group: 'Facebook group',
+    rights: 'All rights reserved.',
   },
 
   pages: {
     empresas: {
       hero: {
-        eyebrow: 'Companies · Skilled migration',
+        eyebrow: 'Companies',
         title: 'Comprehensive immigration support for companies and their foreign staff',
-        lead: 'We assist companies and institutions that hire or relocate workers and specialists to Argentina: from RENURE registration to the residence of each person and their family, with a team that knows the National Immigration Office from the inside.',
-        wa: 'Hello, I would like to ask about immigration procedures for my company’s staff.',
-        bullets: ['RENURE registration and updates', 'Work-based residence and intra-company transfers', 'Applications for the whole family', 'Expiry tracking for all your staff'],
+        lead: 'We support companies and institutions that hire or relocate workers and specialists to Argentina: from RENURE registration to the residence of each person and their family, with follow-up on every case.',
+        bullets: ['RENURE registration and updates', 'Residence permits, entry permits and work visas, with a VIP procedure option', 'Applications for the whole family', 'Tracking of cases and expiry dates for all your staff'],
       },
       cards: {
         eyebrow: 'Comprehensive support',
@@ -242,8 +259,18 @@ export default {
         lead: 'One team for the whole process, with clear information on timelines and requirements for each position.',
         items: [
           { title: 'For the company', items: ['RENURE registration and updates', 'Immigration strategy for each position', 'Invitation letters and business visas', 'Expiry tracking and immigration compliance'] },
-          { title: 'For the worker', items: ['Residence based on an employment contract', 'Intra-company transfers', 'Short-term assignments for technicians and professionals', 'DNI, CUIL and documentation'] },
+          { title: 'For the worker', items: ['Residence permits, entry permits and work visas', 'Intra-company transfers', 'Short-term assignments for technicians and professionals', 'DNI, CUIL and documentation'] },
           { title: 'For their family', items: ['Residence for spouse and children', 'Family reunification', 'DNI and documents for the whole family', 'Renewals and permanent residence'] },
+        ],
+      },
+      modalidades: {
+        eyebrow: 'Ways to work with us',
+        title: 'Per application, with a monitoring retainer or through the VIP procedure',
+        lead: 'Choose how to work with us based on the number of people and the urgency of each case.',
+        items: [
+          { title: 'Per application', text: 'You engage us for each person separately. Ideal for a one-off relocation or a single hire.' },
+          { title: 'Monitoring retainer', text: 'A retainer that covers ongoing monitoring of the cases and expiry dates of all your foreign staff, with advance notices and a periodic status report on each case.' },
+          { title: 'VIP procedure', text: 'We handle the priority service offered by the National Immigration Office, for cases that need to be resolved urgently.' },
         ],
       },
       steps: {
@@ -252,12 +279,14 @@ export default {
           { title: 'Assessment', text: 'We review the profile, the position and the timeline of each relocation.' },
           { title: 'Documentation', text: 'RENURE registration, contracts, legalizations and apostilles.' },
           { title: 'Filing', text: 'We file and manage each application before the National Immigration Office.' },
-          { title: 'Follow-up', text: 'We track expiry dates and renewals for all your foreign staff.' },
+          { title: 'Follow-up', text: 'We monitor each case and the expiry dates of all your foreign staff, per application or with a monitoring retainer.' },
         ],
       },
       callout: '',
       faq: [
         { q: 'What is RENURE?', a: 'It is the National Immigration Office’s registry of sponsors of foreign nationals (Registro Nacional Único de Requirentes de Extranjeros). Companies and institutions that want to bring in foreign staff must be registered before applying for their residence.' },
+        { q: 'What is the VIP procedure?', a: 'It is the priority service offered by the National Immigration Office. We tell you whether your case can be processed this way and take care of the procedure.' },
+        { q: 'How does the monitoring retainer work?', a: 'With the retainer, we continuously monitor the cases and expiry dates of all your foreign staff and send you a periodic report. It is the most practical option for companies with several people in process.' },
         { q: 'Can the worker’s spouse and children come too?', a: 'Yes. Family members can apply for residence through family reunification. We coordinate the whole family’s applications together with the worker’s.' },
         { q: 'How long does a worker’s residence take?', a: 'It depends on the category, the nationality and the documents. At our first meeting we give you an estimated timeline for each case.' },
         { q: 'Can a business visitor work in Argentina?', a: 'No. A business visit allows meetings and commercial activities, but technical or professional work requires a different immigration category. We help you choose the right one to avoid penalties.' },

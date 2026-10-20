@@ -1,7 +1,7 @@
 ---
 import { DICTS } from '../i18n/index.js';
 import es from '../i18n/es.js';
-import { SITIO, waLink } from '../data/sitio.js';
+import { SITIO } from '../data/sitio.js';
 
 // perfil y tipo eligen lo que viene marcado según la página (ej. empresas: empresa + RENURE)
 const { lang, perfil = 'persona', tipo = '' } = Astro.props;
@@ -11,14 +11,13 @@ const empresa = perfil === 'empresa';
 // El valor que llega al estudio queda siempre en español; lo que se ve, en el idioma de la página
 const options = (group) => Object.keys(es.form[group]).map((key) => ({ key, value: es.form[group][key], label: f[group][key] }));
 ---
-<section id="contacto" class="contact">
+<section id="contacto" class="contact" data-guide={t.guide.contacto}>
 <div class="wrap contact-in">
 <div class="contact-copy">
 <p class="eyebrow">{t.contacto.eyebrow}</p>
 <h2 class="h2">{t.contacto.title}</h2>
 <p class="lead">{t.contacto.lead}</p>
 <div class="lines">
-{SITIO.whatsapp.map((w) => <a href={waLink('', w.numero)}><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg>{w.texto}</a>)}
 {SITIO.email
   ? <a class="mail" href={`mailto:${SITIO.email}`}><svg class="ic" aria-hidden="true"><use href="#i-mail" /></svg>{SITIO.email}</a>
   : <div class="meta"><svg class="ic" aria-hidden="true"><use href="#i-mail" /></svg><span>{t.contacto.emailPending}</span></div>}

@@ -1,11 +1,14 @@
 ---
 import { DICTS } from '../i18n/index.js';
-const { lang, items, band = true } = Astro.props;
-const t = DICTS[lang].common;
+const { lang, items, lead = '', band = true } = Astro.props;
+const t = DICTS[lang];
 ---
-<section id="faq" class={band ? 'band' : undefined}>
+<section id="faq" class={band ? 'band' : undefined} data-guide={t.guide.faq}>
 <div class="wrap faq-wrap">
-<h2 class="h2">{t.faqTitle}</h2>
+<div class="head">
+<h2 class="h2">{t.common.faqTitle}</h2>
+{lead && <p class="lead">{lead}</p>}
+</div>
 <div class="faqs">
 {items.map((f, i) => (
   <details class="faq" open={i === 0}><summary><span>{f.q}</span><span class="sign" aria-hidden="true"></span></summary><div class="ans">{f.a}</div></details>

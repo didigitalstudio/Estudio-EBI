@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import QuienesSomos from '../../components/QuienesSomos.astro';
+import Contacto from '../../components/Contacto.astro';
+import { DICTS, langPaths, localePath } from '../../i18n/index.js';
+
+export const prerender = true;
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props;
+const t = DICTS[lang];
+---
+<Base lang={lang} path="/quienes-somos" title={t.meta.quienes.title} description={t.meta.quienes.description}>
+<Hero
+  size="sm"
+  eyebrow={t.nosotros.eyebrow}
+  title={t.nosotros.title}
+  lead={t.nosotros.lead}
+  primary={{ href: '#contacto', label: t.common.consult }}
+  links={[{ href: `${localePath(lang, '/')}#servicios`, label: t.nav.servicios }]}
+/>
+<QuienesSomos lang={lang} />
+<Contacto lang={lang} />
+</Base>

@@ -1,0 +1,48 @@
+---
+// Empresas: asistencia integral, formas de contratar (por trámite, abono de seguimiento, VIP) y proceso.
+// Se usa como sección del inicio y en la subpágina /empresas.
+import Steps from './Steps.astro';
+import { DICTS } from '../i18n/index.js';
+
+const { lang, intro = true } = Astro.props;
+const t = DICTS[lang];
+const p = t.pages.empresas;
+const icons = ['i-inst', 'i-brief', 'i-people'];
+const modIcons = ['i-file', 'i-clock', 'i-shield'];
+---
+<section id="empresas" class="band" data-guide={t.guide.empresas} data-nav="empresas">
+<div class="wrap stack">
+<div class="head">
+<p class="eyebrow">{intro ? p.hero.eyebrow : p.cards.eyebrow}</p>
+<h2 class="h2">{intro ? p.hero.title : p.cards.title}</h2>
+<p class="lead">{intro ? p.hero.lead : p.cards.lead}</p>
+</div>
+<div class="grid-3">
+{p.cards.items.map((c, i) => (
+  <article class="card">
+    <span class="ico-badge"><svg class="ic" aria-hidden="true"><use href={`#${icons[i]}`} /></svg></span>
+    <h3>{c.title}</h3>
+    <ul class="list">{c.items.map((it) => <li>{it}</li>)}</ul>
+  </article>
+))}
+</div>
+<div class="mods">
+<div class="mods-head">
+<p class="eyebrow">{p.modalidades.eyebrow}</p>
+<h3 class="h3">{p.modalidades.title}</h3>
+<p class="lead">{p.modalidades.lead}</p>
+</div>
+<div class="grid-3">
+{p.modalidades.items.map((m, i) => (
+  <article class="mod">
+    <svg class="ic ic-lg" aria-hidden="true"><use href={`#${modIcons[i]}`} /></svg>
+    <h4>{m.title}</h4>
+    <p>{m.text}</p>
+  </article>
+))}
+</div>
+</div>
+<Steps title={p.steps.title} cta={t.common.proposal} items={p.steps.items} perfil="empresa" tipo="renure" />
+{p.callout && <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-shield" /></svg><span>{p.callout}</span></p>}
+</div>
+</section>

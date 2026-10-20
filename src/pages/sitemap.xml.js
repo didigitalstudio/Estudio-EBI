@@ -4,7 +4,7 @@ import { listPublished } from '../lib/articulos.js';
 
 export const prerender = false;
 
-const PAGES = ['/', '/empresas'];
+const PAGES = ['/', '/empresas', '/quienes-somos'];
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 // Sitemap con las páginas en cada idioma (con sus alternativas) y las publicaciones

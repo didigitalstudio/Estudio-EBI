@@ -1,26 +1,23 @@
 ---
+// Inicio: portada → servicios → personas y familias → empresas → actualidad → opiniones → preguntas → contacto.
+// Quiénes somos tiene su propia página y no aparece en este recorrido.
 import Base from '../../layouts/Base.astro';
 import Hero from '../../components/Hero.astro';
-import Why from '../../components/Why.astro';
-import Personas from '../../components/Personas.astro';
 import Servicios from '../../components/Servicios.astro';
-import Nosotros from '../../components/Nosotros.astro';
-import Opiniones from '../../components/Opiniones.astro';
+import Personas from '../../components/Personas.astro';
+import EmpresasSection from '../../components/EmpresasSection.astro';
 import Actualidad from '../../components/Actualidad.astro';
+import Opiniones from '../../components/Opiniones.astro';
 import Faq from '../../components/Faq.astro';
 import Contacto from '../../components/Contacto.astro';
 import { DICTS, langPaths, localePath } from '../../i18n/index.js';
-import { SITIO, SOCIOS, waLink } from '../../data/sitio.js';
+import { SITIO } from '../../data/sitio.js';
 
 export const prerender = true;
 export const getStaticPaths = langPaths;
 
 const { lang } = Astro.props;
 const t = DICTS[lang];
-const entries = [
-  { key: 'personas', href: '#personas', icon: 'i-people' },
-  { key: 'empresas', href: localePath(lang, '/empresas'), icon: 'i-brief' },
-];
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'LegalService',
@@ -29,34 +26,24 @@ const jsonLd = {
   url: Astro.site ? new URL(localePath(lang, '/'), Astro.site).href : undefined,
   areaServed: { '@type': 'Country', name: 'Argentina' },
   knowsLanguage: ['es', 'en'],
-  founder: SOCIOS.map((s) => ({ '@type': 'Person', name: s.nombre })),
   sameAs: [SITIO.facebook, SITIO.linkedin].filter(Boolean),
 };
 ---
 <Base lang={lang} path="/" title={t.meta.home.title} description={t.meta.home.description} jsonLd={jsonLd}>
 <Hero
-  eyebrow={t.hero.eyebrow}
   title={t.hero.title}
   lead={t.hero.lead}
   primary={{ href: '#contacto', label: t.common.consult }}
-  wa={{ href: waLink(), label: t.common.whatsapp }}
-  trust={t.hero.trust}
->
-<p class="panel-title">{t.hero.panelTitle}</p>
-{entries.map((e) => (
-  <a class="entry" href={e.href}>
-    <span class="entry-ico"><svg class="ic ic-lg" aria-hidden="true"><use href={`#${e.icon}`} /></svg></span>
-    <span class="entry-txt"><strong>{t.hero.entries[e.key].title}</strong><span>{t.hero.entries[e.key].text}</span></span>
-    <svg class="ic" aria-hidden="true"><use href="#i-arrow" /></svg>
-  </a>
-))}
-</Hero>
-<Why lang={lang} band />
-<Personas lang={lang} />
+  links={[
+    { href: '#personas', label: t.hero.links.personas },
+    { href: '#empresas', label: t.hero.links.empresas },
+  ]}
+/>
 <Servicios lang={lang} />
-<Nosotros lang={lang} />
-<Opiniones lang={lang} />
+<Personas lang={lang} />
+<EmpresasSection lang={lang} />
 <Actualidad lang={lang} />
-<Faq lang={lang} items={t.faq} />
+<Opiniones lang={lang} />
+<Faq lang={lang} items={t.faq.items} lead={t.faq.lead} />
 <Contacto lang={lang} />
 </Base>

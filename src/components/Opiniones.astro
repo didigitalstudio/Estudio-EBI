@@ -4,12 +4,13 @@ import { SITIO } from '../data/sitio.js';
 const { lang } = Astro.props;
 const t = DICTS[lang].opiniones;
 ---
-<section id="opiniones" class="band">
+<section id="opiniones" class="band" data-guide={DICTS[lang].guide.opiniones} data-nav="actualidad">
 <div class="wrap stack">
 <div class="rev-top">
 <div class="head">
 <p class="eyebrow">{t.eyebrow}</p>
 <h2 class="h2">{t.title}</h2>
+<p class="lead">{t.lead}</p>
 <div id="rev-summary" class="rev-summary" hidden></div>
 </div>
 <div class="ctas">

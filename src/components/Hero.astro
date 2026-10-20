@@ -1,36 +1,26 @@
 ---
-// Encabezado de cada página: texto a la izquierda y un panel verde a la derecha (slot).
-const { eyebrow, title, lead, primary, wa, trust = [] } = Astro.props;
-const trustIcons = ['i-shield', 'i-screen', 'i-pin'];
+// Portada de cada página: foto de la ciudad difusa de fondo (o la silueta, hasta que se elija la foto),
+// título, bajada y accesos. El slot opcional va en una tarjeta a la derecha (ej. la lista de empresas).
+import Skyline from './Skyline.astro';
+import { SITIO } from '../data/sitio.js';
+
+const { eyebrow = '', title, lead, primary, links = [], size = 'lg' } = Astro.props;
+const hasPanel = Astro.slots.has('default');
 ---
-<section class="hero">
-<div class="wrap hero-in">
+<section class:list={['hero', `hero-${size}`]}>
+{SITIO.portada ? <div class="hero-bg" style={`background-image:url('${SITIO.portada}')`}></div> : <Skyline />}
+<div class:list={['wrap hero-in', { 'has-panel': hasPanel }]}>
 <div class="hero-copy">
-<p class="eyebrow">{eyebrow}</p>
+{eyebrow && <p class="eyebrow">{eyebrow}</p>}
 <h1>{title}</h1>
 <p class="hero-lead">{lead}</p>
-<div class="ctas">
-<a href={primary.href} class="btn btn-fill" data-perfil={primary.perfil} data-tipo={primary.tipo}>{primary.label}</a>
-<a href={wa.href} class="btn btn-out"><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg><span>{wa.label}</span></a>
-</div>
-{trust.length > 0 && (
-  <ul class="trust">
-    {trust.map((txt, i) => <li><svg class="ic" aria-hidden="true"><use href={`#${trustIcons[i]}`} /></svg><span>{txt}</span></li>)}
-  </ul>
+{(primary || links.length > 0) && (
+  <div class="ctas">
+    {primary && <a href={primary.href} class="btn btn-light" data-perfil={primary.perfil} data-tipo={primary.tipo}>{primary.label}</a>}
+    {links.map((l) => <a href={l.href} class="btn btn-ghost">{l.label}<svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow" /></svg></a>)}
+  </div>
 )}
 </div>
-<div class="panel">
-<svg class="panel-art" width="400" height="120" viewBox="0 0 400 120" fill="none" aria-hidden="true">
-<path d="M20 100 Q 110 10 200 70" stroke="#C9A86B" stroke-width="1.5" />
-<path d="M200 70 Q 290 0 380 40" stroke="#C9A86B" stroke-width="1.5" />
-<path d="M60 110 Q 200 -10 340 90" stroke="#C9A86B" stroke-width="1" opacity="0.6" />
-<circle cx="20" cy="100" r="4" fill="#C9A86B" />
-<circle cx="200" cy="70" r="4" fill="#C9A86B" />
-<circle cx="380" cy="40" r="4" fill="#C9A86B" />
-<circle cx="60" cy="110" r="3" fill="#C9A86B" />
-<circle cx="340" cy="90" r="3" fill="#C9A86B" />
-</svg>
-<slot />
-</div>
+{hasPanel && <div class="panel"><slot /></div>}
 </div>
 </section>

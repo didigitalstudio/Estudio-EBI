@@ -5,6 +5,8 @@
 // Variables: ACCESS_TEAM_DOMAIN (ej. ebi.cloudflareaccess.com), ACCESS_AUD (Application Audience de la app)
 // y opcional ADMIN_EMAILS (lista separada por comas). En local, DEV_ADMIN_EMAIL saltea el login solo en localhost.
 
+import { json } from './http.js';
+
 const jwksCache = new Map();
 const JWKS_TTL = 60 * 60 * 1000;
 
@@ -64,4 +66,20 @@ export async function getAdmin(request, env, fetchImpl = fetch) {
   const allowed = (env.ADMIN_EMAILS || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
   if (allowed.length && !allowed.includes(email)) return null;
   return { email };
+}
+
+// Control común de la API del panel: login y, en escrituras, solo JSON desde el mismo sitio (un formulario
+// de otro dominio no puede mandar esto). Devuelve { admin } o { response } con el error listo.
+export async function adminGuard(request, env, fetchImpl = fetch) {
+  const noStore = { 'Cache-Control': 'no-store' };
+  const admin = await getAdmin(request, env, fetchImpl);
+  if (!admin) return { response: json({ error: 'No autorizado' }, 401, noStore) };
+  const { method } = request;
+  if (method !== 'GET') {
+    const origin = request.headers.get('Origin');
+    const sameOrigin = !origin || origin === new URL(request.url).origin;
+    const isJson = (request.headers.get('Content-Type') || '').startsWith('application/json');
+    if (!sameOrigin || (method !== 'DELETE' && !isJson)) return { response: json({ error: 'Pedido inválido' }, 400, noStore) };
+  }
+  return { admin };
 }

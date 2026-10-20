@@ -27,7 +27,7 @@ test('no quedan textos vacíos ni sin traducir', () => {
       if (es[path] === '' || path === '.ui.inSpanish') continue;
       assert.ok(value.trim(), `${code}${path} vacío`);
       // Iguales al español solo se aceptan nombres propios, siglas o números (en portugués hay muchas palabras iguales)
-      if (code !== 'pt' && value === es[path]) assert.match(value, /^(\[?[A-Z0-9 ·.,'-]+\]?|WhatsApp|Email|Newsletter|Empresas|Expositores)$/, `${code}${path} sin traducir: "${value}"`);
+      if (code !== 'pt' && value === es[path]) assert.match(value, /^(\[?[A-Z0-9 ·.,'-]+\]?|WhatsApp|Email|Newsletter|Empresas|Estudio EBI)$/, `${code}${path} sin traducir: "${value}"`);
     }
   }
 });

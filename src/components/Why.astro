@@ -2,9 +2,9 @@
 import { DICTS } from '../i18n/index.js';
 const { lang, band = false } = Astro.props;
 const t = DICTS[lang].why;
-const icons = ['i-inst', 'i-globe', 'i-scale'];
+const icons = ['i-scale', 'i-file', 'i-clock'];
 ---
-<section id="por-que" class={band ? 'band' : undefined}>
+<section id="por-que" class={band ? 'band' : undefined} data-guide={DICTS[lang].guide.porque}>
 <div class="wrap stack">
 <div class="head">
 <p class="eyebrow">{t.eyebrow}</p>

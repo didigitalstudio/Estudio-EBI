@@ -1,5 +1,5 @@
 import { json } from './http.js';
-import { getAdmin } from './access.js';
+import { adminGuard } from './access.js';
 
 // Artículos de Actualidad Migratoria guardados en D1 (binding DB).
 export const CATEGORIAS = ['newsletter', 'normativa', 'residencias', 'ciudadania', 'trabajo', 'expulsiones', 'general'];
@@ -110,17 +110,9 @@ export async function deleteArticle(db, id) {
 // API del panel: /api/admin/articulos y /api/admin/articulos/:id
 export async function handleAdmin(request, env, id = null, fetchImpl = fetch) {
   const noStore = { 'Cache-Control': 'no-store' };
-  const admin = await getAdmin(request, env, fetchImpl);
-  if (!admin) return json({ error: 'No autorizado' }, 401, noStore);
-
+  const { admin, response } = await adminGuard(request, env, fetchImpl);
+  if (response) return response;
   const { method } = request;
-  if (method !== 'GET') {
-    // Solo JSON desde el mismo sitio: un formulario de otro dominio no puede mandar esto
-    const origin = request.headers.get('Origin');
-    const sameOrigin = !origin || origin === new URL(request.url).origin;
-    const isJson = (request.headers.get('Content-Type') || '').startsWith('application/json');
-    if (!sameOrigin || (method !== 'DELETE' && !isJson)) return json({ error: 'Pedido inválido' }, 400, noStore);
-  }
 
   const db = env.DB;
   const readBody = () => request.json().catch(() => null);

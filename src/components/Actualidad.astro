@@ -1,25 +1,36 @@
 ---
+// Actualidad en el inicio: carrusel con las publicaciones del estudio y las noticias de medios
+// (lo arma el script), y accesos a todas las publicaciones y al repositorio jurídico.
 import { DICTS } from '../i18n/index.js';
-const { lang, band = false } = Astro.props;
-const t = DICTS[lang].actualidad;
+const { lang } = Astro.props;
+const t = DICTS[lang];
+const a = t.actualidad;
 ---
-<section id="actualidad" class={band ? 'band' : undefined}>
+<section id="actualidad" data-guide={t.guide.actualidad} data-nav="actualidad">
 <div class="wrap stack">
+<div class="act-head">
 <div class="head">
-<p class="eyebrow">{t.eyebrow}</p>
-<h2 class="h2">{t.title}</h2>
-<p class="lead">{t.lead}</p>
+<p class="eyebrow">{a.eyebrow}</p>
+<h2 class="h2">{a.title}</h2>
+<p class="lead">{a.lead}</p>
 </div>
-<div id="studio" class="studio" hidden>
-<div class="sub-head"><h3>{t.studio}</h3><a href="/actualidad" class="more-link">{t.all} →</a></div>
-<div id="studio-list" class="art-list"></div>
-</div>
-<div class="media">
-<h3 class="sub-title">{t.media}</h3>
-<div id="news-list" class="pubs" aria-live="polite">
-<div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
+<div class="car-ctrl">
+<button type="button" class="car-btn" data-car="prev" aria-label={a.prev}><svg class="ic" aria-hidden="true"><use href="#i-left" /></svg></button>
+<button type="button" class="car-btn" data-car="next" aria-label={a.next}><svg class="ic" aria-hidden="true"><use href="#i-arrow" /></svg></button>
 </div>
 </div>
-<p class="note"><span>{t.note}</span> <a href="https://www.argentina.gob.ar/interior/migraciones" target="_blank" rel="noopener">argentina.gob.ar/migraciones</a>.</p>
+<div class="carousel" role="region" aria-roledescription="carousel" aria-label={a.carousel}>
+<div id="news-track" class="car-track" tabindex="0" aria-live="polite">
+<div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
+</div>
+</div>
+<div class="act-foot">
+<a href="/actualidad" class="btn btn-out" hreflang={lang === 'es' ? undefined : 'es'}>{a.all}</a>
+<a href="/actualidad#repositorio" class="repo-link" hreflang={lang === 'es' ? undefined : 'es'}>
+<span class="ico-badge"><svg class="ic" aria-hidden="true"><use href="#i-book" /></svg></span>
+<span><strong>{a.repositorio}</strong><span>{a.repositorioText}</span></span>
+</a>
+</div>
+<p class="note"><span>{a.note}</span> <a href="https://www.argentina.gob.ar/interior/migraciones" target="_blank" rel="noopener">argentina.gob.ar/migraciones</a>.</p>
 </div>
 </section>
