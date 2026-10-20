@@ -360,15 +360,15 @@ if (newsList) {
 }
 
 // Repositorio jurídico (página de Actualidad): filtro por tipo de norma y búsqueda
-const repo = $('#repo');
-if (repo) {
+const repoQ = $('#repo-q');
+if (repoQ) {
+  const repo = $('#repo');
   const plain = (v) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  const items = $$('.norma', repo).map((it) => [it, plain(it.textContent)]);
-  const q = $('#repo-q', repo);
+  const items = $$('.norma', repo).map((it) => [it, plain(`${$('.norma-tipo', it).textContent} ${$('.norma-body', it).textContent}`)]);
   const chips = $$('.chip', repo);
   let tipo = '';
   const apply = () => {
-    const s = plain(q.value.trim());
+    const s = plain(repoQ.value.trim());
     let n = 0;
     items.forEach(([it, txt]) => {
       const on = (!tipo || it.dataset.tipo === tipo) && (!s || txt.includes(s));
@@ -382,5 +382,5 @@ if (repo) {
     chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
     apply();
   }));
-  q.addEventListener('input', apply);
+  repoQ.addEventListener('input', apply);
 }

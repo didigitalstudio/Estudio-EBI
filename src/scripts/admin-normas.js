@@ -2,7 +2,7 @@ import { fechaLarga } from '../lib/fechas.js';
 
 // Pestañas del panel y repositorio jurídico contra /api/admin/normas
 const $ = (id) => document.getElementById(id);
-const msg = $('msg');
+const msg = $('nm-msg');
 const form = $('nm');
 const tabs = [$('tab-pubs'), $('tab-normas')];
 let tipos = {};
@@ -35,7 +35,6 @@ function select(tab, focus = false) {
     $(t.getAttribute('aria-controls')).hidden = !on;
   });
   if (focus) tab.focus();
-  say('');
   const normas = tab.id === 'tab-normas';
   history.replaceState(null, '', normas ? '#repositorio' : location.pathname);
   if (normas && !loaded) loadList().then(() => show('list')).catch((e) => say(e.message, 'err'));

@@ -24,13 +24,13 @@ const abs = (p) => (site ? new URL(p, site).href : null);
 const canonical = translated ? localePath(lang, path) : Astro.url.pathname;
 const home = localePath(lang, '/');
 // Servicios, Empresas y Actualidad son secciones del inicio: el script marca la que se está viendo (data-nav).
-// key marca la página propia de cada una con aria-current="page".
+// En la página propia de cada una (key), el enlace lleva a esa página y se marca con aria-current="page".
 const nav = [
   { href: `${home}#servicios`, label: t.nav.servicios, sec: 'servicios' },
-  { href: `${home}#empresas`, label: t.nav.empresas, sec: 'empresas', key: '/empresas' },
-  { href: localePath(lang, '/quienes-somos'), label: t.nav.nosotros, sec: 'nosotros', key: '/quienes-somos' },
-  { href: `${home}#actualidad`, label: t.nav.actualidad, sec: 'actualidad', key: '/actualidad' },
-];
+  { href: `${home}#empresas`, label: t.nav.empresas, sec: 'empresas', key: '/empresas', page: localePath(lang, '/empresas') },
+  { href: localePath(lang, '/quienes-somos'), label: t.nav.nosotros, sec: 'nosotros', key: '/quienes-somos', page: localePath(lang, '/quienes-somos') },
+  { href: `${home}#actualidad`, label: t.nav.actualidad, sec: 'actualidad', key: '/actualidad', page: '/actualidad' },
+].map((n) => (n.key && n.key === path ? { ...n, href: n.page, current: true } : n));
 const contactHref = hasContact ? '#contacto' : `${home}#contacto`;
 // Índice del pie: repite el recorrido completo del sitio
 const index = [
@@ -78,7 +78,7 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=PT+Serif:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-{SITIO.portada && path === '/' && <link rel="preload" as="image" href={SITIO.portada}>}
+{SITIO.portada && translated && path === '/' && <link rel="preload" as="image" href={SITIO.portada}>}
 {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 <slot name="head" />
 </head>
@@ -114,7 +114,7 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <button type="button" class="menu-btn" aria-label={t.nav.menuOpen} aria-expanded="false" aria-controls="menu"><svg class="ic ic-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
 </div>
 <nav id="menu" class="main-nav" aria-label={t.nav.main}>
-{nav.map((n) => <a href={n.href} data-sec={n.sec} aria-current={n.key && n.key === path ? 'page' : undefined}>{n.label}</a>)}
+{nav.map((n) => <a href={n.href} data-sec={n.sec} aria-current={n.current ? 'page' : undefined}>{n.label}</a>)}
 <a href={contactHref} class="nav-cta">{t.nav.consultar}</a>
 </nav>
 </div>
@@ -149,7 +149,7 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <div class="foot-col">
 <p class="foot-t">{t.footer.contact}</p>
 <ul>
-<li><a href={`${home}#contacto`}>{t.footer.formLink}</a></li>
+<li><a href={contactHref}>{t.footer.formLink}</a></li>
 {SITIO.email && <li><a href={`mailto:${SITIO.email}`}>{SITIO.email}</a></li>}
 {social.map((s) => <li><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>)}
 </ul>

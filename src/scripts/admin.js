@@ -8,6 +8,7 @@ const msg = $('msg');
 const form = $('ed');
 let current = null;
 let dirty = false;
+let loaded = false;
 
 function say(text, kind = '') {
   msg.textContent = text;
@@ -29,7 +30,7 @@ async function api(path = '', options = {}) {
 function show(view) {
   $('list-view').hidden = view !== 'list';
   $('edit-view').hidden = view !== 'edit';
-  window.scrollTo(0, 0);
+  if (!$('pubs').hidden) window.scrollTo(0, 0);
 }
 
 function td(text, cls) {
@@ -42,6 +43,7 @@ function td(text, cls) {
 async function loadList() {
   const { email, articulos } = await api();
   $('user').textContent = email;
+  loaded = true;
   const box = $('list');
   box.textContent = '';
   if (!articulos.length) {
@@ -173,4 +175,7 @@ $('back').addEventListener('click', async () => {
 });
 window.addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
 
-loadList().then(() => show('list')).catch((err) => say(err.message, 'err'));
+const start = () => loadList().then(() => { say(''); show('list'); }).catch((err) => say(err.message, 'err'));
+// Si la primera carga falló, volver a la pestaña la reintenta
+$('tab-pubs').addEventListener('click', () => { if (!loaded) start(); });
+start();
