@@ -22,8 +22,10 @@ Lo que todavía no pasó el estudio queda con un marcador entre corchetes ([EMAI
 
 - `email`: casilla de contacto (se muestra en Contacto y en el pie).
 - `facebook`, `facebookGrupo`, `linkedin`: los íconos del pie aparecen solo si tienen dirección.
-- `logo`: archivo en `public/` (ej. `'/logo.png'`). Mientras esté vacío, el encabezado muestra el logo de texto.
-- `portada`: foto de fondo de la portada en `public/` (ej. `'/portada.jpg'`, idealmente 2000 px de ancho). Se muestra difuminada bajo un velo verde; mientras esté vacía se ve una silueta de Buenos Aires.
+- `logo`: archivo en `public/` (hoy `'/logo.png'`, el sello recortado sobre fondo transparente). Si se deja vacío, el encabezado muestra el logo de texto.
+- `portada`: foto de fondo de la portada en `public/` (hoy `'/portada.jpg'`, el Obelisco). Se muestra difuminada bajo un velo verde; si se deja vacía se ve una silueta de Buenos Aires. Conviene que sea de al menos 2000 px de ancho y con licencia de uso.
+
+En `public/` también están `favicon.png`, `apple-touch-icon.png` y `og.jpg` (la imagen que aparece al compartir el link: foto difusa con el logo). Si cambian el logo o la foto, hay que regenerarlos.
 
 Por pedido del estudio, el sitio no menciona el paso de los socios por organismos públicos o internacionales y en Quiénes somos muestra solo los apellidos, sin fotos ni currículums. `test/contenido.test.js` lo controla en los cinco idiomas.
 
@@ -63,7 +65,7 @@ Tests: `npm test`.
    - Node: lo toma de `.nvmrc` (22).
 4. Asignar el dominio en Workers → estudio-ebi → Settings → Domains & Routes. La caché de reseñas y noticias funciona en el dominio propio, no en la dirección `workers.dev`.
 
-En el build conviene definir `SITE_URL` con el dominio final (por ejemplo `https://estudioebi.com.ar`) para que las páginas tengan su URL canónica y las alternativas por idioma.
+En el build conviene definir `SITE_URL` con el dominio final (por ejemplo `https://estudioebi.com.ar`), o mientras tanto con el link de workers.dev, para que las páginas tengan su URL canónica, las alternativas por idioma y la imagen para compartir con dirección completa (WhatsApp y las redes la necesitan así para mostrar la vista previa).
 
 | Variable | Para qué | |
 | --- | --- | --- |
