@@ -69,7 +69,8 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60');
         <input id="repo-q" type="search" placeholder="Buscar por número o tema" aria-label="Buscar en el repositorio" autocomplete="off">
       </div>
     </div>
-    <ul class="normas" aria-live="polite">
+    <p id="repo-count" class="sr-only" role="status" data-one="1 norma" data-many="normas"></p>
+    <ul class="normas">
       {normas.map((n) => (
         <li class="norma" data-tipo={n.tipo}>
           <div class="norma-tipo"><b>{TIPOS[n.tipo] || TIPOS.otro}{n.numero && ` ${n.numero}`}</b>{n.fecha && <time datetime={n.fecha}>{fechaLarga(`${n.fecha}T12:00:00Z`)}</time>}</div>
@@ -96,7 +97,7 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60');
 <h2 class="h2">Noticias de medios</h2>
 <p class="lead">Una selección de notas periodísticas sobre migraciones en la Argentina, para que sigas lo que pasa en el sector. Si alguna novedad te afecta, consultanos.</p>
 </div>
-<div id="news-list" class="pubs" aria-live="polite">
+<div id="news-list" class="pubs">
 <div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
 </div>
 <p class="note"><span>{a.note}</span> <a href="https://www.argentina.gob.ar/interior/migraciones" target="_blank" rel="noopener">argentina.gob.ar/migraciones</a>.</p>

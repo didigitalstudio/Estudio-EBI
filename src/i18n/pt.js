@@ -133,6 +133,8 @@ export default {
     carousel: 'Novidades',
     prev: 'Anterior',
     next: 'Próximo',
+    pause: 'Pausar o carrossel',
+    play: 'Retomar o carrossel',
     all: 'Ver todas as publicações',
     repositorio: 'Repositório jurídico',
     repositorioText: 'Leis, decretos e disposições migratórias, com link para a fonte oficial.',

@@ -15,7 +15,7 @@ const modeIcons = ['i-people', 'i-chat', 'i-person', 'i-globe'];
 <p class="resena">{n.resena}</p>
 <div class="name-line">
 <p class="name-title">{n.nameTitle}</p>
-<p class="names" aria-label={APELLIDOS.join(', ')}>
+<p class="names">
 {APELLIDOS.map((ap, i) => <>{i > 0 && <span class="sep" aria-hidden="true">·</span>}<span><b>{ap[0]}</b>{ap.slice(1)}</span></>)}
 </p>
 <p class="name-text">{n.nameText}</p>

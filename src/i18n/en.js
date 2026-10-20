@@ -133,6 +133,8 @@ export default {
     carousel: 'Updates',
     prev: 'Previous',
     next: 'Next',
+    pause: 'Pause carousel',
+    play: 'Play carousel',
     all: 'See all articles',
     repositorio: 'Legal repository',
     repositorioText: 'Immigration laws, decrees and regulations, with links to the official source.',

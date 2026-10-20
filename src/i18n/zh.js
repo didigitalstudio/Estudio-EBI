@@ -133,6 +133,8 @@ export default {
     carousel: '最新动态',
     prev: '上一条',
     next: '下一条',
+    pause: '暂停轮播',
+    play: '继续轮播',
     all: '查看全部文章',
     repositorio: '法律资料库',
     repositorioText: '移民相关法律、法令及规定，附官方来源链接。',

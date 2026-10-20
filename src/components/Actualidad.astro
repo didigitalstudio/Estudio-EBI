@@ -15,12 +15,13 @@ const a = t.actualidad;
 <p class="lead">{a.lead}</p>
 </div>
 <div class="car-ctrl">
+<button type="button" class="car-btn" data-car="toggle" aria-label={a.pause} data-pause={a.pause} data-play={a.play}><svg class="ic" aria-hidden="true"><use href="#i-pause" /></svg></button>
 <button type="button" class="car-btn" data-car="prev" aria-label={a.prev}><svg class="ic" aria-hidden="true"><use href="#i-left" /></svg></button>
 <button type="button" class="car-btn" data-car="next" aria-label={a.next}><svg class="ic" aria-hidden="true"><use href="#i-arrow" /></svg></button>
 </div>
 </div>
 <div class="carousel" role="region" aria-roledescription="carousel" aria-label={a.carousel}>
-<div id="news-track" class="car-track" tabindex="0" aria-live="polite">
+<div id="news-track" class="car-track" tabindex="0">
 <div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
 </div>
 </div>

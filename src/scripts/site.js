@@ -282,10 +282,12 @@ if (track) {
   });
 }
 
-// Avanza solo cada 6 segundos (salvo movimiento reducido) y se pausa con el mouse, el foco o fuera de pantalla
+// Avanza solo cada 6 segundos (salvo movimiento reducido) y se detiene con el botón de pausa; también se
+// frena con el mouse encima, con el foco adentro, al tocarlo o fuera de pantalla
 function carousel(tr) {
   const prev = $('[data-car="prev"]');
   const next = $('[data-car="next"]');
+  const toggle = $('[data-car="toggle"]');
   const step = () => (tr.firstElementChild ? tr.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(tr).columnGap || 0) : tr.clientWidth);
   const atEnd = () => tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4;
   const sync = () => {
@@ -302,18 +304,29 @@ function carousel(tr) {
   tr.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
   window.addEventListener('resize', sync);
   sync();
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    toggle.hidden = true;
+    return;
+  }
+  let stopped = false;
   let hold = false;
   let seen = false;
+  let touchTimer = 0;
+  toggle.addEventListener('click', () => {
+    stopped = !stopped;
+    toggle.setAttribute('aria-label', stopped ? toggle.dataset.play : toggle.dataset.pause);
+    $('use', toggle).setAttribute('href', stopped ? '#i-play' : '#i-pause');
+  });
   const box = tr.closest('section') || tr;
   box.addEventListener('mouseenter', () => { hold = true; });
   box.addEventListener('mouseleave', () => { hold = false; });
-  box.addEventListener('focusin', () => { hold = true; });
+  box.addEventListener('focusin', (e) => { hold = e.target !== toggle; });
   box.addEventListener('focusout', () => { hold = false; });
-  box.addEventListener('touchstart', () => { hold = true; }, { passive: true });
+  box.addEventListener('touchstart', () => { hold = true; clearTimeout(touchTimer); }, { passive: true });
+  box.addEventListener('touchend', () => { touchTimer = setTimeout(() => { hold = false; }, 5000); }, { passive: true });
   new IntersectionObserver(([e]) => { seen = e.isIntersecting; }).observe(tr);
   setInterval(() => {
-    if (!hold && seen && !document.hidden && tr.scrollWidth > tr.clientWidth + 4) go(1);
+    if (!stopped && !hold && seen && !document.hidden && tr.scrollWidth > tr.clientWidth + 4) go(1);
   }, 6000);
 }
 
@@ -376,6 +389,8 @@ if (repoQ) {
       if (on) n++;
     });
     $('#repo-empty', repo).hidden = n > 0;
+    const count = $('#repo-count', repo);
+    count.textContent = n === 1 ? count.dataset.one : `${n} ${count.dataset.many}`;
   };
   chips.forEach((c) => c.addEventListener('click', () => {
     tipo = c.dataset.tipo;

@@ -21,7 +21,7 @@ const t = DICTS[lang];
 const info = langInfo(lang);
 const site = Astro.site;
 const abs = (p) => (site ? new URL(p, site).href : null);
-const canonical = translated ? localePath(lang, path) : Astro.url.pathname;
+const canonical = translated ? localePath(lang, path) : path;
 const home = localePath(lang, '/');
 // Servicios, Empresas y Actualidad son secciones del inicio: el script marca la que se está viendo (data-nav).
 // En la página propia de cada una (key), el enlace lleva a esa página y se marca con aria-current="page".
@@ -58,9 +58,9 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <title>{title}</title>
 <meta name="description" content={description}>
 {noindex && <meta name="robots" content="noindex, nofollow">}
-{abs(canonical) && <link rel="canonical" href={abs(canonical)}>}
+{!noindex && abs(canonical) && <link rel="canonical" href={abs(canonical)}>}
 {site && translated && LANGS.map((l) => <link rel="alternate" hreflang={l.hreflang} href={abs(localePath(l.code, path))}>)}
-{site && translated && <link rel="alternate" hreflang="x-default" href={abs(path)}>}
+{site && translated && <link rel="alternate" hreflang="x-default" href={abs(localePath('es', path))}>}
 <meta property="og:type" content={ogType}>
 <meta property="og:title" content={title}>
 <meta property="og:description" content={description}>
