@@ -8,8 +8,8 @@ export const SITIO = {
   facebookGrupo: '',
   linkedin: '',
   // Archivos en public/: logo del encabezado (ej. '/logo.png') y foto de fondo de la portada (ej. '/portada.jpg')
-  logo: '',
-  portada: '',
+  logo: '/logo.png',
+  portada: '/portada.jpg',
   googleMaps: 'https://www.google.com/maps/search/?api=1&query=Estudio%20EBI%20derecho%20migratorio',
 };
 

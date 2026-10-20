@@ -25,6 +25,7 @@ export default {
     nosotros: 'Quiénes somos',
     actualidad: 'Actualidad',
     consultar: 'Consultar',
+    brandTag: 'Derecho migratorio',
     menuOpen: 'Abrir menú',
     menuClose: 'Cerrar menú',
     language: 'Idioma',

@@ -67,12 +67,17 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <meta property="og:locale" content={info.locale.replace('-', '_')}>
 <meta property="og:site_name" content="Estudio EBI">
 {abs(canonical) && <meta property="og:url" content={abs(canonical)}>}
-{SITIO.portada && abs(SITIO.portada) && <meta property="og:image" content={abs(SITIO.portada)}>}
+<meta property="og:image" content={abs('/og.jpg') || '/og.jpg'}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Estudio EBI">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FAF6EC">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23123F2F'/%3E%3Ctext x='32' y='41' font-family='Georgia' font-weight='700' font-size='24' fill='%23F4F0E6' text-anchor='middle'%3EEBI%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=PT+Serif:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
 {SITIO.portada && path === '/' && <link rel="preload" as="image" href={SITIO.portada}>}
 {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 <slot name="head" />
@@ -83,7 +88,10 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <div class="top-in">
 <a href={home} class:list={['logo', { 'logo-has-img': SITIO.logo }]} aria-label="Estudio EBI">
 {SITIO.logo
-  ? <img src={SITIO.logo} alt="" class="logo-img" width="200" height="64">
+  ? <>
+    <img src={SITIO.logo} alt="" class="logo-img" width="72" height="72">
+    <span class="logo-txt"><span class="logo-name">Estudio EBI</span><span class="logo-tag">{t.nav.brandTag}</span></span>
+  </>
   : <>
     <span class="logo-mark">EBI</span>
     <span class="logo-rule"></span>
@@ -123,7 +131,7 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <footer class="foot">
 <div class="foot-in">
 <div class="foot-brand">
-<a href={home} class="foot-logo" aria-label="Estudio EBI"><b>EBI</b><span>ESTUDIO JURÍDICO</span></a>
+<a href={home} class="foot-logo" aria-label="Estudio EBI">{SITIO.logo ? <img src={SITIO.logo} alt="" width="96" height="96" loading="lazy"> : <><b>EBI</b><span>ESTUDIO JURÍDICO</span></>}</a>
 <p>{t.footer.tagline}</p>
 {social.length > 0 && (
   <div class="foot-social">

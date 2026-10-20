@@ -1,4 +1,4 @@
-:root{--green:#123F2F;--green-d:#0B2A1F;--gold:#C9A86B;--cream:#F4F0E6;--ivory:#FBF8F0;--paper:#F8F5EE;--sand:#E9E2D2;--line:#E4DCCB;--line-2:#DDD5C3;--ink:#1E2A24;--text:#33403A;--muted:#4E5A52;--brown:#6B5430;--mist:#CFD9D3;--error:#8A2A1A;--serif:'Libre Caslon Text',Georgia,'Noto Serif SC','Songti SC',serif;--sans:'Source Sans 3','Segoe UI',system-ui,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
+:root{--green:#123F2F;--green-d:#0B2A1F;--gold:#C9A86B;--cream:#F4F0E6;--ivory:#FBF8F0;--paper:#F8F5EE;--sand:#E9E2D2;--line:#E4DCCB;--line-2:#DDD5C3;--ink:#1E2A24;--text:#33403A;--muted:#4E5A52;--brown:#6B5430;--mist:#CFD9D3;--error:#8A2A1A;--serif:'Libre Caslon Text','PT Serif',Georgia,'Noto Serif SC','Songti SC',serif;--sans:'Source Sans 3','Segoe UI',system-ui,'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif}
 :lang(zh){--serif:'Noto Serif SC','Songti SC','SimSun',Georgia,serif}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:136px}
@@ -41,12 +41,16 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:700;color:var(--green)}
 /* Encabezado: fondo marfil con filete dorado */
 .top{position:sticky;top:0;z-index:20;background:var(--ivory);border-bottom:1px solid var(--line-2);box-shadow:inset 0 -3px 0 -1px rgba(201,168,107,.55)}
 .top.scrolled{box-shadow:inset 0 -3px 0 -1px rgba(201,168,107,.55),0 6px 18px rgba(11,42,31,.08)}
-.top-in{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:16px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px}
+.top-in{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px}
 .logo{display:flex;flex-direction:column;align-items:center;gap:3px;margin-right:auto;text-decoration:none;color:var(--green)}
 .logo-mark{font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:2.375rem;line-height:1;letter-spacing:.04em}
 .logo-rule{width:64px;height:2px;background:var(--gold)}
 .logo-sub{font-family:'Libre Caslon Text',Georgia,serif;font-size:.6875rem;letter-spacing:.24em}
-.logo-img{display:block;height:64px;width:auto;border-radius:6px}
+.logo-has-img{flex-direction:row;align-items:center;gap:16px}
+.logo-img{display:block;width:72px;height:72px;flex:none}
+.logo-txt{display:flex;flex-direction:column;gap:4px;padding-left:16px;border-left:1px solid var(--gold)}
+.logo-name{font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:1.5rem;line-height:1.1;color:var(--green);white-space:nowrap}
+.logo-tag{font-family:var(--serif);font-size:.6875rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brown);white-space:nowrap}
 .main-nav{display:flex;align-items:center;gap:28px;font-weight:600;letter-spacing:.01em}
 .main-nav a{color:var(--green);text-decoration:none;text-decoration-color:transparent;text-decoration-thickness:2px;text-underline-offset:8px;transition:text-decoration-color .2s}
 .main-nav a:hover,.main-nav a[aria-current],.main-nav a.is-active{text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:8px}
@@ -84,8 +88,9 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:700;color:var(--green)}
 
 /* Portada: foto de la ciudad difusa (o silueta) bajo un velo verde */
 .hero{position:relative;overflow:hidden;isolation:isolate;background:var(--green-d);color:var(--cream)}
-.hero-bg{position:absolute;inset:-24px;z-index:-2;background-size:cover;background-position:center;filter:blur(4px) saturate(.85)}
+.hero-bg{position:absolute;inset:-24px;z-index:-2;background-size:cover;background-position:center 40%;filter:blur(3px) saturate(.9)}
 .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(100deg,rgba(11,42,31,.94) 0%,rgba(18,63,47,.8) 52%,rgba(18,63,47,.55) 100%)}
+.hero:has(.hero-bg)::before{background:linear-gradient(100deg,rgba(11,42,31,.9) 0%,rgba(11,42,31,.74) 45%,rgba(18,63,47,.4) 100%)}
 .hero-skyline{position:absolute;left:0;right:0;bottom:0;width:100%;height:72%;z-index:-1}
 .wrap.hero-in{padding-top:88px;padding-bottom:96px}
 .hero-lg .hero-in{min-height:min(76vh,700px)}
@@ -340,6 +345,7 @@ a.sit:hover{border-color:var(--green);color:var(--ink)}
 .foot-in{max-width:1200px;margin:0 auto;padding:64px 24px 40px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr);gap:40px}
 .foot-brand{display:flex;flex-direction:column;gap:16px;align-items:flex-start}
 .foot-logo{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+.foot-logo img{display:block;width:96px;height:96px}
 .foot-logo b{font-family:'Libre Caslon Text',Georgia,serif;font-size:2rem;line-height:1;letter-spacing:.04em;color:var(--cream)}
 .foot-logo span{padding-top:4px;border-top:1px solid var(--gold);font-family:'Libre Caslon Text',Georgia,serif;font-size:.625rem;letter-spacing:.24em;color:var(--cream)}
 .foot-brand>p{max-width:340px}
@@ -362,7 +368,10 @@ body{top:0!important}
   .tools{order:1}
   .top-in{padding-top:12px;padding-bottom:12px}
   .logo-mark{font-size:2rem}
-  .logo-img{height:52px}
+  .logo-img{width:56px;height:56px}
+  .logo-has-img{gap:12px}
+  .logo-txt{padding-left:12px}
+  .logo-name{font-size:1.25rem}
   .main-nav{order:2;display:none;width:100%;flex-direction:column;align-items:stretch;gap:4px;padding:4px 0}
   .main-nav.open{display:flex}
   .main-nav a{padding:12px 4px;border-top:1px solid var(--line)}
@@ -395,10 +404,23 @@ body{top:0!important}
   .hero-lead{font-size:1.0625rem}
   .lines a{font-size:1.125rem}
   .lang-code{display:none}
+  .logo-img{width:50px;height:50px}
+  .logo-name{font-size:1.125rem}
+  .logo-tag{font-size:.625rem;letter-spacing:.14em}
   .article{padding-top:48px}
   .car-track{grid-auto-columns:86%;gap:16px}
   .act-head .car-ctrl{display:none}
   .foot-in{grid-template-columns:minmax(0,1fr);padding-top:48px;gap:32px}
   .repo-search{flex-basis:100%}
+}
+@media (max-width:400px){
+  .top-in{gap:8px 12px}
+  .tools{gap:4px}
+  .lang-menu summary{padding:0 10px}
+  .logo-has-img{gap:10px}
+  .logo-img{width:46px;height:46px}
+  .logo-txt{padding-left:10px}
+  .logo-name{font-size:1.0625rem}
+  .logo-tag{display:none}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.car-track{scroll-behavior:auto}.skel{animation:none}.btn,.guide,.car-btn,.main-nav a{transition:none}}
