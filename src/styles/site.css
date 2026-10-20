@@ -48,9 +48,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:700;color:var(--green)}
 .logo-sub{font-family:'Libre Caslon Text',Georgia,serif;font-size:.6875rem;letter-spacing:.24em}
 .logo-has-img{flex-direction:row;align-items:center;gap:16px}
 .logo-img{display:block;width:72px;height:72px;flex:none}
-.logo-txt{display:flex;flex-direction:column;gap:4px;padding-left:16px;border-left:1px solid var(--gold)}
-.logo-name{font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:1.5rem;line-height:1.1;color:var(--green);white-space:nowrap}
-.logo-tag{font-family:var(--serif);font-size:.6875rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brown);white-space:nowrap}
+.logo-name{padding:4px 0 4px 16px;border-left:1px solid var(--gold);font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:1.5rem;line-height:1.1;color:var(--green);white-space:nowrap}
 .main-nav{display:flex;align-items:center;gap:28px;font-weight:600;letter-spacing:.01em}
 .main-nav a{color:var(--green);text-decoration:none;text-decoration-color:transparent;text-decoration-thickness:2px;text-underline-offset:8px;transition:text-decoration-color .2s}
 .main-nav a:hover,.main-nav a[aria-current],.main-nav a.is-active{text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:8px}
@@ -370,7 +368,7 @@ body{top:0!important}
   .logo-mark{font-size:2rem}
   .logo-img{width:56px;height:56px}
   .logo-has-img{gap:12px}
-  .logo-txt{padding-left:12px}
+  .logo-name{padding-left:12px}
   .logo-name{font-size:1.25rem}
   .main-nav{order:2;display:none;width:100%;flex-direction:column;align-items:stretch;gap:4px;padding:4px 0}
   .main-nav.open{display:flex}
@@ -406,7 +404,6 @@ body{top:0!important}
   .lang-code{display:none}
   .logo-img{width:50px;height:50px}
   .logo-name{font-size:1.125rem}
-  .logo-tag{font-size:.625rem;letter-spacing:.14em}
   .article{padding-top:48px}
   .car-track{grid-auto-columns:86%;gap:16px}
   .act-head .car-ctrl{display:none}
@@ -419,8 +416,7 @@ body{top:0!important}
   .lang-menu summary{padding:0 10px}
   .logo-has-img{gap:10px}
   .logo-img{width:46px;height:46px}
-  .logo-txt{padding-left:10px}
+  .logo-name{padding-left:10px}
   .logo-name{font-size:1.0625rem}
-  .logo-tag{display:none}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.car-track{scroll-behavior:auto}.skel{animation:none}.btn,.guide,.car-btn,.main-nav a{transition:none}}

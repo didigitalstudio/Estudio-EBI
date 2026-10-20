@@ -21,7 +21,6 @@ export default {
     nosotros: 'Quem somos',
     actualidad: 'Atualidades',
     consultar: 'Consultar',
-    brandTag: 'Direito migratório',
     menuOpen: 'Abrir menu',
     menuClose: 'Fechar menu',
     language: 'Idioma',
@@ -38,7 +37,6 @@ export default {
     opiniones: 'Avaliações',
     faq: 'Perguntas frequentes',
     nosotros: 'Quem somos',
-    enfoque: 'Nossa abordagem',
     contacto: 'Contato',
   },
 
@@ -111,6 +109,7 @@ export default {
     enfoqueTitle: 'Nossa abordagem',
     checks: ['Atendimento claro e personalizado', 'Acompanhamento durante todo o processo', 'Informação transparente sobre requisitos, prazos e custos', 'Acompanhamento real de cada caso', 'Comunicação simples e direta'],
     modesTitle: 'Formas de atendimento',
+    modesLead: 'Atendemos presencialmente ou on-line, em espanhol ou inglês, e mantemos você informado sobre cada novidade do seu processo.',
     modes: [
       { title: 'Consultas presenciais e on-line', text: 'Em reuniões agendadas ou por videochamada, onde você estiver' },
       { title: 'Acompanhamento pelo WhatsApp', text: 'Depois de recebermos a sua consulta, seguimos em contato com respostas rápidas' },
@@ -284,6 +283,7 @@ export default {
         ],
       },
       callout: '',
+      faqLead: 'Respostas às dúvidas mais comuns de empresas que contratam ou transferem funcionários estrangeiros. Se não encontrar a sua, escreva para nós.',
       faq: [
         { q: 'O que é o RENURE?', a: 'É o Registro Nacional Único de Requirentes de Extranjeros da Direção Nacional de Migrações. As empresas e instituições que querem trazer funcionários estrangeiros precisam estar inscritas nele para poder iniciar os pedidos de residência.' },
         { q: 'O que é o trâmite VIP?', a: 'É a modalidade de atendimento prioritário oferecida pela Direção Nacional de Migrações. Informamos se o caso pode ser tramitado por essa via e cuidamos da gestão.' },

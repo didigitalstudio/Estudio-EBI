@@ -21,7 +21,6 @@ export default {
     nosotros: '关于我们',
     actualidad: '最新动态',
     consultar: '咨询',
-    brandTag: '移民法',
     menuOpen: '打开菜单',
     menuClose: '关闭菜单',
     language: '语言',
@@ -38,7 +37,6 @@ export default {
     opiniones: '客户评价',
     faq: '常见问题',
     nosotros: '关于我们',
-    enfoque: '我们的理念',
     contacto: '联系我们',
   },
 
@@ -111,6 +109,7 @@ export default {
     enfoqueTitle: '我们的理念',
     checks: ['清晰、个性化的服务', '全程陪同', '要求、时间和费用信息公开透明', '切实跟进每一个案件', '简单直接的沟通'],
     modesTitle: '服务方式',
+    modesLead: '我们提供线下或线上咨询，可使用西班牙语或英语沟通，案件每有进展都会及时通知您。',
     modes: [
       { title: '线下与线上咨询', text: '预约面谈或视频通话，无论您身在何处' },
       { title: '通过 WhatsApp 跟进', text: '收到您的咨询后，我们会与您保持联系，快速答复' },
@@ -284,6 +283,7 @@ export default {
         ],
       },
       callout: '',
+      faqLead: '雇用或调派外籍员工的企业最常咨询的问题解答。如果没有找到您的问题，请给我们留言。',
       faq: [
         { q: '什么是 RENURE？', a: '这是阿根廷国家移民局的“外籍人员邀请方全国统一登记册”（Registro Nacional Único de Requirentes de Extranjeros）。希望聘用外籍员工的企业和机构必须先完成登记，才能为员工申请居留。' },
         { q: '什么是 VIP 优先办理？', a: '这是阿根廷国家移民局提供的优先受理服务。我们会告诉您该案件是否适用这一途径，并负责相关办理工作。' },

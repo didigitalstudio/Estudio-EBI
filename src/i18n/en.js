@@ -21,7 +21,6 @@ export default {
     nosotros: 'About us',
     actualidad: 'Updates',
     consultar: 'Contact us',
-    brandTag: 'Immigration law',
     menuOpen: 'Open menu',
     menuClose: 'Close menu',
     language: 'Language',
@@ -38,7 +37,6 @@ export default {
     opiniones: 'Reviews',
     faq: 'Frequently asked questions',
     nosotros: 'About us',
-    enfoque: 'Our approach',
     contacto: 'Contact',
   },
 
@@ -111,6 +109,7 @@ export default {
     enfoqueTitle: 'Our approach',
     checks: ['Clear and personalized advice', 'Support throughout the whole process', 'Transparent information on requirements, timelines and fees', 'Real follow-up on every case', 'Simple and direct communication'],
     modesTitle: 'How we work',
+    modesLead: 'We meet in person or online, in Spanish or English, and keep you posted on every update in your case.',
     modes: [
       { title: 'In-person and online consultations', text: 'Scheduled meetings or video calls, wherever you are' },
       { title: 'WhatsApp follow-up', text: 'Once we receive your inquiry, we stay in touch with quick answers' },
@@ -284,6 +283,7 @@ export default {
         ],
       },
       callout: '',
+      faqLead: 'Answers to the most common questions from companies that hire or relocate foreign staff. If you can’t find yours, write to us.',
       faq: [
         { q: 'What is RENURE?', a: 'It is the National Immigration Office’s registry of sponsors of foreign nationals (Registro Nacional Único de Requirentes de Extranjeros). Companies and institutions that want to bring in foreign staff must be registered before they can start residence applications for those workers.' },
         { q: 'What is the VIP procedure?', a: 'It is the priority service offered by the National Immigration Office. We tell you whether your case can be processed this way and take care of the procedure.' },

@@ -21,7 +21,7 @@ const modeIcons = ['i-people', 'i-chat', 'i-person', 'i-globe'];
 <p class="name-text">{n.nameText}</p>
 </div>
 </div>
-<div class="enfoque" data-guide={t.guide.enfoque}>
+<div class="enfoque">
 <h2 class="h3">{n.enfoqueTitle}</h2>
 <ul class="checks">
 {n.checks.map((c) => <li><svg class="ic" aria-hidden="true"><use href="#i-check" /></svg><span>{c}</span></li>)}
@@ -32,7 +32,10 @@ const modeIcons = ['i-people', 'i-chat', 'i-person', 'i-globe'];
 </section>
 <section class="band" data-guide={n.modesTitle}>
 <div class="wrap stack">
+<div class="head">
 <h2 class="h3">{n.modesTitle}</h2>
+<p class="lead">{n.modesLead}</p>
+</div>
 <div class="modes">
 {n.modes.map((m, i) => (
   <div class="mode">
