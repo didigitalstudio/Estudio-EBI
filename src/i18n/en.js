@@ -51,6 +51,8 @@ export default {
     title: 'A law firm specializing in immigration law',
     lead: 'We guide individuals, families and companies through their immigration and citizenship procedures in Argentina, providing clear information and following up on every case.',
     links: { personas: 'Individuals and families', empresas: 'Companies' },
+    place: 'Buenos Aires · Argentina',
+    accent: 'immigration law',
   },
 
   why: {

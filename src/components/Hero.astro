@@ -1,14 +1,47 @@
 ---
 // Portada de cada página: foto de la ciudad difusa de fondo (o la silueta, hasta que se elija la foto),
 // título, bajada y accesos. El slot opcional va en una tarjeta a la derecha (ej. la lista de empresas).
+// variant="monument" (inicio): composición centrada con el Obelisco como eje, el sello del estudio entre
+// filetes dorados (enhebrado en el fuste, con la punta asomando arriba), la parte `accent` del título en
+// cursiva y un indicador para bajar hasta `next`. El texto va dentro de .mon-body, que lleva su propio velo.
 import Skyline from './Skyline.astro';
 import { SITIO } from '../data/sitio.js';
 
-const { eyebrow = '', title, lead, primary, links = [], size = 'lg' } = Astro.props;
+const { eyebrow = '', title, accent = '', lead, primary, links = [], size = 'lg', variant = '', next = '' } = Astro.props;
 const hasPanel = Astro.slots.has('default');
+const monument = variant === 'monument' && !hasPanel;
+// El destacado se busca dentro del título; si no está, el título va entero. Si cierra el título va en su
+// propia línea (es, en, pt, ru); si queda en el medio (zh) se marca sin cortar la frase.
+const at = monument && accent ? title.indexOf(accent) : -1;
+const parts = at >= 0 ? [title.slice(0, at), accent, title.slice(at + accent.length)] : null;
+const split = !!parts && !parts[2].trim();
+// Sin corte (zh), el destacado queda pegado al carácter que sigue (的) para que ninguna línea empiece con él
+const glue = parts && !split ? parts[2].slice(0, 1) : '';
 ---
-<section class:list={['hero', `hero-${size}`]}>
+<section class:list={['hero', `hero-${size}`, { 'hero-mon': monument }]}>
 {SITIO.portada ? <div class="hero-bg" style={`background-image:url('${SITIO.portada}')`}></div> : <Skyline />}
+{monument ? (
+  <>
+  <div class="wrap hero-in">
+  <div class="mon">
+  {SITIO.logo && <div class="mon-crest" aria-hidden="true"><span class="mon-rule"></span><span class="mon-ring"><img src={SITIO.logo} alt="" class="mon-seal" width="128" height="128"></span><span class="mon-rule"></span></div>}
+  <div class="mon-body">
+  {eyebrow && <p class="mon-eyebrow">{eyebrow}</p>}
+  <h1 class:list={['mon-title', { 'mon-split': split }]}>{!parts ? title : split ? <>{parts[0]}<em>{parts[1]}</em></> : <>{parts[0]}<span class="mon-keep"><em>{parts[1]}</em>{glue}</span>{parts[2].slice(1)}</>}</h1>
+  <span class="mon-orn" aria-hidden="true"></span>
+  <p class="hero-lead">{lead}</p>
+  {(primary || links.length > 0) && (
+    <div class="ctas">
+      {primary && <a href={primary.href} class="btn btn-light" data-perfil={primary.perfil} data-tipo={primary.tipo}>{primary.label}</a>}
+      {links.length > 0 && <span class="mon-links">{links.map((l) => <a href={l.href} class="btn btn-ghost">{l.label}<svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow" /></svg></a>)}</span>}
+    </div>
+  )}
+  </div>
+  </div>
+  </div>
+  {next && <a href={next} class="mon-cue" tabindex="-1" aria-hidden="true"><span class="mon-cue-line"></span><span class="mon-cue-chev"></span></a>}
+  </>
+) : (
 <div class:list={['wrap hero-in', { 'has-panel': hasPanel }]}>
 <div class="hero-copy">
 {eyebrow && <p class="eyebrow">{eyebrow}</p>}
@@ -23,4 +56,5 @@ const hasPanel = Astro.slots.has('default');
 </div>
 {hasPanel && <div class="panel"><slot /></div>}
 </div>
+)}
 </section>

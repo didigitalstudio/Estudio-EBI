@@ -51,6 +51,8 @@ export default {
     title: 'Escritório de advocacia especializado em direito migratório',
     lead: 'Assessoramos pessoas, famílias e empresas em seus trâmites migratórios e de cidadania na Argentina, com informação clara e acompanhamento de cada caso.',
     links: { personas: 'Pessoas e famílias', empresas: 'Empresas' },
+    place: 'Buenos Aires · Argentina',
+    accent: 'direito migratório',
   },
 
   why: {

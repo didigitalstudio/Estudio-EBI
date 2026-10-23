@@ -27,9 +27,17 @@ test('no quedan textos vacíos ni sin traducir', () => {
       if (es[path] === '' || path === '.ui.inSpanish') continue;
       assert.ok(value.trim(), `${code}${path} vacío`);
       // Iguales al español solo se aceptan nombres propios, siglas o números (en portugués hay muchas palabras iguales)
-      if (code !== 'pt' && value === es[path]) assert.match(value, /^(\[?[A-Z0-9 ·.,'-]+\]?|WhatsApp|Email|Newsletter|Empresas|Estudio EBI)$/, `${code}${path} sin traducir: "${value}"`);
+      if (code !== 'pt' && value === es[path]) assert.match(value, /^(\[?[A-Z0-9 ·.,'-]+\]?|WhatsApp|Email|Newsletter|Empresas|Estudio EBI|Buenos Aires · Argentina)$/, `${code}${path} sin traducir: "${value}"`);
     }
   }
+});
+
+test('la parte destacada del título de portada está dentro del título', () => {
+  for (const { code } of LANGS) assert.ok(DICTS[code].hero.title.includes(DICTS[code].hero.accent), `${code}: hero.accent no aparece en hero.title`);
+});
+
+test('la línea de lugar de la portada no está vacía en ningún idioma', () => {
+  for (const { code } of LANGS) assert.ok(typeof DICTS[code].hero.place === 'string' && DICTS[code].hero.place.trim(), `${code}: hero.place vacío`);
 });
 
 test('rutas por idioma', () => {

@@ -51,6 +51,8 @@ export default {
     title: '专注移民法的律师事务所',
     lead: '我们协助个人、家庭和企业办理在阿根廷的移民及入籍手续，提供清晰的信息，并跟进每一个案件。',
     links: { personas: '个人与家庭', empresas: '企业' },
+    place: '布宜诺斯艾利斯 · 阿根廷',
+    accent: '移民法',
   },
 
   why: {

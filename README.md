@@ -25,6 +25,22 @@ Lo que todavía no pasó el estudio queda con un marcador entre corchetes ([EMAI
 - `logo`: archivo en `public/` (hoy `'/logo.png'`, el sello recortado sobre fondo transparente). Si se deja vacío, el encabezado muestra el logo de texto.
 - `portada`: foto de fondo de la portada en `public/` (hoy `'/portada.jpg'`, el Obelisco). Se muestra difuminada bajo un velo verde; si se deja vacía se ve una silueta de Buenos Aires. Conviene que sea de al menos 2000 px de ancho y con licencia de uso.
 
+### Portada del inicio
+
+La portada del inicio es una composición simétrica: el Obelisco queda en el eje de la pantalla y el sello del estudio se apoya enhebrado en el fuste, con el piramidión asomando arriba del aro. Debajo van la línea de lugar, el título, la bajada y los accesos. El encuadre está calibrado para esta foto (`portada.jpg`, 612 × 344 px), en `src/styles/site.css` (bloque `.hero-mon`):
+
+- `background-position` 48,7 % + `translateX(1.3%)`: el Obelisco está al 48,7 % del ancho de la foto y así cae en el centro. La capa de la foto sangra 40 px por lado; en pantallas de más de unos 2690 px el 1,3 % superaría ese sangrado, así que el sangrado lateral crece lo justo (`--mon-ext`, y `--mon-bw` es el ancho de la capa) y el Obelisco sigue exactamente en el eje sin dejar una franja sin foto.
+- La punta está al 16,86 % del alto de la foto y el piramidión ocupa otro 6,4 % (las cifras `.1686` y `.064` en las variables `--mon-apex0` y en el `padding-top` del bloque). La foto se dimensiona para la altura mínima de la portada y el bloque de texto arranca justo debajo del piramidión, así la punta se ve en cualquier pantalla de escritorio, tablet o celular alto. Como la foto escala con el ancho, ese tramo se limita al 14 % del alto de la portada: en pantallas muy anchas y bajas el aro abraza la base del piramidión en vez de empujar los botones fuera de la primera pantalla.
+- Pantallas bajas: en escritorio de hasta 700 px de alto (notebooks con las barras del navegador, pantallas al 125-150 %) el sello se achica y sube sobre el piramidión, con la punta asomando por encima del aro, y el resto se compacta. En celulares de hasta 760 px de alto el sello sube y tapa la punta, y de hasta 620 px (iPhone SE/8 con las barras de Safari) además se achica, para que el botón entre en la primera pantalla; en celular horizontal no se muestra el sello. En un iPhone con Safari el área visible casi siempre queda en esa franja, así que ahí el sello tapa la punta: la composición con la punta sobre el aro se ve en escritorio, tablet y celulares altos.
+- La franja que atenúa el fuste detrás del texto (`.mon-body::after`) usa el ancho del Obelisco en la foto (`.0407` del alto).
+
+Si se cambia `portada.jpg` hay que medir de nuevo esas cuatro cifras (posición horizontal del Obelisco, altura de la punta, alto del piramidión y ancho del fuste) y volver a revisar el contraste del texto: el velo está ajustado para que la línea de lugar quede en 5:1 o más, la bajada y los enlaces en 4,5:1 o más y la cursiva del título en 4:1 o más.
+
+Textos de la portada (en los cinco diccionarios, dentro de `hero`):
+
+- `place`: la línea de lugar sobre el título («Buenos Aires · Argentina»).
+- `accent`: la parte del título que va en cursiva dorada. Tiene que aparecer tal cual dentro de `title` (si no, el título se muestra entero sin cursiva; `npm test` lo controla). Si cierra el título va en su propia línea; si queda en el medio (en chino) se marca sin cortar la frase y queda pegado al carácter siguiente, para que ninguna línea empiece con 的.
+
 En `public/` también están `favicon.png`, `apple-touch-icon.png` y `og.jpg` (la imagen que aparece al compartir el link: foto difusa con el logo). Si cambian el logo o la foto, hay que regenerarlos.
 
 Por pedido del estudio, el sitio no menciona el paso de los socios por organismos públicos o internacionales y en Quiénes somos muestra solo los apellidos, sin fotos ni currículums. `test/contenido.test.js` lo controla en los cinco idiomas.

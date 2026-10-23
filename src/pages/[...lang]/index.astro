@@ -31,8 +31,12 @@ const jsonLd = {
 ---
 <Base lang={lang} path="/" title={t.meta.home.title} description={t.meta.home.description} jsonLd={jsonLd}>
 <Hero
+  variant="monument"
+  eyebrow={t.hero.place}
   title={t.hero.title}
+  accent={t.hero.accent}
   lead={t.hero.lead}
+  next="#servicios"
   primary={{ href: '#contacto', label: t.common.consult }}
   links={[
     { href: '#personas', label: t.hero.links.personas },

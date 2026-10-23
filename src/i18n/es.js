@@ -56,6 +56,10 @@ export default {
     title: 'Estudio jurídico especializado en derecho migratorio',
     lead: 'Acompañamos a personas, familias y empresas en sus trámites migratorios y de ciudadanía en la Argentina, con información clara y seguimiento de cada caso.',
     links: { personas: 'Personas y familias', empresas: 'Empresas' },
+    // Portada del inicio: línea de lugar sobre el título y la parte del título que va en cursiva
+    // (tiene que aparecer tal cual dentro de title)
+    place: 'Buenos Aires · Argentina',
+    accent: 'derecho migratorio',
   },
 
   why: {
