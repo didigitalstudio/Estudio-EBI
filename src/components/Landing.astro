@@ -18,7 +18,7 @@ const p = t.pages.empresas;
   eyebrow={p.hero.eyebrow}
   title={p.hero.title}
   lead={p.hero.lead}
-  primary={{ href: '#contacto', label: t.common.proposal, perfil: 'empresa', tipo: 'renure' }}
+  primary={{ href: '#contacto', label: t.common.proposal, perfil: 'empresa', tipo: 'contratacion' }}
   links={[{ href: `${localePath(lang, '/')}#servicios`, label: t.nav.servicios }]}
 >
 <p class="panel-title">{t.common.solves}</p>
@@ -29,5 +29,5 @@ const p = t.pages.empresas;
 <EmpresasSection lang={lang} intro={false} />
 <Why lang={lang} />
 <Faq lang={lang} items={p.faq} lead={p.faqLead} />
-<Contacto lang={lang} perfil="empresa" tipo="renure" />
+<Contacto lang={lang} perfil="empresa" tipo="contratacion" />
 </Base>

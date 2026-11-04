@@ -1,26 +1,43 @@
 ---
+// Contacto: datos del estudio a la izquierda y el formulario a la derecha. El formulario distingue persona y
+// empresa; "Enviar consulta" lo manda al correo del estudio y "Consultar por WhatsApp" es una alternativa
+// aparte que arma el mensaje con lo que se haya completado y lo deja revisar antes de abrir WhatsApp.
 import { DICTS } from '../i18n/index.js';
 import es from '../i18n/es.js';
 import { SITIO } from '../data/sitio.js';
 
-// perfil y tipo eligen lo que viene marcado según la página (ej. empresas: empresa + RENURE)
+// perfil y tipo eligen lo que viene marcado según la página (ej. empresas: empresa + contratación)
 const { lang, perfil = 'persona', tipo = '' } = Astro.props;
 const t = DICTS[lang];
 const f = t.form;
+const c = t.contacto;
 const empresa = perfil === 'empresa';
 // El valor que llega al estudio queda siempre en español; lo que se ve, en el idioma de la página
 const options = (group) => Object.keys(es.form[group]).map((key) => ({ key, value: es.form[group][key], label: f[group][key] }));
+const preset = (group) => options(group).some((o) => o.key === tipo);
+const social = [
+  { href: SITIO.linkedin, label: 'LinkedIn', icon: 'i-linkedin-fill' },
+  { href: SITIO.facebook, label: 'Facebook', icon: 'i-facebook' },
+].filter((s) => s.href);
 ---
 <section id="contacto" class="contact" data-guide={t.guide.contacto}>
 <div class="wrap contact-in">
 <div class="contact-copy">
-<p class="eyebrow">{t.contacto.eyebrow}</p>
-<h2 class="h2">{t.contacto.title}</h2>
-<p class="lead">{t.contacto.lead}</p>
-<div class="lines">
-{SITIO.email
-  ? <a class="mail" href={`mailto:${SITIO.email}`}><svg class="ic" aria-hidden="true"><use href="#i-mail" /></svg>{SITIO.email}</a>
-  : <div class="meta"><svg class="ic" aria-hidden="true"><use href="#i-mail" /></svg><span>{t.contacto.emailPending}</span></div>}
+<p class="eyebrow">{c.eyebrow}</p>
+<h2 class="h2">{c.title}</h2>
+<p class="lead">{c.lead}</p>
+<div class="inst">
+<p class="inst-name">{c.studio}</p>
+<ul class="inst-list">
+<li><svg class="ic" aria-hidden="true"><use href="#i-pin" /></svg><span>{c.place}</span></li>
+<li><svg class="ic" aria-hidden="true"><use href="#i-mail" /></svg><span><span class="inst-k">{c.email}</span>{SITIO.email ? <a href={`mailto:${SITIO.email}`}>{SITIO.email}</a> : <span>{c.emailPending}</span>}</span></li>
+{SITIO.whatsapp && <li><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg><span><span class="inst-k">{c.wa}</span><a href={`https://wa.me/${SITIO.whatsapp}`} target="_blank" rel="noopener">{SITIO.whatsappTexto}</a></span></li>}
+</ul>
+{social.length > 0 && (
+  <ul class="inst-social">
+    {social.map((s) => <li><a href={s.href} target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href={`#${s.icon}`} /></svg>{s.label}</a></li>)}
+  </ul>
+)}
 </div>
 </div>
 <form id="form" class="card-form" novalidate>
@@ -31,68 +48,79 @@ const options = (group) => Object.keys(es.form[group]).map((key) => ({ key, valu
 <label class={empresa ? 'on' : undefined}><input type="radio" name="perfil" value="empresa" checked={empresa}><span>{f.empresa}</span></label>
 </div>
 </fieldset>
+<div class="field" data-only="empresa" hidden={!empresa}>
+<label for="empresa">{f.empresaLabel} <span class="req" aria-hidden="true">*</span></label>
+<input id="empresa" name="empresa" type="text" autocomplete="organization" required disabled={!empresa}>
+</div>
 <div class="field">
-<label for="nombre">{f.nombre}</label>
+<label for="nombre"><span data-only="persona" hidden={empresa}>{f.nombre}</span><span data-only="empresa" hidden={!empresa}>{f.contacto}</span> <span class="req" aria-hidden="true">*</span></label>
 <input id="nombre" name="nombre" type="text" autocomplete="name" required>
-</div>
-<div class="row" data-only="empresa" hidden={!empresa}>
-<div class="field">
-<label for="empresa">{f.empresaLabel}</label>
-<input id="empresa" name="empresa" type="text" autocomplete="organization" disabled={!empresa}>
-</div>
-<div class="field">
-<label for="cargo">{f.cargo}</label>
-<input id="cargo" name="cargo" type="text" autocomplete="organization-title" disabled={!empresa}>
-</div>
 </div>
 <div class="row">
 <div class="field">
-<label for="email">{f.email}</label>
-<input id="email" name="email" type="email" autocomplete="email">
+<label for="email">{f.email}<span data-only="empresa" hidden={!empresa}> <span class="req" aria-hidden="true">*</span></span></label>
+<input id="email" name="email" type="email" autocomplete="email" aria-describedby="contact-hint">
 </div>
 <div class="field">
 <label for="tel">{f.tel}</label>
-<input id="tel" name="tel" type="tel" autocomplete="tel">
+<input id="tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="+54 9 11 1234-5678" aria-describedby="contact-hint">
 </div>
 </div>
-<div class="row">
-<div class="field">
-<label for="pais"><span data-only="persona" hidden={empresa}>{f.pais}</span><span data-only="empresa" hidden={!empresa}>{f.paisEmpresa}</span></label>
-<input id="pais" name="pais" type="text">
-</div>
-<div class="field" data-only="empresa" hidden={!empresa}>
-<label for="cantidad">{f.personas}</label>
-<select id="cantidad" name="personas" disabled={!empresa}>
-{Object.keys(es.form.personasOpts).map((k) => <option value={es.form.personasOpts[k]}>{f.personasOpts[k]}</option>)}
-</select>
-</div>
+<p id="contact-hint" class="field-hint" data-only="persona" hidden={empresa}><span class="req" aria-hidden="true">*</span> {f.contactHint}</p>
+<div class="field" data-only="persona" hidden={empresa}>
+<label for="pais">{f.pais}</label>
+<input id="pais" name="pais" type="text" autocomplete="country-name" disabled={empresa}>
 </div>
 <div class="field" data-only="persona" hidden={empresa}>
-<label for="tipo-persona">{f.tipo}</label>
-<select id="tipo-persona" name="tipo" disabled={empresa}>
+<label for="tipo-persona">{f.tipo} <span class="req" aria-hidden="true">*</span></label>
+<select id="tipo-persona" name="tipo" required disabled={empresa}>
+<option value="" disabled selected={empresa || !preset('tiposPersona')}>{f.tipoPick}</option>
 {options('tiposPersona').map((o) => <option value={o.value} data-key={o.key} selected={!empresa && o.key === tipo}>{o.label}</option>)}
 </select>
 </div>
 <div class="field" data-only="empresa" hidden={!empresa}>
-<label for="tipo-empresa">{f.tipo}</label>
-<select id="tipo-empresa" name="tipo" disabled={!empresa}>
+<label for="tipo-empresa">{f.tipo} <span class="req" aria-hidden="true">*</span></label>
+<select id="tipo-empresa" name="tipo" required disabled={!empresa}>
+<option value="" disabled selected={!empresa || !preset('tiposEmpresa')}>{f.tipoPick}</option>
 {options('tiposEmpresa').map((o) => <option value={o.value} data-key={o.key} selected={empresa && o.key === tipo}>{o.label}</option>)}
 </select>
 </div>
 <div class="field">
-<label for="msg"><span data-only="persona" hidden={empresa}>{f.msgPersona}</span><span data-only="empresa" hidden={!empresa}>{f.msgEmpresa}</span></label>
+<label for="msg"><span data-only="persona" hidden={empresa}>{f.msgPersona}</span><span data-only="empresa" hidden={!empresa}>{f.msgEmpresa}</span> <span class="req" aria-hidden="true">*</span></label>
 <textarea id="msg" name="msg" rows="4" required></textarea>
 </div>
 <div class="hp" aria-hidden="true">
 <label for="website">Web</label>
 <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
 </div>
+<p class="form-req">{f.requiredNote}</p>
 <div class="form-actions">
-<button type="submit" id="send-email" class="btn btn-fill" value="email" hidden>{f.sendEmail}</button>
-<button type="submit" id="send-wa" class="btn btn-fill" value="wa"><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg><span>{f.sendWa}</span></button>
+<button type="submit" id="send-email" class="btn btn-fill">{f.sendEmail}</button>
+<button type="button" id="send-wa" class="btn btn-out"><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg><span>{f.sendWa}</span></button>
 </div>
-<p class="form-note">{f.note}</p>
 <p id="form-msg" class="form-msg" role="status"></p>
+<div class="privacy">
+<p class="privacy-t"><svg class="ic" aria-hidden="true"><use href="#i-shield" /></svg>{f.privacyTitle}</p>
+<p>{f.privacy}</p>
+</div>
+<div class="form-done" hidden>
+<span class="done-ic"><svg class="ic ic-lg" aria-hidden="true"><use href="#i-check" /></svg></span>
+<p class="done-t" tabindex="-1">{t.ui.sentTitle}</p>
+<p>{t.ui.sent}</p>
+<button type="button" class="btn btn-out" id="form-again">{t.ui.sentAgain}</button>
+</div>
 </form>
 </div>
+<dialog id="wa-dialog" class="wa-dlg" aria-labelledby="wa-title">
+<form method="dialog" class="wa-box">
+<h3 id="wa-title">{t.ui.waTitle}</h3>
+<p id="wa-desc" class="wa-desc">{t.ui.waText}</p>
+<label for="wa-text" class="sr-only">{t.ui.waTitle}</label>
+<textarea id="wa-text" rows="8" aria-describedby="wa-desc"></textarea>
+<div class="wa-actions">
+<a id="wa-go" class="btn btn-fill" href={`https://wa.me/${SITIO.whatsapp}`} target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg>{t.ui.waOpen}</a>
+<button type="submit" class="btn btn-out" value="cancel">{t.ui.waCancel}</button>
+</div>
+</form>
+</dialog>
 </section>

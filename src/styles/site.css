@@ -25,6 +25,8 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:700;color:var(--green)}
 .h2{font-size:clamp(1.875rem,3.2vw,2.5rem);line-height:1.2}
 .h3{font-size:clamp(1.375rem,2.4vw,1.625rem);line-height:1.25}
 .lead{color:var(--muted);font-size:1.125rem}
+.head-wide{max-width:900px}
+.head .lead+.lead{margin-top:4px}
 .list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--text)}
 .list li::marker{color:var(--gold)}
 .ico-badge{width:52px;height:52px;border-radius:50%;background:var(--green);color:var(--cream);display:flex;align-items:center;justify-content:center;flex:none}
@@ -103,6 +105,9 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:700;color:var(--green)}
 .hero h1{color:#fff;font-size:clamp(2.25rem,4.4vw,3.5rem);line-height:1.12}
 .hero-sm h1{font-size:clamp(2rem,3.6vw,2.875rem)}
 .hero-lead{font-size:1.25rem;color:var(--mist);max-width:640px}
+.hero-long h1{font-size:clamp(2rem,3.3vw,2.75rem)}
+.hero-long .hero-lead{font-size:1.0625rem;max-width:680px}
+.hero-long .hero-lead+.hero-lead{margin-top:-10px}
 .ctas .btn-ghost:hover .ic{transform:translateX(3px)}
 /* Accesos secundarios de las portadas: enlaces subrayados en dorado (el principal sigue siendo el botón crema) */
 .hero .btn-ghost{border-color:transparent;padding-inline:14px;color:#fff;text-decoration:underline;text-decoration-color:rgba(201,168,107,.75);text-decoration-thickness:1px;text-underline-offset:7px}
@@ -122,58 +127,45 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:700;color:var(--green)}
 .panel-list li{display:flex;gap:12px;align-items:flex-start;font-size:1.0625rem}
 .panel-list .ic{color:var(--gold);margin-top:2px}
 
-/* Portada del inicio: composición simétrica con el Obelisco como eje y el sello enhebrado en el fuste, con
-   el piramidión asomando arriba del aro. La foto es chica (612 px), así que va apenas difusa y con grano fino.
-   Encuadre calibrado para portada.jpg (si cambia la foto hay que reajustarlo, ver README): el Obelisco está
-   al 48,7% del ancho (la foto se corre 1,3% para que caiga en el eje), la punta al 16,86% del alto y el
-   piramidión ocupa otro 6,4%. La foto se dimensiona para la altura mínima de la portada (--mon-h) y no para
-   la real, así la punta queda en un lugar calculable y el texto se ubica a partir de ella: --mon-img es el
-   alto de la foto en pantalla, --mon-lift lo que se sube cuando sobra foto (pantallas anchas) para que la
-   punta no quede tan baja, y --mon-apex la altura de la punta dentro de la portada. La capa de la foto sangra
-   40px por lado; desde ~2690 px de ancho el corrimiento de 1,3% superaría ese sangrado y dejaría una franja sin
-   foto a la izquierda, así que el sangrado lateral crece lo justo (--mon-ext) y --mon-bw es el ancho de la capa. */
-.hero-mon{--top-h:97px;--mon-gold:#E6D2A4;--mon-place:#F7F2E6;--mon-gap:clamp(14px,2.3vh,24px);--mon-shaft:.02;--mon-h:min(calc(100vh - var(--top-h)),940px);--mon-ext:max(0px,1.3347vw - 35.9px);--mon-bw:calc(100vw + 80px + var(--mon-ext) * 2);--mon-img:max(calc(var(--mon-bw) * .5621),calc(var(--mon-h) + 80px));--mon-apex0:calc(var(--mon-img) * .1686 - 40px);--mon-lift:clamp(0px,calc(var(--mon-apex0) - var(--mon-h) * .1 - 10px),max(0px,calc(var(--mon-bw) * .5621 - var(--mon-h) - 80px)));--mon-apex:calc(var(--mon-apex0) - var(--mon-lift));text-align:center;border-bottom:1px solid rgba(201,168,107,.5)}
-@supports (height:100svh){.hero-mon{--mon-h:min(calc(100svh - var(--top-h)),940px)}}
-.hero-mon .hero-bg{inset:-40px calc(-40px - var(--mon-ext));background-repeat:no-repeat;background-size:max(100%,calc((var(--mon-h) + 80px) * 1.7791)) auto;background-position:48.7% calc(0px - var(--mon-lift));transform:translateX(1.3%);filter:blur(1.2px) saturate(.8) contrast(1.05);-webkit-mask-image:linear-gradient(#000 calc(var(--mon-img) - var(--mon-lift) - 40px),transparent calc(var(--mon-img) - var(--mon-lift)));mask-image:linear-gradient(#000 calc(var(--mon-img) - var(--mon-lift) - 40px),transparent calc(var(--mon-img) - var(--mon-lift)))}
+/* Portada del inicio: composición centrada sobre el eje de la foto, con el Congreso al final de la avenida
+   asomando arriba del texto (que va apoyado abajo). La foto va difusa y bajo un velo verde; el texto lleva su
+   propio velo (.mon-body::before).
+   Encuadre calibrado para portada.jpg (1280 × 854, proporción 1,4988; ver README): el Congreso está al 47 %
+   del ancho y su cúpula entre el 29 % y el 46 % del alto. La foto se agranda a 1,35 veces el alto de la capa
+   (2,0234 = 1,35 × 1,4988 en el ancho, o el ancho completo si es mayor) y se ubica al 62 % vertical: así la
+   cúpula queda en el tercio de arriba en escritorio y tablet. Si cambia la foto hay que revisar esas cifras y
+   el contraste del texto. */
+.hero-mon{--top-h:97px;--mon-gold:#E8D5A8;--mon-place:#F7F2E6;--mon-gap:clamp(14px,2.3vh,24px);--mon-h:min(calc(100vh - var(--top-h)),900px);text-align:center;border-bottom:1px solid rgba(201,168,107,.5)}
+@supports (height:100svh){.hero-mon{--mon-h:min(calc(100svh - var(--top-h)),900px)}}
+.hero-mon .hero-bg{inset:-40px;background-repeat:no-repeat;background-size:max(100%,calc((var(--mon-h) + 80px) * 2.0234)) auto;background-position:47% 62%;filter:blur(2px) grayscale(.15) saturate(.9) contrast(1.05) brightness(.95)}
 .hero.hero-mon::before{background:radial-gradient(ellipse 70% 90% at 50% 40%,rgba(18,63,47,.6),rgba(11,42,31,.96))}
-/* Velo general: viñeta suave y apenas más oscuro arriba y abajo. Donde no hay texto (la franja del sello y de
-   los botones hacia abajo) la foto queda clara; el contraste del texto lo da el velo de .mon-body */
-.hero.hero-mon:has(.hero-bg)::before{background:radial-gradient(ellipse 66% 84% at 50% 46%,rgba(11,42,31,.3) 0%,rgba(11,42,31,.4) 48%,rgba(11,42,31,.82) 100%),linear-gradient(180deg,rgba(11,42,31,.36) 0%,rgba(11,42,31,0) 20%,rgba(11,42,31,0) 80%,rgba(11,42,31,.3) 100%)}
-.hero-mon::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.14;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 0 0/180px 180px}
-/* El bloque arranca arriba: el sello se apoya justo debajo del piramidión (punta + piramidión + un tramo de fuste).
-   Como la foto escala con el ancho, en pantallas muy anchas y bajas (ultrapanorámicas, ventanas apaisadas) ese
-   tramo crecería más que el alto disponible y empujaría los botones fuera de la primera pantalla: se limita al 14%
-   del alto de la portada, y si hace falta el sello sube y el aro abraza la base del piramidión */
-.hero-mon .wrap.hero-in{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:var(--mon-h);padding-top:calc(var(--mon-apex) + min(var(--mon-img) * (.064 + var(--mon-shaft)) + 7px,var(--mon-h) * .14));padding-bottom:48px}
-.mon{display:flex;flex-direction:column;align-items:center;gap:var(--mon-gap);width:100%;max-width:1120px}
+/* Velo general: verde parejo con viñeta, más oscuro abajo (donde va el texto y la avenida tiene más luz) */
+.hero.hero-mon:has(.hero-bg)::before{background:radial-gradient(ellipse 72% 88% at 50% 46%,rgba(11,42,31,.5) 0%,rgba(11,42,31,.6) 55%,rgba(11,42,31,.86) 100%),linear-gradient(180deg,rgba(11,42,31,.1) 0%,rgba(11,42,31,0) 30%,rgba(11,42,31,.2) 70%,rgba(11,42,31,.55) 100%),linear-gradient(rgba(18,63,47,.35),rgba(18,63,47,.35))}
+.hero-mon::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.12;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 0 0/180px 180px}
+.hero-mon .wrap.hero-in{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:var(--mon-h);padding-top:48px;padding-bottom:max(72px,9vh)}
+.mon{display:flex;flex-direction:column;align-items:center;width:100%;max-width:1120px}
 .mon-body{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--mon-gap);width:100%}
 /* Velo del texto: un rectángulo de bordes muy difusos que cubre desde la línea de lugar hasta los botones */
-.mon-body::before,.mon-body::after{content:"";position:absolute;z-index:-1;left:50%;top:-30px;bottom:-40px;width:calc(100% + max(30vw,160px));transform:translateX(-50%);pointer-events:none}
-.mon-body::before{background:linear-gradient(180deg,rgba(11,42,31,0),rgba(11,42,31,.5) 30px,rgba(11,42,31,.5) calc(100% - 40px),rgba(11,42,31,0));-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
-/* El fuste es lo más claro detrás del texto: una franja difusa del ancho del Obelisco lo atenúa solo ahí */
-.mon-body::after{--w:calc(var(--mon-img) * .0407);background:linear-gradient(90deg,rgba(11,42,31,0) calc(50% - var(--w) * 1.4),rgba(11,42,31,.24) calc(50% - var(--w) * .5),rgba(11,42,31,.24) calc(50% + var(--w) * .5),rgba(11,42,31,0) calc(50% + var(--w) * 1.4));-webkit-mask-image:linear-gradient(180deg,transparent,#000 30px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(180deg,transparent,#000 30px,#000 calc(100% - 40px),transparent)}
-.mon-crest{display:flex;align-items:center;justify-content:center;gap:clamp(16px,2.2vw,28px);width:100%}
-.mon-rule{flex:0 1 clamp(44px,13vw,190px);height:1px;background:linear-gradient(90deg,rgba(201,168,107,0),var(--gold));transform-origin:100% 50%}
+.mon-body::before{content:"";position:absolute;z-index:-1;left:50%;top:-36px;bottom:-44px;width:calc(100% + max(30vw,160px));transform:translateX(-50%);pointer-events:none;background:linear-gradient(180deg,rgba(11,42,31,0),rgba(11,42,31,.42) 36px,rgba(11,42,31,.42) calc(100% - 44px),rgba(11,42,31,0));-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
+.mon-eyebrow{display:flex;align-items:center;justify-content:center;gap:clamp(12px,1.6vw,18px);font-family:var(--serif);font-size:.875rem;line-height:1.4;letter-spacing:.3em;text-transform:uppercase;color:var(--mon-place)}
+.mon-eyebrow>span:not(.mon-rule){padding-left:.3em}
+:lang(zh) .mon-eyebrow{letter-spacing:.2em}
+:lang(zh) .mon-eyebrow>span:not(.mon-rule){padding-left:.2em}
+.mon-rule{flex:none;width:clamp(28px,6vw,72px);height:1px;background:linear-gradient(90deg,rgba(201,168,107,0),var(--gold));transform-origin:100% 50%}
 .mon-rule:last-child{background:linear-gradient(270deg,rgba(201,168,107,0),var(--gold));transform-origin:0 50%}
-/* El aro es un pseudo-elemento circular con borde de 1px y no un outline: en Safari anterior a 16.4 el outline no
-   sigue el border-radius y dibuja un cuadrado alrededor del sello */
-.mon-ring{position:relative;display:block;flex:none;border-radius:50%}
-.mon-ring::before{content:"";position:absolute;inset:-7px;border:1px solid rgba(226,203,155,.55);border-radius:50%;pointer-events:none}
-.mon-seal{display:block;width:clamp(76px,12.5vh,120px);height:auto;border-radius:50%;box-shadow:0 8px 22px rgba(4,18,12,.42)}
-.mon-eyebrow{padding-left:.3em;font-family:var(--serif);font-size:.875rem;line-height:1.4;letter-spacing:.3em;text-transform:uppercase;color:var(--mon-place)}
-:lang(zh) .mon-eyebrow{letter-spacing:.2em;padding-left:.2em}
 .hero-mon .mon-title{font-size:clamp(1.875rem,min(1rem + 2.85vw,1.2rem + 4.2vh),3.25rem);line-height:1.14;text-wrap:balance}
-.mon-title em{font-style:italic;font-weight:400;color:var(--mon-gold)}
-.mon-split em{display:block;margin-top:.04em;font-size:1.62em;line-height:1.04;letter-spacing:-.005em}
+/* La cursiva del título va en Cormorant Garamond, una serif más sobria y liviana que la del resto del título */
+.mon-title em{font-family:'Cormorant Garamond','Libre Caslon Text',Georgia,serif;font-style:italic;font-weight:500;color:var(--mon-gold)}
+.mon-split em{display:block;margin-top:.02em;font-size:1.78em;line-height:1;letter-spacing:0}
 :lang(zh) .hero-mon .mon-title{font-size:clamp(2rem,min(1rem + 3.7vw,1.4rem + 5vh),4.25rem);letter-spacing:.04em}
 /* En ruso la primera parte del título es más larga: un poco más chico para que entre en una línea */
 :lang(ru) .hero-mon .mon-title{font-size:clamp(1.75rem,min(.9rem + 2.3vw,1.1rem + 3.7vh),2.875rem)}
-:lang(zh) .mon-title em{font-style:normal;font-weight:inherit}
+:lang(zh) .mon-title em{font-family:inherit;font-style:normal;font-weight:inherit}
 .mon-keep{white-space:nowrap}
-.mon-eyebrow,.hero-mon .mon-title,.hero-mon .hero-lead,.hero-mon .btn-ghost{text-shadow:0 1px 2px rgba(6,24,17,.45)}
+.mon-eyebrow,.hero-mon .mon-title,.hero-mon .hero-lead,.hero-mon .btn-ghost{text-shadow:0 1px 2px rgba(6,24,17,.5)}
 .mon-orn{position:relative;flex:none;width:clamp(120px,15vw,176px);height:9px;background:linear-gradient(90deg,rgba(201,168,107,0),var(--gold) 34%,var(--gold) 66%,rgba(201,168,107,0)) center/100% 1px no-repeat}
 .mon-orn::after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;border:1px solid var(--gold);background:var(--green-d);transform:translate(-50%,-50%) rotate(45deg)}
-.hero-mon .hero-lead{max-width:40em;font-size:clamp(1.0625rem,.95rem + .35vw,1.25rem);color:#EEF2EF;text-wrap:balance}
+.hero-mon .hero-lead{max-width:44em;font-size:clamp(1.0625rem,.95rem + .35vw,1.25rem);color:#EEF2EF;text-wrap:balance}
 .hero-mon .ctas{justify-content:center;align-items:center;gap:10px 18px;margin-top:clamp(2px,.8vh,8px)}
 .hero-mon .btn-light{padding-inline:26px}
 /* Los dos enlaces van juntos: si no entran al lado del botón, bajan los dos a la línea siguiente */
@@ -183,34 +175,18 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:700;color:var(--green)}
 .mon-cue-line{position:relative;display:block;width:1px;height:clamp(22px,3.2vh,36px);overflow:hidden;background:rgba(201,168,107,.4)}
 .mon-cue-line::after{content:"";position:absolute;left:0;top:0;width:1px;height:42%;background:var(--gold-light);transform:translateY(-100%)}
 .mon-cue-chev{width:9px;height:9px;margin-top:-7px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg)}
-/* Pantallas bajas de escritorio (1366x768, 1280x720, 1024x768): menos aire para que todo entre sin bajar */
-@media (min-width:641px) and (max-height:800px){
-  .hero-mon{--mon-shaft:.006;--mon-gap:clamp(12px,1.9vh,18px)}
-  .hero-mon .wrap.hero-in{padding-bottom:28px}
-  .mon-seal{width:clamp(76px,11.5vh,104px)}
-}
-/* Escritorios muy bajos (hasta 700 px de alto: 1366x768 con la barra de tareas y la de favoritos, 1920x1080 al
-   150 %, ventanas sin maximizar): el sello sube y queda enhebrado en el piramidión, con la punta asomando sobre
-   el aro, y el resto se compacta para que el botón y los enlaces entren en la primera pantalla */
-@media (min-width:641px) and (max-height:700px){
-  .hero-mon{--mon-gap:clamp(8px,1.7vh,11px)}
-  /* Cuánto asoma la punta sobre el aro depende del alto que sobra: casi medio piramidión, o menos en las más bajas */
-  .hero-mon .wrap.hero-in{padding-top:calc(var(--mon-apex) + clamp(18px,(var(--mon-h) - 420px) * .45,var(--mon-img) * .04 + 7px));padding-bottom:20px}
-  .mon-seal{width:clamp(56px,10.5vh,68px)}
+/* Pantallas bajas de escritorio (1366x768, 1280x720): menos aire para que todo entre sin bajar */
+@media (min-width:641px) and (max-height:760px){
+  .hero-mon{--mon-gap:clamp(10px,1.8vh,16px)}
+  .hero-mon .wrap.hero-in{padding-top:32px;padding-bottom:48px}
   .hero-mon .mon-title{font-size:clamp(1.625rem,min(1rem + 2.4vw,.8rem + 3.9vh),2.75rem)}
   :lang(ru) .hero-mon .mon-title{font-size:clamp(1.5rem,min(.9rem + 2vw,.75rem + 3.4vh),2.5rem)}
   :lang(zh) .hero-mon .mon-title{font-size:clamp(1.75rem,min(1rem + 3vw,.9rem + 4.6vh),3.5rem)}
   .hero-mon .hero-lead{font-size:1.0625rem}
-  .hero-mon .ctas{margin-top:0}
 }
-@media (min-width:1441px){.hero-mon .hero-bg{filter:blur(1.4px) saturate(.8) contrast(1.05)}}
-@media (min-width:1600px){.hero-mon .hero-bg{filter:blur(1.6px) saturate(.8) contrast(1.05)}}
-/* Entrada, solo si el sistema no pide reducir el movimiento. Se animan solo el sello (con su aro), los filetes,
-   la línea de lugar, el rombo, la bajada, los accesos y el indicador. El título y la foto no se animan: se pintan
-   desde el primer cuadro (la foto es el elemento LCP y la punta no se desliza respecto del sello). Los filetes se
-   abren desde el sello, el resto aparece apenas y el indicador marca una sola vez hacia abajo */
+/* Entrada, solo si el sistema no pide reducir el movimiento: los filetes se abren desde la línea de lugar y el
+   resto aparece apenas. El título y la foto no se animan (la foto es el elemento LCP) */
 @media (prefers-reduced-motion:no-preference){
-  .mon-ring{animation:mon-fade 1.1s ease-out backwards}
   .mon-rule{animation:mon-draw 1.3s .2s cubic-bezier(.2,.65,.25,1) backwards}
   .mon-eyebrow,.mon-orn,.hero-mon .hero-lead,.hero-mon .ctas{animation:mon-rise .9s cubic-bezier(.2,.65,.25,1) backwards}
   .mon-eyebrow{animation-delay:.1s}.mon-orn{animation-delay:.22s}.hero-mon .hero-lead{animation-delay:.3s}.hero-mon .ctas{animation-delay:.4s}
@@ -269,20 +245,15 @@ a.sit:hover{border-color:var(--green);color:var(--ink)}
 .area h3{font-size:1.25rem;line-height:1.3}
 .area p{color:var(--muted)}
 
-/* Quiénes somos: reseña y apellidos, sin fotos */
-.about{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:56px;align-items:start}
-.about-copy{display:flex;flex-direction:column;gap:32px}
-.resena{font-family:var(--serif);font-size:clamp(1.1875rem,2vw,1.375rem);line-height:1.6;color:var(--ink)}
-.name-line{display:flex;flex-direction:column;gap:10px;padding-top:28px;border-top:1px solid var(--line-2)}
-.name-title{font-family:var(--serif);font-size:.8125rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brown)}
-.names{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;font-family:var(--serif);font-size:clamp(1.5rem,3vw,2rem);line-height:1.3;color:var(--green)}
-.names b{font-weight:700;text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:6px}
-.names .sep{color:var(--gold)}
-.name-text{color:var(--muted)}
-.enfoque{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:18px}
-.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
-.checks li{display:flex;gap:12px;align-items:flex-start}
-.checks .ic{margin-top:2px;color:var(--green)}
+/* Quiénes somos: presentación, experiencia y enfoque, sin fotos */
+.about{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:56px;align-items:start}
+.resena{font-family:var(--serif);font-size:clamp(1.1875rem,2vw,1.375rem);line-height:1.6;color:var(--ink);padding-left:24px;border-left:2px solid var(--gold)}
+.about-more{display:flex;flex-direction:column;gap:16px;color:var(--text)}
+.hero-sm .hero-lead strong,.about strong{font-weight:700;color:inherit}
+.exp{display:flex;flex-direction:column;gap:24px}
+.enfoque{background:var(--green);color:var(--cream);border-radius:16px;padding:40px;display:flex;flex-direction:column;gap:14px}
+.enfoque .eyebrow{color:var(--gold-light)}
+.enfoque-t{font-family:var(--serif);font-size:clamp(1.125rem,1.8vw,1.3125rem);line-height:1.6;color:#fff;max-width:900px}
 .modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
 .mode{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px}
 .mode-t{font-weight:700}
@@ -302,34 +273,39 @@ a.sit:hover{border-color:var(--green);color:var(--ink)}
 .rev-when{color:var(--muted);font-size:.875rem}
 .rev-text{margin:0;color:var(--text);display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
 
-/* Actualidad: carrusel del inicio */
+/* Actualidad en el inicio: las tres publicaciones más recientes y la normativa migratoria */
 .act-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px}
-.car-ctrl{display:flex;gap:10px}
-.car-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--green);background:transparent;color:var(--green);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background-color .15s,color .15s}
-.car-btn:hover{background:var(--green);color:#fff}
-.car-btn:disabled{opacity:.35;cursor:default;background:transparent;color:var(--green)}
-.carousel{position:relative}
-.car-track{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 48px)/3);gap:24px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px 8px;margin:-4px -2px -8px}
-.car-track::-webkit-scrollbar{display:none}
-.car-track>*{scroll-snap-align:start}
-.car-track .skel{min-height:240px}
-.news{display:flex;flex-direction:column;gap:10px;min-height:240px;padding:24px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:12px;color:var(--ink);text-decoration:none}
-.news.own{border-top-color:var(--green);background:var(--ivory)}
-.news:hover{border-color:var(--gold);color:var(--ink)}
-.news-meta{display:flex;flex-wrap:wrap;gap:6px 8px;font-size:.8125rem;font-weight:600;color:var(--muted)}
-.news-meta span+span::before,.news-meta span+time::before,.news-meta time+span::before{content:"·";margin-right:8px}
-.news-badge{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green)}
-.news-badge::before{content:"";width:20px;height:1px;background:var(--gold)}
-.news-cat{color:var(--brown);letter-spacing:.12em;text-transform:uppercase}
-.news-title{font-family:var(--serif);font-weight:700;font-size:1.1875rem;line-height:1.35;color:var(--green);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-.news-sum{color:var(--muted);font-size:.95rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.news-more{margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--green)}
-.act-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
-.repo-link{display:flex;align-items:center;gap:16px;padding:14px 20px 14px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;max-width:560px}
-.repo-link:hover{border-color:var(--green);color:var(--ink)}
-.repo-link>span:last-child{display:flex;flex-direction:column;gap:2px}
-.repo-link strong{color:var(--green);font-family:var(--serif);font-size:1.0625rem}
-.repo-link span span{color:var(--muted);font-size:.95rem;line-height:1.4}
+.pub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.pub-grid[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pub-grid[data-n="1"],.pub-grid[data-n="0"]{grid-template-columns:minmax(0,1fr)}
+.pub-grid .skel{min-height:240px}
+.pub-card{display:flex;flex-direction:column;gap:12px;min-height:240px;padding:28px;background:var(--ivory);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:12px;color:var(--ink);text-decoration:none;transition:border-color .15s,box-shadow .15s}
+.pub-card:hover{border-color:var(--gold);color:var(--ink);box-shadow:0 10px 24px rgba(11,42,31,.08)}
+.pub-card-meta{display:flex;flex-direction:column;gap:2px;font-size:.8125rem;font-weight:600;color:var(--muted)}
+.pub-card-cat{color:var(--brown);letter-spacing:.12em;text-transform:uppercase}
+.pub-card-title{font-family:var(--serif);font-weight:700;font-size:1.25rem;line-height:1.35;color:var(--green)}
+.pub-card-sum{color:var(--muted);font-size:.975rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pub-card-more{margin-top:auto;padding-top:6px;font-weight:700;color:var(--green)}
+.pub-card:hover .pub-card-more{text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:4px}
+/* Con una sola publicación la tarjeta ocupa todo el ancho, con el título más grande y el resumen al lado */
+.pub-grid[data-n="1"] .pub-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto 1fr auto;column-gap:48px;min-height:0;padding:36px}
+.pub-grid[data-n="1"] .pub-card-meta{grid-column:1/-1}
+.pub-grid[data-n="1"] .pub-card-title{font-size:clamp(1.375rem,2.4vw,1.75rem)}
+.pub-grid[data-n="1"] .pub-card-sum{-webkit-line-clamp:5}
+.pub-grid[data-n="1"] .pub-card-more{grid-column:1/-1}
+.norm-box{display:flex;flex-direction:column;gap:8px;padding:28px 32px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.norm-head{display:flex;flex-wrap:wrap;align-items:center;gap:16px 20px}
+.norm-head>div{flex:1 1 320px;display:flex;flex-direction:column;gap:2px}
+.norm-title{font-size:1.3125rem;line-height:1.3}
+.norm-text{color:var(--muted)}
+.norm-all{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-weight:700;text-decoration:none}
+.norm-all:hover{text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:5px}
+.norm-list{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;border-top:1px solid var(--line-2)}
+.norm-item{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:16px;align-items:center;align-content:center;padding:16px 0;border-bottom:1px solid var(--line-2);color:var(--ink);text-decoration:none;height:100%}
+.norm-k{grid-column:1;font-size:.8125rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brown)}
+.norm-t{grid-column:1;font-family:var(--serif);font-weight:700;line-height:1.35;color:var(--green)}
+.norm-go{grid-column:2;grid-row:1/3;display:inline-flex;align-items:center;gap:6px;font-size:.9375rem;font-weight:600;color:var(--green);white-space:nowrap}
+.norm-item:hover .norm-t{text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:4px}
 
 /* Página de Actualidad: publicaciones, repositorio y noticias */
 .art{display:flex;flex-direction:column;gap:10px;padding:24px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--green);border-radius:12px;color:var(--ink);text-decoration:none}
@@ -424,11 +400,19 @@ a.sit:hover{border-color:var(--green);color:var(--ink)}
 .contact .lead{color:var(--mist)}
 .contact-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:48px;align-items:start}
 .contact-copy{display:flex;flex-direction:column;gap:20px}
-.lines{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.lines a{display:flex;gap:12px;align-items:center;min-height:44px;color:#fff;text-decoration:none;font-weight:600;font-size:1.25rem;overflow-wrap:anywhere}
-.lines a:hover{color:var(--gold)}
-.lines .ic{color:var(--gold)}
-.meta{display:flex;gap:12px;align-items:center;color:var(--mist)}
+.inst{display:flex;flex-direction:column;gap:14px;margin-top:8px;padding-top:24px;border-top:1px solid rgba(201,168,107,.35)}
+.inst-name{font-family:var(--serif);font-weight:700;font-size:1.25rem;color:#fff}
+.inst-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.inst-list li{display:flex;gap:12px;align-items:flex-start;color:var(--mist)}
+.inst-list .ic{margin-top:2px;color:var(--gold)}
+.inst-list li>span{display:flex;flex-direction:column;gap:1px;min-width:0}
+.inst-k{font-size:.8125rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-light)}
+.inst-list a{color:#fff;font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.inst-list a:hover{color:var(--gold-light);text-decoration:underline}
+.inst-social{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.inst-social a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid rgba(201,168,107,.5);border-radius:999px;color:var(--cream);font-weight:600;text-decoration:none}
+.inst-social a:hover{background:rgba(201,168,107,.15);border-color:var(--gold);color:#fff}
+.inst-social .ic{width:18px;height:18px}
 .card-form{background:var(--cream);color:var(--ink);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:16px}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field label{font-weight:600;font-size:.95rem}
@@ -443,9 +427,29 @@ a.sit:hover{border-color:var(--green);color:var(--ink)}
 .seg-opts label.on{background:var(--green);color:#fff}
 .seg-opts input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
 .seg-opts label:has(input:focus-visible){box-shadow:inset 0 0 0 3px var(--gold),inset 0 0 0 5px var(--green-d)}
+.req{color:var(--error);font-weight:700}
+.field-hint{margin-top:-8px;font-size:.875rem;color:var(--muted)}
+.form-req{font-size:.875rem;color:var(--muted)}
 .form-actions{display:flex;flex-wrap:wrap;gap:12px}
-.form-actions .btn{flex:1 1 200px;min-height:52px}
-.form-note{font-size:.875rem;color:var(--muted)}
+.form-actions .btn{flex:1 1 240px;min-height:52px;white-space:nowrap}
+.privacy{display:flex;flex-direction:column;gap:4px;padding:14px 16px;background:var(--paper);border:1px solid var(--line);border-radius:10px;font-size:.875rem;color:var(--muted);line-height:1.5}
+.privacy-t{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink)}
+.privacy-t .ic{width:18px;height:18px;color:var(--green)}
+/* Confirmación: reemplaza al formulario una vez enviada la consulta */
+.card-form.is-sent>:not(.form-done){display:none!important}
+.form-done{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:12px 0}
+.done-ic{width:56px;height:56px;border-radius:50%;background:var(--green);color:var(--cream);display:flex;align-items:center;justify-content:center}
+.done-t{font-family:var(--serif);font-weight:700;font-size:1.5rem;color:var(--green)}
+.done-t:focus{outline:none}
+/* Revisión del mensaje antes de abrir WhatsApp */
+.wa-dlg{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:0;border:0;border-radius:16px;background:var(--cream);color:var(--ink);box-shadow:0 24px 60px rgba(4,18,12,.4)}
+.wa-dlg::backdrop{background:rgba(6,24,17,.6)}
+.wa-box{display:flex;flex-direction:column;gap:12px;padding:28px}
+.wa-box h3{font-size:1.375rem}
+.wa-desc{color:var(--muted);font-size:.95rem}
+.wa-box textarea{width:100%;min-height:180px;padding:12px 14px;border:1px solid #A89F8C;border-radius:6px;background:#fff;color:var(--ink);font:inherit;resize:vertical}
+.wa-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+.wa-actions .btn{flex:1 1 180px}
 .form-msg{font-size:.95rem;color:var(--error)}
 .form-msg.ok{color:var(--green)}
 .hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
@@ -491,10 +495,12 @@ body{top:0!important}
   .hero-mon{--top-h:81px}
 }
 @media (max-width:1000px){.modes,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.pub-grid,.pub-grid[data-n="2"]{grid-template-columns:minmax(0,1fr)}.pub-card{min-height:0}}
 @media (max-width:960px){
   .areas,.grid-sit{grid-template-columns:repeat(2,minmax(0,1fr))}
   .about{grid-template-columns:minmax(0,1fr);gap:40px}
-  .car-track{grid-auto-columns:calc((100% - 24px)/2)}
+  .norm-list{grid-template-columns:minmax(0,1fr)}
+  .pub-grid[data-n="1"] .pub-card{grid-template-columns:minmax(0,1fr)}
   .foot-in{grid-template-columns:repeat(2,minmax(0,1fr))}
   .foot-brand{grid-column:1/-1}
 }
@@ -514,32 +520,30 @@ body{top:0!important}
   .hero-lg .hero-in{min-height:0}
   .stack{gap:32px}
   .areas,.grid-sit,.modes,.steps{grid-template-columns:minmax(0,1fr)}
-  .card,.area,.panel,.process,.urgent,.card-form,.pillar,.enfoque,.mod{padding:22px}
+  .card,.area,.panel,.process,.urgent,.card-form,.pillar,.enfoque,.mod,.pub-card,.norm-box,.wa-box{padding:22px}
+  .pub-grid[data-n="1"] .pub-card{padding:22px}
+  .resena{padding-left:18px}
   .hero-lead{font-size:1.0625rem}
-  .lines a{font-size:1.125rem}
   .lang-code{display:none}
   .logo-img{width:50px;height:50px}
   .logo-name{font-size:1.125rem}
   .article{padding-top:48px}
-  .car-track{grid-auto-columns:86%;gap:16px}
-  .car-btn{width:44px;height:44px}
   .foot-in{grid-template-columns:minmax(0,1fr);padding-top:48px;gap:32px}
   .repo-search{flex-basis:100%}
   .hero-mon{--top-h:73px;--mon-gap:14px}
   .hero-mon .wrap.hero-in{padding-bottom:36px}
   .hero-mon .hero-lead{font-size:1.0625rem}
   .hero-mon .ctas{flex-direction:column;gap:4px;margin-top:0}
-  .mon-seal{width:clamp(60px,8.5vh,76px)}
-  .mon-ring::before{inset:-6px}
-  .mon-rule{flex-basis:clamp(40px,16vw,96px)}
+  .hero-mon .hero-bg{background-position:47% 50%}
+  .mon-rule{width:clamp(20px,8vw,40px)}
   .mon-cue{display:none}
   /* Si los dos enlaces no entran en una fila bajan juntos, cada uno entero */
   .mon-links{flex-wrap:wrap}
   /* Palabras largas en ruso: el título se achica con el ancho para que ninguna desborde */
   :lang(ru) .hero-mon .mon-title{font-size:min(1.875rem,7.4vw)}
   :lang(pt) .hero-mon .mon-title{font-size:min(1.875rem,7.5vw)}
-  :lang(ru) .mon-split em{font-size:1.4em}
-  :lang(en) .mon-split em{font-size:min(1.62em,calc((100vw - 48px) / 8))}
+  :lang(ru) .mon-split em{font-size:1.55em}
+  :lang(en) .mon-split em{font-size:min(1.78em,calc((100vw - 48px) / 6.6))}
 }
 @media (max-width:400px){
   .top-in{gap:8px 12px}
@@ -550,9 +554,9 @@ body{top:0!important}
   .logo-name{padding-left:10px}
   .logo-name{font-size:1.0625rem}
   .hero-mon{--mon-gap:12px}
-  .mon-seal{width:60px}
-  .mon-eyebrow{letter-spacing:.22em;padding-left:.22em;white-space:nowrap}
-  :lang(zh) .mon-eyebrow{letter-spacing:.16em;padding-left:.16em}
+  .mon-eyebrow{gap:10px;letter-spacing:.22em;white-space:nowrap}
+  .mon-eyebrow>span:not(.mon-rule){padding-left:.22em}
+  :lang(zh) .mon-eyebrow{letter-spacing:.16em}
   .hero-mon .hero-lead{font-size:1rem}
   .mon-links{gap:2px 14px}
   .hero-mon .btn-ghost{gap:5px;padding-inline:3px;font-size:.9375rem}
@@ -563,18 +567,12 @@ body{top:0!important}
   :lang(ru) .mon-links{gap:2px 14px}
   :lang(ru) .hero-mon .btn-ghost{gap:5px;padding-inline:3px;font-size:.875rem}
 }
-/* Celulares bajos: el sello sube y tapa la punta, para que el botón y los enlaces entren en la primera pantalla */
-@media (max-width:640px) and (max-height:760px){
-  .hero-mon .wrap.hero-in{padding-top:20px}
-}
-/* Celulares más bajos todavía (iPhone SE/8 con las barras de Safari, unos 375x548; Android chicos): sello y aire
-   un poco menores para que el botón principal entre en el área visible real */
-@media (max-width:640px) and (max-height:620px){
+/* Celulares bajos (iPhone SE/8 con las barras de Safari, unos 375x548; Android chicos): menos aire para que el
+   botón principal entre en el área visible real */
+@media (max-width:640px) and (max-height:700px){
   .hero-mon{--mon-gap:10px}
-  .hero-mon .wrap.hero-in{padding-top:14px;padding-bottom:28px}
-  .mon-seal{width:50px}
-  .mon-ring::before{inset:-5px}
-  .mon-split em{font-size:1.45em}
+  .hero-mon .wrap.hero-in{padding-top:24px;padding-bottom:28px}
+  .mon-split em{font-size:1.6em}
   .hero-mon .hero-lead{font-size:.9375rem;line-height:1.5}
 }
 /* 320 px de ancho (iPhone SE de primera generación): margen lateral de 16px y encabezado más compacto, para que
@@ -591,11 +589,10 @@ body{top:0!important}
 /* Celular horizontal: sin sello ni indicador y con la altura que pida el texto */
 @media (max-height:500px) and (orientation:landscape){
   .hero-mon{--mon-gap:10px}
-  .hero-mon .hero-bg{background-size:cover;background-position:48.7% 40%;-webkit-mask-image:none;mask-image:none}
   .hero-mon .wrap.hero-in{min-height:0;padding-top:24px;padding-bottom:28px}
-  .mon-crest,.mon-orn,.mon-cue{display:none}
+  .mon-orn,.mon-cue{display:none}
   .hero-mon .mon-title{font-size:clamp(1.5rem,4vw,2rem)}
   .hero-mon .hero-lead{font-size:1rem;max-width:44em}
   .hero-mon .ctas{flex-direction:row;margin-top:2px}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.car-track{scroll-behavior:auto}.skel{animation:none}.btn,.guide,.car-btn,.main-nav a{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.skel{animation:none}.btn,.guide,.main-nav a,.pub-card{transition:none}}

@@ -1,10 +1,12 @@
 ---
-// Actualidad en el inicio: carrusel con las publicaciones del estudio y las noticias de medios
-// (lo arma el script), y accesos a todas las publicaciones y al repositorio jurídico.
+// Actualidad en el inicio: las tres publicaciones más recientes del estudio (las trae el script de
+// /api/articulos, así una nota nueva aparece sola) y, debajo, la normativa migratoria con enlaces a la
+// fuente oficial (/api/normas). Las noticias de medios quedan solo en la página de Actualidad.
 import { DICTS } from '../i18n/index.js';
 const { lang } = Astro.props;
 const t = DICTS[lang];
 const a = t.actualidad;
+const es = lang === 'es' ? undefined : 'es';
 ---
 <section id="actualidad" data-guide={t.guide.actualidad} data-nav="actualidad">
 <div class="wrap stack">
@@ -14,24 +16,21 @@ const a = t.actualidad;
 <h2 class="h2">{a.title}</h2>
 <p class="lead">{a.lead}</p>
 </div>
-<div class="car-ctrl">
-<button type="button" class="car-btn" data-car="toggle" aria-label={a.pause} data-pause={a.pause} data-play={a.play}><svg class="ic" aria-hidden="true"><use href="#i-pause" /></svg></button>
-<button type="button" class="car-btn" data-car="prev" aria-label={a.prev}><svg class="ic" aria-hidden="true"><use href="#i-left" /></svg></button>
-<button type="button" class="car-btn" data-car="next" aria-label={a.next}><svg class="ic" aria-hidden="true"><use href="#i-arrow" /></svg></button>
+<a href="/actualidad" class="btn btn-out" hreflang={es}>{a.all}</a>
 </div>
-</div>
-<div class="carousel" role="region" aria-roledescription="carousel" aria-label={a.carousel}>
-<div id="news-track" class="car-track" tabindex="0">
+<div id="pub-grid" class="pub-grid" aria-live="polite" data-empty={a.empty}>
 <div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
 </div>
-</div>
-<div class="act-foot">
-<a href="/actualidad" class="btn btn-out" hreflang={lang === 'es' ? undefined : 'es'}>{a.all}</a>
-<a href="/actualidad#repositorio" class="repo-link" hreflang={lang === 'es' ? undefined : 'es'}>
+<div class="norm-box">
+<div class="norm-head">
 <span class="ico-badge"><svg class="ic" aria-hidden="true"><use href="#i-book" /></svg></span>
-<span><strong>{a.repositorio}</strong><span>{a.repositorioText}</span></span>
-</a>
+<div>
+<h3 class="norm-title">{a.normativa}</h3>
+<p class="norm-text">{a.normativaText}</p>
 </div>
-<p class="note"><span>{a.note}</span> <a href="https://www.argentina.gob.ar/interior/migraciones" target="_blank" rel="noopener">argentina.gob.ar/migraciones</a>.</p>
+<a href="/actualidad#normativa" class="norm-all" hreflang={es}>{a.normativaAll}<svg class="ic ic-sm" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+</div>
+<ul id="norm-list" class="norm-list" data-see={a.normativaSee} hidden></ul>
+</div>
 </div>
 </section>

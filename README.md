@@ -4,50 +4,52 @@ Sitio del estudio hecho con [Astro](https://astro.build) y publicado en Cloudfla
 
 - Las páginas (inicio, `/empresas` y `/quienes-somos`, en cinco idiomas) se generan en el build como HTML estático.
 - Actualidad Migratoria (`/actualidad`), el panel de los socios (`/admin`) y la API (`/api/*`) corren en el Worker.
-- Los artículos y el repositorio jurídico se guardan en Cloudflare D1. El panel queda protegido con Cloudflare Access: cada socio entra con un código que le llega por email, así que no hay contraseñas que mantener.
+- Los artículos y la normativa migratoria se guardan en Cloudflare D1. El panel queda protegido con Cloudflare Access: cada socio entra con un código que le llega por email, así que no hay contraseñas que mantener.
 
 ## Dónde está cada cosa
 
 | Qué | Dónde |
 | --- | --- |
 | Textos del sitio | `src/i18n/es.js` y sus traducciones `en.js`, `pt.js`, `zh.js`, `ru.js` |
-| WhatsApp del formulario, email, redes, logo, foto de portada y apellidos | `src/data/sitio.js` |
+| WhatsApp y correo del estudio, redes, logo y foto de portada | `src/data/sitio.js` |
 | Secciones | `src/components/` |
 | Páginas | `src/pages/` (`[...lang]/` son las páginas traducidas) |
 | Estilos | `src/styles/site.css` |
-| Script del navegador (guía de sección, carrusel, formulario, reseñas, repositorio) | `src/scripts/site.js` |
+| Script del navegador (guía de sección, publicaciones y normativa del inicio, formulario, reseñas, filtro de normas) | `src/scripts/site.js` |
 | Base de artículos y normas | `migrations/` |
 
-Lo que todavía no pasó el estudio queda con un marcador entre corchetes ([EMAIL], [Reseña profesional del estudio…]). En `src/data/sitio.js` se cargan:
+Lo que todavía no pasó el estudio queda con un marcador entre corchetes ([EMAIL]). En `src/data/sitio.js` se cargan:
 
-- `email`: casilla de contacto (se muestra en Contacto y en el pie).
+- `email`: correo institucional (se muestra en Contacto y en el pie; mientras esté vacío, Contacto muestra [EMAIL]). Las consultas del formulario llegan a la casilla de la variable `CONSULTAS_EMAIL` (ver más abajo).
+- `whatsapp` y `whatsappTexto`: número del estudio, en formato de wa.me (sin + ni espacios) y como se lee en la página. Recibe el botón "Consultar por WhatsApp" y se muestra en Contacto y en el pie.
 - `facebook`, `facebookGrupo`, `linkedin`: los íconos del pie aparecen solo si tienen dirección.
 - `logo`: archivo en `public/` (hoy `'/logo.png'`, el sello recortado sobre fondo transparente). Si se deja vacío, el encabezado muestra el logo de texto.
-- `portada`: foto de fondo de la portada en `public/` (hoy `'/portada.jpg'`, el Obelisco). Se muestra difuminada bajo un velo verde; si se deja vacía se ve una silueta de Buenos Aires. Conviene que sea de al menos 2000 px de ancho y con licencia de uso.
+- `portada`: foto de fondo de la portada en `public/` (hoy `'/portada.jpg'`, el Congreso al atardecer visto desde la Avenida de Mayo). Se muestra difuminada bajo un velo verde; si se deja vacía se ve una silueta de Buenos Aires. Conviene que sea de al menos 2000 px de ancho y con licencia de uso.
 
 ### Portada del inicio
 
-La portada del inicio es una composición simétrica: el Obelisco queda en el eje de la pantalla y el sello del estudio se apoya enhebrado en el fuste, con el piramidión asomando arriba del aro. Debajo van la línea de lugar, el título, la bajada y los accesos. El encuadre está calibrado para esta foto (`portada.jpg`, 612 × 344 px), en `src/styles/site.css` (bloque `.hero-mon`):
+La portada del inicio es una composición centrada sobre el eje de la foto: el Congreso queda al final de la avenida, asomando arriba del texto, y el bloque de texto (línea de lugar entre filetes dorados, título, bajada y accesos) va apoyado en la parte de abajo. No lleva el sello del estudio al centro, para que no se repita con el del encabezado. La parte destacada del título va en cursiva Cormorant Garamond, más sobria que la serif del resto.
 
-- `background-position` 48,7 % + `translateX(1.3%)`: el Obelisco está al 48,7 % del ancho de la foto y así cae en el centro. La capa de la foto sangra 40 px por lado; en pantallas de más de unos 2690 px el 1,3 % superaría ese sangrado, así que el sangrado lateral crece lo justo (`--mon-ext`, y `--mon-bw` es el ancho de la capa) y el Obelisco sigue exactamente en el eje sin dejar una franja sin foto.
-- La punta está al 16,86 % del alto de la foto y el piramidión ocupa otro 6,4 % (las cifras `.1686` y `.064` en las variables `--mon-apex0` y en el `padding-top` del bloque). La foto se dimensiona para la altura mínima de la portada y el bloque de texto arranca justo debajo del piramidión, así la punta se ve en cualquier pantalla de escritorio, tablet o celular alto. Como la foto escala con el ancho, ese tramo se limita al 14 % del alto de la portada: en pantallas muy anchas y bajas el aro abraza la base del piramidión en vez de empujar los botones fuera de la primera pantalla.
-- Pantallas bajas: en escritorio de hasta 700 px de alto (notebooks con las barras del navegador, pantallas al 125-150 %) el sello se achica y sube sobre el piramidión, con la punta asomando por encima del aro, y el resto se compacta. En celulares de hasta 760 px de alto el sello sube y tapa la punta, y de hasta 620 px (iPhone SE/8 con las barras de Safari) además se achica, para que el botón entre en la primera pantalla; en celular horizontal no se muestra el sello. En un iPhone con Safari el área visible casi siempre queda en esa franja, así que ahí el sello tapa la punta: la composición con la punta sobre el aro se ve en escritorio, tablet y celulares altos.
-- La franja que atenúa el fuste detrás del texto (`.mon-body::after`) usa el ancho del Obelisco en la foto (`.0407` del alto).
+El encuadre está calibrado para esta foto (`portada.jpg`, 1280 × 854 px), en `src/styles/site.css` (bloque `.hero-mon`): el Congreso está al 47 % del ancho y la cúpula entre el 29 % y el 46 % del alto. La foto se agranda a 1,35 veces el alto de la portada (el factor `2.0234` del `background-size` es 1,35 × la proporción de la foto, 1,4988; si la pantalla es más ancha, ocupa el ancho completo) y se ubica al 62 % vertical, así la cúpula queda en el tercio de arriba en escritorio, tablet y celular.
 
-Si se cambia `portada.jpg` hay que medir de nuevo esas cuatro cifras (posición horizontal del Obelisco, altura de la punta, alto del piramidión y ancho del fuste) y volver a revisar el contraste del texto: el velo está ajustado para que la línea de lugar quede en 5:1 o más, la bajada y los enlaces en 4,5:1 o más y la cursiva del título en 4:1 o más.
+Si se cambia `portada.jpg` hay que revisar esas cifras (posición horizontal del edificio, proporción de la foto) y volver a revisar el contraste del texto sobre el velo verde.
 
 Textos de la portada (en los cinco diccionarios, dentro de `hero`):
 
 - `place`: la línea de lugar sobre el título («Buenos Aires · Argentina»).
 - `accent`: la parte del título que va en cursiva dorada. Tiene que aparecer tal cual dentro de `title` (si no, el título se muestra entero sin cursiva; `npm test` lo controla). Si cierra el título va en su propia línea; si queda en el medio (en chino) se marca sin cortar la frase y queda pegado al carácter siguiente, para que ninguna línea empiece con 的.
 
-En `public/` también están `favicon.png`, `apple-touch-icon.png` y `og.jpg` (la imagen que aparece al compartir el link: foto difusa con el logo). Si cambian el logo o la foto, hay que regenerarlos.
+En `public/` también están `favicon.png`, `apple-touch-icon.png` y `og.jpg` (la imagen que aparece al compartir el link: la foto de portada difusa, con velo verde y el logo). Si cambian el logo o la foto, hay que regenerarlos.
 
-Por pedido del estudio, el sitio no menciona el paso de los socios por organismos públicos o internacionales y en Quiénes somos muestra solo los apellidos, sin fotos ni currículums. `test/contenido.test.js` lo controla en los cinco idiomas.
+Quiénes somos describe la trayectoria del equipo en términos generales (ejercicio del derecho migratorio, gestión pública, cooperación internacional) con los textos que pasó el estudio el 3/11, sin nombrar los organismos donde trabajaron los socios, y muestra solo los apellidos, sin fotos ni currículums. `test/contenido.test.js` lo controla en los cinco idiomas.
+
+En los textos largos de los diccionarios, `**así**` marca una parte en negrita (lo usa Quiénes somos para los apellidos).
 
 ## Recorrido del inicio
 
-Portada → Servicios → Personas y familias → Empresas → Actualidad (carrusel de publicaciones y noticias) → Opiniones de Google → Preguntas frecuentes → Contacto. Quiénes somos tiene su página propia. Mientras se recorre la página, el menú marca la sección y una franja debajo del encabezado muestra su nombre (cada sección lo define con `data-guide`). El sitio no tiene botones directos a WhatsApp: las consultas entran por el formulario, que filtra los contactos y ordena la información.
+Portada → Servicios → Personas y familias → Empresas → Actualidad (las tres publicaciones más recientes del estudio y, debajo, la normativa migratoria) → Opiniones de Google → Preguntas frecuentes → Contacto. Quiénes somos tiene su página propia. Mientras se recorre la página, el menú marca la sección y una franja debajo del encabezado muestra su nombre (cada sección lo define con `data-guide`). Las consultas entran por el formulario; el WhatsApp del estudio figura en Contacto y en el pie.
+
+Actualidad en el inicio muestra solo notas del estudio (las noticias de medios quedan en `/actualidad`). La grilla toma las tres más recientes de `/api/articulos` cada vez que se abre la página, así una nota nueva aparece sola, y ocupa todo el ancho con las que haya (con una sola, la tarjeta va a lo ancho). Debajo, Normativa migratoria muestra las primeras cuatro normas de `/api/normas` con su enlace a la fuente oficial y un acceso a la lista completa.
 
 ## Idiomas
 
@@ -94,7 +96,7 @@ En el build conviene definir `SITE_URL` con el dominio final (por ejemplo `https
 | `GOOGLE_PLACES_API_KEY` | Clave de Google Cloud con Places API (New) habilitada | Reseñas |
 | `GOOGLE_PLACE_ID` | ID del perfil de Google del estudio | Reseñas |
 
-Sin las variables del formulario, la consulta se manda por WhatsApp. Sin las de reseñas, la sección muestra solo el botón "Ver reseñas en Google".
+Sin las variables del formulario, el botón "Enviar consulta" no se muestra y queda solo "Consultar por WhatsApp". Sin las de reseñas, la sección muestra solo el botón "Ver reseñas en Google".
 
 ## Panel de Actualidad Migratoria (`/admin`)
 
@@ -107,15 +109,24 @@ Para habilitar el acceso de los socios, en Cloudflare Zero Trust:
 
 Además de Access, la API verifica en cada pedido el token que firma Cloudflare, así que si alguien entra por otra dirección del Worker no puede leer ni modificar nada.
 
-El panel tiene dos pestañas: Publicaciones y Repositorio jurídico.
+El panel tiene dos pestañas: Publicaciones y Normativa migratoria.
 
 Para publicar: entrar a `/admin`, poner el email y el código que llega, tocar "Nueva publicación", completar título, categoría, autor, resumen y contenido, y "Publicar". "Guardar borrador" la guarda sin mostrarla en el sitio. El contenido se escribe en Markdown y al lado se ve cómo va a quedar. Cada publicación tiene botones para compartir en LinkedIn, Facebook y WhatsApp.
 
-Repositorio jurídico: leyes, decretos, DNU, disposiciones y resoluciones con su enlace a la fuente oficial (tiene que empezar con `https://`). Se muestran en `/actualidad#repositorio` apenas se guardan, ordenadas por fecha, con filtro por tipo y buscador. La migración `0002_normas.sql` carga las normas base (Ley 25.871, Decreto 616/2010, DNU 366/2025, Ley 346 y el Boletín Oficial).
+Normativa migratoria: leyes, decretos, DNU, disposiciones y resoluciones con su enlace a la fuente oficial (tiene que empezar con `https://`). Se muestran en `/actualidad#normativa` (y las primeras cuatro en el inicio) apenas se guardan, ordenadas por fecha, con filtro por tipo y buscador. La migración `0002_normas.sql` carga las normas base (Ley 25.871, Decreto 616/2010, DNU 366/2025, Ley 346 y el Boletín Oficial).
 
 ## Formulario de consultas (`/api/consulta`)
 
-Distingue persona y empresa. Con Resend configurado, el botón principal manda la consulta por email a la casilla del estudio, con respuesta directa a quien consultó, y WhatsApp queda como alternativa. El email indica desde qué página y en qué idioma llegó la consulta. Las opciones elegidas llegan siempre en español.
+Distingue persona y empresa (los campos cambian según la opción):
+
+- Persona: nombre y apellido, correo, WhatsApp con código de país, nacionalidad, tipo de consulta y mensaje. Alcanza con un medio de contacto: correo o WhatsApp.
+- Empresa: nombre de la empresa o institución, persona de contacto, correo (obligatorio), WhatsApp, tipo de consulta y mensaje.
+
+Los obligatorios se marcan con *. "Enviar consulta" la manda por email (Resend) a la casilla de `CONSULTAS_EMAIL`, con respuesta directa a quien consultó si dejó su correo, y muestra la confirmación en el lugar del formulario. "Consultar por WhatsApp" es una alternativa aparte: arma el mensaje con lo que se haya completado y lo muestra para revisarlo y corregirlo antes de abrir WhatsApp. El email indica desde qué página y en qué idioma llegó la consulta. Las opciones elegidas llegan siempre en español.
+
+Protección contra envíos automáticos: un campo trampa invisible, un mínimo de 3 segundos entre que se abre la página y se envía, un límite de links en el mensaje y solo se aceptan envíos desde el propio sitio. Si aun así llega spam, el paso siguiente es sumar Cloudflare Turnstile.
+
+Debajo del formulario va el aviso de protección de datos personales (Ley 25.326).
 
 ## Noticias de medios (`/api/noticias`)
 

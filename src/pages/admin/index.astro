@@ -1,5 +1,5 @@
 ---
-// Panel para que los socios publiquen Actualidad Migratoria y carguen el repositorio jurídico. Cloudflare Access pide el login antes de
+// Panel para que los socios publiquen Actualidad Migratoria y carguen la normativa migratoria. Cloudflare Access pide el login antes de
 // llegar acá; la API (/api/admin) vuelve a verificarlo en cada pedido.
 import '../../styles/site.css';
 import es from '../../i18n/es.js';
@@ -75,7 +75,7 @@ export const prerender = true;
 <main class="adm">
 <div class="adm-tabs" role="tablist" aria-label="Secciones del panel">
 <button type="button" role="tab" id="tab-pubs" aria-controls="pubs" aria-selected="true">Publicaciones</button>
-<button type="button" role="tab" id="tab-normas" aria-controls="normas" aria-selected="false" tabindex="-1">Repositorio jurídico</button>
+<button type="button" role="tab" id="tab-normas" aria-controls="normas" aria-selected="false" tabindex="-1">Normativa migratoria</button>
 </div>
 <div id="pubs" class="adm-panel" role="tabpanel" aria-labelledby="tab-pubs">
 <div id="msg" class="adm-msg" role="status" hidden></div>
@@ -147,10 +147,10 @@ export const prerender = true;
 <div id="nm-msg" class="adm-msg" role="status" hidden></div>
 <section id="nm-list-view">
 <div class="adm-bar">
-<h1>Repositorio jurídico</h1>
+<h1>Normativa migratoria</h1>
 <button type="button" class="btn btn-fill" id="nm-new">Nueva norma</button>
 </div>
-<p class="adm-help">Leyes, decretos y disposiciones que se muestran en Actualidad Migratoria › Repositorio jurídico, con enlace a la fuente oficial (argentina.gob.ar, Boletín Oficial). Se publican apenas las guardás.</p>
+<p class="adm-help">Leyes, decretos y disposiciones que se muestran en Actualidad Migratoria › Normativa migratoria (y las primeras cuatro en el inicio), con enlace a la fuente oficial (argentina.gob.ar, Boletín Oficial). Se publican apenas las guardás.</p>
 <div id="nm-list"></div>
 </section>
 <section id="nm-edit-view" hidden>

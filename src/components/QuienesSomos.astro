@@ -1,32 +1,36 @@
 ---
-// Quiénes somos: reseña del estudio y origen del nombre con los apellidos, sin fotos ni currículums
-// (pedido del estudio). Solo se ve en su propia página, no en el recorrido del inicio.
+// Quiénes somos: presentación del estudio, experiencia del equipo y enfoque. Solo apellidos, sin fotos ni
+// currículums (pedido del estudio). Tiene su propia página, no aparece en el recorrido del inicio.
 import { DICTS } from '../i18n/index.js';
-import { APELLIDOS } from '../data/sitio.js';
+import { rich } from '../lib/rich.js';
 
 const { lang } = Astro.props;
 const t = DICTS[lang];
 const n = t.nosotros;
+const expIcons = ['i-scale', 'i-inst', 'i-globe'];
 const modeIcons = ['i-people', 'i-chat', 'i-person', 'i-globe'];
 ---
 <section id="nosotros" data-guide={t.guide.nosotros} data-nav="nosotros">
-<div class="wrap about">
-<div class="about-copy">
-<p class="resena">{n.resena}</p>
-<div class="name-line">
-<p class="name-title">{n.nameTitle}</p>
-<p class="names">
-{APELLIDOS.map((ap, i) => <>{i > 0 && <span class="sep" aria-hidden="true">·</span>}<span><b>{ap[0]}</b>{ap.slice(1)}</span></>)}
-</p>
-<p class="name-text">{n.nameText}</p>
+<div class="wrap stack">
+<div class="about">
+<p class="resena" set:html={rich(n.body[0])} />
+<div class="about-more">{n.body.slice(1).map((p) => <p set:html={rich(p)} />)}</div>
+</div>
+<div class="exp">
+<h2 class="h3">{n.expTitle}</h2>
+<div class="grid-3">
+{n.exp.map((e, i) => (
+  <article class="pillar">
+    <span class="ico-badge"><svg class="ic" aria-hidden="true"><use href={`#${expIcons[i]}`} /></svg></span>
+    <h3>{e.title}</h3>
+    <p>{e.text}</p>
+  </article>
+))}
 </div>
 </div>
 <div class="enfoque">
-<h2 class="h3">{n.enfoqueTitle}</h2>
-<ul class="checks">
-{n.checks.map((c) => <li><svg class="ic" aria-hidden="true"><use href="#i-check" /></svg><span>{c}</span></li>)}
-</ul>
-<p class="rights"><svg class="ic" aria-hidden="true"><use href="#i-shield" /></svg><span>{t.why.rights}</span></p>
+<p class="eyebrow">{n.enfoqueTitle}</p>
+<p class="enfoque-t" set:html={rich(n.enfoque)} />
 </div>
 </div>
 </section>

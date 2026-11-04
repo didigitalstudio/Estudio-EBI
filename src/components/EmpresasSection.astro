@@ -1,8 +1,9 @@
 ---
-// Empresas: asistencia integral, formas de contratar (por trámite, abono de seguimiento, VIP) y proceso.
-// Se usa como sección del inicio y en la subpágina /empresas.
+// Empresas: asistencia integral, modalidades de contratación (por caso, asesoramiento permanente y trámite
+// corporativo) y proceso. Se usa como sección del inicio y en la subpágina /empresas.
 import Steps from './Steps.astro';
 import { DICTS } from '../i18n/index.js';
+import { paras } from '../lib/rich.js';
 
 const { lang, intro = true } = Astro.props;
 const t = DICTS[lang];
@@ -12,10 +13,10 @@ const modIcons = ['i-file', 'i-clock', 'i-shield'];
 ---
 <section id="empresas" class="band" data-guide={t.guide.empresas} data-nav="empresas">
 <div class="wrap stack">
-<div class="head">
+<div class:list={['head', { 'head-wide': intro }]}>
 <p class="eyebrow">{intro ? p.hero.eyebrow : p.cards.eyebrow}</p>
 <h2 class="h2">{intro ? p.hero.title : p.cards.title}</h2>
-<p class="lead">{intro ? p.hero.lead : p.cards.lead}</p>
+{paras(intro ? p.hero.lead : p.cards.lead).map((x) => <p class="lead">{x}</p>)}
 </div>
 <div class="grid-3">
 {p.cards.items.map((c, i) => (
@@ -42,7 +43,7 @@ const modIcons = ['i-file', 'i-clock', 'i-shield'];
 ))}
 </div>
 </div>
-<Steps title={p.steps.title} cta={t.common.proposal} items={p.steps.items} perfil="empresa" tipo="renure" />
+<Steps title={p.steps.title} cta={t.common.proposal} items={p.steps.items} perfil="empresa" tipo="contratacion" />
 {p.callout && <p class="callout"><svg class="ic" aria-hidden="true"><use href="#i-shield" /></svg><span>{p.callout}</span></p>}
 </div>
 </section>

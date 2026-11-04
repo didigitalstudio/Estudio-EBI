@@ -1,6 +1,6 @@
 import { fechaLarga } from '../lib/fechas.js';
 
-// Pestañas del panel y repositorio jurídico contra /api/admin/normas
+// Pestañas del panel y normativa migratoria contra /api/admin/normas
 const $ = (id) => document.getElementById(id);
 const msg = $('nm-msg');
 const form = $('nm');
@@ -36,7 +36,7 @@ function select(tab, focus = false) {
   });
   if (focus) tab.focus();
   const normas = tab.id === 'tab-normas';
-  history.replaceState(null, '', normas ? '#repositorio' : location.pathname);
+  history.replaceState(null, '', normas ? '#normativa' : location.pathname);
   if (normas && !loaded) loadList().then(() => show('list')).catch((e) => say(e.message, 'err'));
 }
 tabs.forEach((t, i) => {
@@ -156,7 +156,7 @@ form.addEventListener('submit', async (e) => {
       ? await api(`/${current.id}`, { method: 'PUT', body })
       : await api('', { method: 'POST', body });
     fill(norma);
-    say('Listo, la norma está en el repositorio del sitio.', 'ok');
+    say('Listo, la norma ya se ve en Normativa migratoria.', 'ok');
   } catch (err) {
     say(err.message, 'err');
   } finally {
@@ -165,7 +165,7 @@ form.addEventListener('submit', async (e) => {
 });
 
 $('nm-delete').addEventListener('click', async () => {
-  if (!current || !confirm(`¿Eliminar "${current.titulo}" del repositorio? No se puede deshacer.`)) return;
+  if (!current || !confirm(`¿Eliminar "${current.titulo}" de la normativa? No se puede deshacer.`)) return;
   try {
     await api(`/${current.id}`, { method: 'DELETE' });
     dirty = false;
@@ -191,4 +191,4 @@ $('nm-back').addEventListener('click', async () => {
 });
 window.addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault(); });
 
-if (location.hash === '#repositorio') select(tabs[1]);
+if (location.hash === '#normativa' || location.hash === '#repositorio') select(tabs[1]);

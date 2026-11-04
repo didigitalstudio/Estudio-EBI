@@ -14,13 +14,24 @@ test('arma asunto y cuerpo de la consulta de una persona', () => {
 });
 
 test('suma los datos de la empresa y avisa en qué idioma llegó', () => {
-  const c = buildInquiry({ ...persona, perfil: 'empresa', empresa: 'Acme SA', cargo: 'HR Manager', personas: '2 a 5', tipo: 'Inscripción en el RENURE', lang: 'pt' });
-  assert.equal(c.subject, 'Consulta web: Inscripción en el RENURE · Acme SA');
-  assert.match(c.text, /^Perfil: Empresa\nNombre: Ana Pérez\nEmpresa: Acme SA\nCargo: HR Manager\nPersonas: 2 a 5\n/);
+  const c = buildInquiry({ ...persona, perfil: 'empresa', empresa: 'Acme SA', pais: 'Perú', tipo: 'Inscripción y actualización en RENURE', lang: 'pt' });
+  assert.equal(c.subject, 'Consulta web: Inscripción y actualización en RENURE · Acme SA');
+  assert.match(c.text, /^Perfil: Empresa\nEmpresa: Acme SA\nContacto: Ana Pérez\nEmail: ana@mail.com\n/);
+  assert.doesNotMatch(c.text, /Nacionalidad/);
   assert.match(c.text, /Idioma: Portugués \(la consulta llegó desde la versión en portugués\)/);
 });
 
-test('rechaza consultas incompletas o sin email válido', () => {
+test('una persona puede dejar solo el WhatsApp; una empresa necesita el correo', () => {
+  const c = buildInquiry({ ...persona, email: '', tel: '+54 9 11 5555-1234' });
+  assert.equal(c.error, undefined);
+  assert.equal(c.replyTo, '');
+  assert.match(c.text, /WhatsApp: \+54 9 11 5555-1234/);
+  assert.ok(buildInquiry({ ...persona, email: '', tel: '' }).error);
+  assert.ok(buildInquiry({ ...persona, email: '', tel: '123' }).error);
+  assert.ok(buildInquiry({ ...persona, perfil: 'empresa', empresa: 'Acme SA', email: '', tel: '+54 9 11 5555-1234' }).error);
+});
+
+test('rechaza consultas incompletas o con datos de contacto inválidos', () => {
   assert.ok(buildInquiry({ ...persona, nombre: '  ' }).error);
   assert.ok(buildInquiry({ ...persona, msg: '' }).error);
   assert.ok(buildInquiry({ ...persona, email: 'ana@' }).error);
@@ -57,11 +68,30 @@ test('manda la consulta a Resend con respuesta a quien consultó', async () => {
   assert.equal(calls[0].body.subject, 'Consulta web: Residencia · Ana Pérez');
 });
 
-test('ignora a los bots que completan el campo trampa', async () => {
+test('ignora a los bots: campo trampa, envío instantáneo o mensaje lleno de links', async () => {
   let called = 0;
-  const res = await handleConsulta(post({ ...persona, website: 'http://spam.example' }), env, async () => { called++; return new Response('{}'); });
-  assert.equal(res.status, 200);
+  const count = async () => { called++; return new Response('{}'); };
+  for (const body of [
+    { ...persona, website: 'http://spam.example' },
+    { ...persona, t: 800 },
+    { ...persona, msg: 'https://a.example https://b.example www.c.example http://d.example' },
+  ]) assert.equal((await handleConsulta(post(body), env, count)).status, 200);
   assert.equal(called, 0);
+  assert.equal((await handleConsulta(post({ ...persona, t: 25000 }), env, count)).status, 200);
+  assert.equal(called, 1);
+});
+
+test('rechaza envíos desde otro sitio', async () => {
+  const req = new Request('https://ebi.test/api/consulta', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://otro.example' }, body: JSON.stringify(persona) });
+  assert.equal((await handleConsulta(req, env, async () => new Response('{}'))).status, 403);
+  const same = new Request('https://ebi.test/api/consulta', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://ebi.test' }, body: JSON.stringify(persona) });
+  assert.equal((await handleConsulta(same, env, async () => new Response('{}'))).status, 200);
+});
+
+test('sin correo, la consulta llega sin dirección de respuesta', async () => {
+  let sent = null;
+  await handleConsulta(post({ ...persona, email: '', tel: '+54 9 11 5555-1234' }), env, async (url, opts) => { sent = JSON.parse(opts.body); return new Response('{}'); });
+  assert.equal(sent.reply_to, undefined);
 });
 
 test('responde 400 si faltan datos o el JSON está roto, y 502 si Resend falla', async () => {

@@ -1,15 +1,18 @@
 ---
-// Portada de cada página: foto de la ciudad difusa de fondo (o la silueta, hasta que se elija la foto),
-// título, bajada y accesos. El slot opcional va en una tarjeta a la derecha (ej. la lista de empresas).
-// variant="monument" (inicio): composición centrada con el Obelisco como eje, el sello del estudio entre
-// filetes dorados (enhebrado en el fuste, con la punta asomando arriba), la parte `accent` del título en
-// cursiva y un indicador para bajar hasta `next`. El texto va dentro de .mon-body, que lleva su propio velo.
+// Portada de cada página: foto de la ciudad difusa de fondo (o la silueta, si no hay foto), título, bajada y
+// accesos. El slot opcional va en una tarjeta a la derecha (ej. la lista de empresas).
+// variant="monument" (inicio): composición centrada sobre el eje de la foto (el Congreso al final de la
+// avenida), con la línea de lugar entre filetes dorados, la parte `accent` del título en cursiva y un
+// indicador para bajar hasta `next`. El texto va dentro de .mon-body, que lleva su propio velo.
+// lead puede ser un texto o una lista de párrafos; **así** marca negrita.
 import Skyline from './Skyline.astro';
 import { SITIO } from '../data/sitio.js';
+import { rich, paras } from '../lib/rich.js';
 
 const { eyebrow = '', title, accent = '', lead, primary, links = [], size = 'lg', variant = '', next = '' } = Astro.props;
 const hasPanel = Astro.slots.has('default');
 const monument = variant === 'monument' && !hasPanel;
+const leads = paras(lead);
 // El destacado se busca dentro del título; si no está, el título va entero. Si cierra el título va en su
 // propia línea (es, en, pt, ru); si queda en el medio (zh) se marca sin cortar la frase.
 const at = monument && accent ? title.indexOf(accent) : -1;
@@ -24,12 +27,11 @@ const glue = parts && !split ? parts[2].slice(0, 1) : '';
   <>
   <div class="wrap hero-in">
   <div class="mon">
-  {SITIO.logo && <div class="mon-crest" aria-hidden="true"><span class="mon-rule"></span><span class="mon-ring"><img src={SITIO.logo} alt="" class="mon-seal" width="128" height="128"></span><span class="mon-rule"></span></div>}
   <div class="mon-body">
-  {eyebrow && <p class="mon-eyebrow">{eyebrow}</p>}
+  {eyebrow && <p class="mon-eyebrow"><span class="mon-rule" aria-hidden="true"></span><span>{eyebrow}</span><span class="mon-rule" aria-hidden="true"></span></p>}
   <h1 class:list={['mon-title', { 'mon-split': split }]}>{!parts ? title : split ? <>{parts[0]}<em>{parts[1]}</em></> : <>{parts[0]}<span class="mon-keep"><em>{parts[1]}</em>{glue}</span>{parts[2].slice(1)}</>}</h1>
   <span class="mon-orn" aria-hidden="true"></span>
-  <p class="hero-lead">{lead}</p>
+  {leads.map((p) => <p class="hero-lead" set:html={rich(p)} />)}
   {(primary || links.length > 0) && (
     <div class="ctas">
       {primary && <a href={primary.href} class="btn btn-light" data-perfil={primary.perfil} data-tipo={primary.tipo}>{primary.label}</a>}
@@ -43,10 +45,10 @@ const glue = parts && !split ? parts[2].slice(0, 1) : '';
   </>
 ) : (
 <div class:list={['wrap hero-in', { 'has-panel': hasPanel }]}>
-<div class="hero-copy">
+<div class:list={['hero-copy', { 'hero-long': leads.length > 1 }]}>
 {eyebrow && <p class="eyebrow">{eyebrow}</p>}
 <h1>{title}</h1>
-<p class="hero-lead">{lead}</p>
+{leads.map((p) => <p class="hero-lead" set:html={rich(p)} />)}
 {(primary || links.length > 0) && (
   <div class="ctas">
     {primary && <a href={primary.href} class="btn btn-light" data-perfil={primary.perfil} data-tipo={primary.tipo}>{primary.label}</a>}

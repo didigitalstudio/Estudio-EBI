@@ -12,27 +12,27 @@ export const prerender = false;
 // Cada consulta por separado: si una falla, la otra parte de la página se muestra igual
 const [articulos, normas] = await Promise.all([
   listPublished(env.DB, { limit: 60 }).catch((e) => { console.error('actualidad', e); return []; }),
-  listNormas(env.DB).catch((e) => { console.error('repositorio', e); return []; }),
+  listNormas(env.DB).catch((e) => { console.error('normativa', e); return []; }),
 ]);
 // Filtros solo para los tipos que tienen alguna norma cargada
 const tipos = Object.keys(TIPOS).filter((k) => normas.some((n) => n.tipo === k));
 const a = es.actualidad;
 Astro.response.headers.set('Cache-Control', 'public, max-age=60');
 ---
-<Base lang="es" path="/actualidad" translated={false} hasContact={false} title="Actualidad Migratoria | Estudio EBI" description="Newsletter semanal y análisis del Estudio EBI sobre normativa migratoria, repositorio jurídico con leyes y decretos, y noticias del sector.">
+<Base lang="es" path="/actualidad" translated={false} hasContact={false} title="Actualidad Migratoria | Estudio EBI" description="Novedades normativas, jurisprudencia y análisis del Estudio EBI sobre derecho migratorio en Argentina, con la normativa migratoria y sus fuentes oficiales.">
 <Hero
   size="sm"
   eyebrow={a.eyebrow}
   title="Actualidad Migratoria"
   lead={a.lead}
-  links={[{ href: '#repositorio', label: a.repositorio }, { href: '#noticias', label: 'Noticias de medios' }]}
+  links={[{ href: '#normativa', label: a.normativa }, { href: '#noticias', label: 'Noticias de medios' }]}
 />
 <section id="publicaciones" data-guide="Publicaciones del estudio" data-nav="actualidad">
 <div class="wrap stack">
 <div class="head">
 <p class="eyebrow">Estudio EBI</p>
 <h2 class="h2">Publicaciones del estudio</h2>
-<p class="lead">Ediciones de Actualidad Migratoria y análisis de los cambios normativos que impactan en los trámites.</p>
+<p class="lead">Notas elaboradas por el estudio: novedades normativas, jurisprudencia y análisis de los cambios que impactan en las personas, las familias y las empresas.</p>
 </div>
 {articulos.length ? (
   <div class="art-list">
@@ -50,12 +50,12 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60');
 )}
 </div>
 </section>
-<section id="repositorio" class="band" data-guide={a.repositorio} data-nav="actualidad">
+<section id="normativa" class="band" data-guide={a.normativa} data-nav="actualidad">
 <div id="repo" class="wrap stack">
 <div class="head">
-<p class="eyebrow">{a.repositorio}</p>
-<h2 class="h2">Normativa migratoria</h2>
-<p class="lead">{a.repositorioText} Antes de iniciar un trámite, verificá siempre la versión vigente en la fuente oficial.</p>
+<p class="eyebrow">Fuentes oficiales</p>
+<h2 class="h2">{a.normativa}</h2>
+<p class="lead">{a.normativaText} Antes de iniciar un trámite, verificá siempre la versión vigente en la fuente oficial.</p>
 </div>
 {normas.length ? (
   <>
@@ -66,7 +66,7 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60');
       </div>
       <div class="repo-search">
         <svg class="ic" aria-hidden="true"><use href="#i-search" /></svg>
-        <input id="repo-q" type="search" placeholder="Buscar por número o tema" aria-label="Buscar en el repositorio" autocomplete="off">
+        <input id="repo-q" type="search" placeholder="Buscar por número o tema" aria-label="Buscar en la normativa" autocomplete="off">
       </div>
     </div>
     <p id="repo-count" class="sr-only" role="status" data-one="1 norma" data-many="normas"></p>
@@ -78,7 +78,7 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60');
             <span class="norma-t">{n.titulo}</span>
             {n.resumen && <span class="norma-r">{n.resumen}</span>}
           </div>
-          <a class="norma-link" href={n.url} target="_blank" rel="noopener">Ver la norma<svg class="ic ic-sm" aria-hidden="true"><use href="#i-external" /></svg></a>
+          <a class="norma-link" href={n.url} target="_blank" rel="noopener">{a.normativaSee}<svg class="ic ic-sm" aria-hidden="true"><use href="#i-external" /></svg></a>
         </li>
       ))}
     </ul>
@@ -87,7 +87,7 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=60');
 ) : (
   <p class="empty">Muy pronto vas a encontrar acá las principales normas migratorias, con enlace a la fuente oficial.</p>
 )}
-<p class="note">Los enlaces llevan a sitios oficiales del Estado argentino (argentina.gob.ar y Boletín Oficial). La información de este repositorio no reemplaza el asesoramiento profesional sobre tu caso.</p>
+<p class="note">Los enlaces llevan a sitios oficiales del Estado argentino (argentina.gob.ar y Boletín Oficial). Esta información no reemplaza el asesoramiento profesional sobre tu caso.</p>
 </div>
 </section>
 <section id="noticias" data-guide="Noticias de medios" data-nav="actualidad">

@@ -1,5 +1,6 @@
 ---
 import { DICTS } from '../i18n/index.js';
+import { paras } from '../lib/rich.js';
 const { lang } = Astro.props;
 const t = DICTS[lang].personas;
 ---
@@ -27,9 +28,9 @@ const t = DICTS[lang].personas;
 <div class="urgent-txt">
 <span class="tag">{t.urgent.tag}</span>
 <h3>{t.urgent.title}</h3>
-<p>{t.urgent.text}</p>
+{paras(t.urgent.text).map((p) => <p>{p}</p>)}
 </div>
-<a href="#contacto" class="btn btn-light" data-perfil="persona" data-tipo="expulsion">{t.urgent.cta}</a>
+<a href="#contacto" class="btn btn-light" data-perfil="persona" data-tipo="recursos">{t.urgent.cta}</a>
 </div>
 </div>
 </section>

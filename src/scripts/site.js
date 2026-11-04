@@ -80,14 +80,23 @@ $$('[data-copy]').forEach((b) => b.addEventListener('click', () => {
   navigator.clipboard?.writeText(location.href).then(() => { b.textContent = b.dataset.copied; });
 }));
 
-// Formulario de consultas: persona o empresa, por email si está configurado y si no por WhatsApp
+// Formulario de consultas: persona o empresa. "Enviar consulta" lo manda al correo del estudio (si el envío
+// por email está configurado); "Consultar por WhatsApp" es aparte: arma el mensaje con lo que haya y lo deja
+// revisar antes de abrir WhatsApp.
 const form = $('#form');
 if (form) {
   const msgEl = $('#form-msg');
   const sendMail = $('#send-email');
   const sendWa = $('#send-wa');
-  let mailOn = false;
+  const done = $('.form-done', form);
+  const dlg = $('#wa-dialog');
+  const waText = $('#wa-text');
+  const waGo = $('#wa-go');
+  // Tiempo desde que se abrió la página: el servidor descarta los envíos instantáneos (bots)
+  const opened = Date.now();
+  let mailOn = true;
 
+  const perfil = () => (form.elements.perfil.value === 'empresa' ? 'empresa' : 'persona');
   const setPerfil = (p) => {
     $$('input[name="perfil"]', form).forEach((r) => { r.checked = r.value === p; r.parentNode.classList.toggle('on', r.checked); });
     $$('[data-only]', form).forEach((e) => {
@@ -96,7 +105,10 @@ if (form) {
       $$('input,select,textarea', e).forEach((c) => { c.disabled = !on; });
     });
   };
-  form.addEventListener('change', (e) => { if (e.target.name === 'perfil') setPerfil(e.target.value); });
+  form.addEventListener('change', (e) => {
+    if (e.target.name === 'perfil') setPerfil(e.target.value);
+    if (e.target.tagName === 'SELECT') e.target.removeAttribute('aria-invalid');
+  });
   // Los botones con data-perfil / data-tipo dejan el formulario listo para ese caso
   document.addEventListener('click', (e) => {
     const a = e.target.closest('[data-perfil]');
@@ -109,45 +121,75 @@ if (form) {
 
   const data = () => {
     const fd = new FormData(form);
-    const d = { lang, pagina: ui.page };
-    ['perfil', 'nombre', 'empresa', 'cargo', 'email', 'tel', 'pais', 'personas', 'tipo', 'msg', 'website'].forEach((k) => { d[k] = String(fd.get(k) || '').trim(); });
+    const d = { lang, pagina: ui.page, perfil: perfil(), t: Date.now() - opened };
+    ['nombre', 'empresa', 'email', 'tel', 'pais', 'tipo', 'msg', 'website'].forEach((k) => { d[k] = String(fd.get(k) || '').trim(); });
     return d;
   };
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const telOk = (v) => /^\+?[\d\s().-]{6,24}$/.test(v) && v.replace(/\D/g, '').length >= 8;
   // Para WhatsApp va el texto visible de cada opción, en el idioma de la página
   const shown = (name) => {
     const s = $(`select[name="${name}"]:not(:disabled)`, form);
-    return s && s.selectedIndex >= 0 ? s.options[s.selectedIndex].textContent : '';
+    return s && s.value && s.selectedIndex >= 0 ? s.options[s.selectedIndex].textContent : '';
   };
-  const waLink = (d) => {
-    let s = `${ui.waHello} ${d.nombre}${d.pais ? ` (${d.pais})` : ''}.`;
-    if (d.perfil === 'empresa') s += `\n${ui.waCompany}: ${d.empresa}${d.cargo ? ` (${d.cargo})` : ''} · ${ui.waPeople}: ${shown('personas')}`;
-    s += `\n${ui.waTopic}: ${shown('tipo')}\n${d.msg}`;
-    if (d.email) s += `\nEmail: ${d.email}`;
-    if (d.tel) s += `\n${ui.waPhone}: ${d.tel}`;
-    return `https://wa.me/${ui.wa}?text=${encodeURIComponent(s)}`;
+  const waMessage = (d) => {
+    const lines = [d.nombre ? `${ui.waHello} ${d.nombre}${d.pais ? ` (${d.pais})` : ''}.` : ui.waHelloAnon];
+    if (d.perfil === 'empresa' && d.empresa) lines.push(`${ui.waCompany}: ${d.empresa}`);
+    const tipo = shown('tipo');
+    if (tipo) lines.push(`${ui.waTopic}: ${tipo}`);
+    if (d.msg) lines.push('', d.msg);
+    if (d.email) lines.push('', `Email: ${d.email}`);
+    return lines.join('\n');
   };
+  const waHref = (text) => `https://wa.me/${ui.wa}?text=${encodeURIComponent(text)}`;
   const say = (txt, ok) => { msgEl.textContent = txt; msgEl.classList.toggle('ok', !!ok); };
   const invalid = (name, key) => {
-    const f = form.elements[name];
+    const f = $(`[name="${name}"]:not(:disabled)`, form);
     f.setAttribute('aria-invalid', 'true');
     f.focus();
     say(ui[key]);
+    return null;
   };
-  form.addEventListener('input', (e) => e.target.removeAttribute('aria-invalid'));
+  form.addEventListener('input', (e) => {
+    e.target.removeAttribute('aria-invalid');
+    if (!msgEl.classList.contains('ok')) say('');
+    if (e.target.name === 'email' || e.target.name === 'tel') ['email', 'tel'].forEach((n) => form.elements[n].removeAttribute('aria-invalid'));
+  });
+
+  // Obligatorios: persona, nombre y al menos un medio de contacto (correo o WhatsApp); empresa, nombre de la
+  // empresa, persona de contacto y correo. En los dos casos, el tipo de consulta y el mensaje.
+  const check = (d) => {
+    $$('[aria-invalid]', form).forEach((f) => f.removeAttribute('aria-invalid'));
+    if (d.perfil === 'empresa' && !d.empresa) return invalid('empresa', 'errEmpresa');
+    if (!d.nombre) return invalid('nombre', 'errRequired');
+    if (d.perfil === 'empresa' || d.email) {
+      if (!EMAIL.test(d.email)) return invalid('email', 'errEmail');
+    } else if (!d.tel) return invalid('email', 'errContact');
+    if (d.tel && !telOk(d.tel)) return invalid('tel', 'errTel');
+    if (!d.tipo) return invalid('tipo', 'errTipo');
+    if (!d.msg) return invalid('msg', 'errRequired');
+    return d;
+  };
+
+  // Revisión del mensaje de WhatsApp antes de abrirlo
+  const openWa = () => {
+    waText.value = waMessage(data());
+    waGo.href = waHref(waText.value);
+    if (!dlg.showModal) { window.open(waGo.href, '_blank'); return; }
+    dlg.showModal();
+    waText.focus();
+    waText.setSelectionRange(waText.value.length, waText.value.length);
+  };
+  sendWa.addEventListener('click', openWa);
+  waText.addEventListener('input', () => { waGo.href = waHref(waText.value); });
+  waGo.addEventListener('click', () => { setTimeout(() => dlg.close(), 0); });
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const via = e.submitter?.value === 'wa' || !mailOn ? 'wa' : 'email';
-    const d = data();
-    $$('[aria-invalid]', form).forEach((f) => f.removeAttribute('aria-invalid'));
-    if (!d.nombre) return invalid('nombre', 'errRequired');
-    if (d.perfil === 'empresa' && !d.empresa) return invalid('empresa', 'errEmpresa');
-    if (!d.msg) return invalid('msg', 'errRequired');
-    if (via === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) return invalid('email', 'errEmail');
-    if (via === 'wa') {
-      say('');
-      window.open(waLink(d), '_blank');
-      return;
-    }
+    const d = check(data());
+    if (!d) return;
+    if (!mailOn) { say(''); openWa(); return; }
     sendMail.disabled = sendWa.disabled = true;
     say(ui.sending, true);
     fetch('/api/consulta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
@@ -155,23 +197,32 @@ if (form) {
         if (!r.ok) throw r;
         form.reset();
         setPerfil(d.perfil);
-        say(ui.sent, true);
+        say('');
+        form.classList.add('is-sent');
+        done.hidden = false;
+        $('.done-t', done).focus();
       })
       .catch(() => {
         say(ui.sendError);
         const a = el('a', null, ui.sendErrorLink);
-        a.href = waLink(d);
-        a.target = '_blank';
-        a.rel = 'noopener';
+        a.href = '#';
+        a.addEventListener('click', (ev) => { ev.preventDefault(); openWa(); });
         msgEl.append(a, '.');
       })
       .finally(() => { sendMail.disabled = sendWa.disabled = false; });
   });
+  $('#form-again').addEventListener('click', () => {
+    form.classList.remove('is-sent');
+    done.hidden = true;
+    form.elements.nombre.focus();
+  });
+
+  // Si el envío por email no está configurado, el botón principal pasa a ser WhatsApp
   getJSON('/api/consulta').then((d) => {
-    if (!d.configured) return;
-    mailOn = true;
-    sendMail.hidden = false;
-    sendWa.className = 'btn btn-out';
+    if (d.configured) return;
+    mailOn = false;
+    sendMail.hidden = true;
+    sendWa.className = 'btn btn-fill';
   }).catch(() => {});
 }
 
@@ -247,90 +298,61 @@ if (revList) {
 
 const dateTxt = (iso) => new Date(iso).toLocaleDateString(ui.locale, { day: 'numeric', month: 'long', year: 'numeric' });
 
-// Carrusel de Actualidad en el inicio: publicaciones del estudio primero y después noticias de medios
-const track = $('#news-track');
-if (track) {
-  const card = (href, own, cat, date, extra, title, sum, external) => {
-    const a = el('a', own ? 'news own' : 'news');
-    a.href = href;
-    if (external) { a.target = '_blank'; a.rel = 'noopener'; } else if (lang !== 'es') a.hreflang = 'es';
-    if (own) a.appendChild(el('span', 'news-badge', ui.studio));
-    const meta = el('span', 'news-meta');
-    meta.appendChild(el('span', 'news-cat', cat));
-    const dt = new Date(date);
-    if (date && !Number.isNaN(+dt)) { const t = el('time', null, dateTxt(date)); t.dateTime = date; meta.appendChild(t); }
-    if (extra) meta.appendChild(el('span', null, extra));
-    const h = el('span', 'news-title', title);
+// Actualidad en el inicio: las tres publicaciones más recientes del estudio. La grilla ocupa todo el ancho
+// con las que haya (data-n = 1, 2 o 3 columnas), así no queda espacio vacío al costado
+const pubGrid = $('#pub-grid');
+if (pubGrid) {
+  const card = (a) => {
+    const c = el('a', 'pub-card');
+    c.href = `/actualidad/${encodeURIComponent(a.slug)}`;
+    if (lang !== 'es') c.hreflang = 'es';
+    const meta = el('span', 'pub-card-meta');
+    meta.appendChild(el('span', 'pub-card-cat', ui.cats[a.categoria] || ui.catDefault));
+    const dt = new Date(a.publicado_en);
+    if (a.publicado_en && !Number.isNaN(+dt)) { const t = el('time', null, dateTxt(a.publicado_en)); t.dateTime = a.publicado_en; meta.appendChild(t); }
+    const h = el('span', 'pub-card-title', a.titulo);
     if (lang !== 'es') h.lang = 'es';
-    a.append(meta, h);
-    if (sum) { const s = el('span', 'news-sum', sum); if (lang !== 'es') s.lang = 'es'; a.appendChild(s); }
-    a.appendChild(el('span', 'news-more', own ? ui.read : ui.more));
-    return a;
+    c.append(meta, h);
+    if (a.resumen) { const r = el('span', 'pub-card-sum', a.resumen); if (lang !== 'es') r.lang = 'es'; c.appendChild(r); }
+    c.appendChild(el('span', 'pub-card-more', ui.read));
+    return c;
   };
-  Promise.allSettled([getJSON('/api/articulos?limit=6'), getJSON('/api/noticias')]).then(([pubs, media]) => {
-    const cards = [];
-    (pubs.value?.articulos || []).forEach((a) => {
-      cards.push(card(`/actualidad/${encodeURIComponent(a.slug)}`, true, ui.cats[a.categoria] || ui.catDefault, a.publicado_en, ui.inSpanish, a.titulo, a.resumen));
-    });
-    (media.value?.items || []).forEach((n) => {
-      if (safe(n.link)) cards.push(card(n.link, false, ui.cats[n.category] || ui.catDefault, n.date, n.source, n.title, '', true));
-    });
-    if (!cards.length) cards.push(card('https://www.argentina.gob.ar/interior/migraciones', false, ui.catDefault, '', '', ui.newsFallback, '', true));
-    track.textContent = '';
-    track.append(...cards);
-    carousel(track);
+  getJSON('/api/articulos?limit=3').then((d) => d.articulos || []).catch(() => []).then((list) => {
+    pubGrid.textContent = '';
+    pubGrid.dataset.n = String(Math.min(list.length, 3));
+    if (!list.length) { pubGrid.appendChild(el('p', 'empty', pubGrid.dataset.empty)); return; }
+    list.slice(0, 3).forEach((a) => pubGrid.appendChild(card(a)));
   });
 }
 
-// Avanza solo cada 6 segundos (salvo movimiento reducido) y se detiene con el botón de pausa; también se
-// frena con el mouse encima, con el foco adentro, al tocarlo o fuera de pantalla
-function carousel(tr) {
-  const prev = $('[data-car="prev"]');
-  const next = $('[data-car="next"]');
-  const toggle = $('[data-car="toggle"]');
-  const step = () => (tr.firstElementChild ? tr.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(tr).columnGap || 0) : tr.clientWidth);
-  const atEnd = () => tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4;
-  const sync = () => {
-    const over = tr.scrollWidth > tr.clientWidth + 4;
-    prev.parentNode.hidden = !over;
-    prev.disabled = tr.scrollLeft <= 4;
-  };
-  const go = (dir) => {
-    if (dir > 0 && atEnd()) tr.scrollTo({ left: 0 });
-    else tr.scrollBy({ left: dir * step() });
-  };
-  prev.addEventListener('click', () => go(-1));
-  next.addEventListener('click', () => go(1));
-  tr.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
-  window.addEventListener('resize', sync);
-  sync();
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    toggle.hidden = true;
-    return;
-  }
-  let stopped = false;
-  let hold = false;
-  let seen = false;
-  let touchTimer = 0;
-  toggle.addEventListener('click', () => {
-    stopped = !stopped;
-    toggle.setAttribute('aria-label', stopped ? toggle.dataset.play : toggle.dataset.pause);
-    $('use', toggle).setAttribute('href', stopped ? '#i-play' : '#i-pause');
-  });
-  const box = tr.closest('section') || tr;
-  box.addEventListener('mouseenter', () => { hold = true; });
-  box.addEventListener('mouseleave', () => { hold = false; });
-  box.addEventListener('focusin', (e) => { hold = e.target !== toggle; });
-  box.addEventListener('focusout', () => { hold = false; });
-  box.addEventListener('touchstart', () => { hold = true; clearTimeout(touchTimer); }, { passive: true });
-  box.addEventListener('touchend', () => { touchTimer = setTimeout(() => { hold = false; }, 5000); }, { passive: true });
-  new IntersectionObserver(([e]) => { seen = e.isIntersecting; }).observe(tr);
-  setInterval(() => {
-    if (!stopped && !hold && seen && !document.hidden && tr.scrollWidth > tr.clientWidth + 4) go(1);
-  }, 6000);
+// Normativa migratoria en el inicio: las primeras normas con enlace a la fuente oficial
+const normList = $('#norm-list');
+if (normList) {
+  const TIPOS = { ley: 'Ley', decreto: 'Decreto', dnu: 'DNU', disposicion: 'Disposición', resolucion: 'Resolución', boletin: 'Boletín Oficial' };
+  getJSON('/api/normas?limit=4').then((d) => {
+    (d.normas || []).forEach((n) => {
+      if (!safe(n.url)) return;
+      const li = el('li');
+      const a = el('a', 'norm-item');
+      a.href = n.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const tipo = [TIPOS[n.tipo], n.numero].filter(Boolean).join(' ');
+      if (tipo) { const k = el('span', 'norm-k', tipo); k.lang = 'es'; a.appendChild(k); }
+      const t = el('span', 'norm-t', n.titulo);
+      t.lang = 'es';
+      a.appendChild(t);
+      const go = el('span', 'norm-go', normList.dataset.see);
+      go.insertAdjacentHTML('beforeend', '<svg class="ic ic-sm" aria-hidden="true"><use href="#i-external" /></svg>');
+      a.appendChild(go);
+      li.appendChild(a);
+      normList.appendChild(li);
+    });
+    normList.hidden = !normList.children.length;
+  }).catch(() => {});
 }
 
-// Noticias de medios (Google News)
+// Noticias de medios (Google News), en la página de Actualidad
 const newsList = $('#news-list');
 if (newsList) {
   getJSON('/api/noticias').then((d) => {
@@ -372,11 +394,11 @@ if (newsList) {
   });
 }
 
-// Repositorio jurídico (página de Actualidad): filtro por tipo de norma y búsqueda
+// Normativa migratoria (página de Actualidad): filtro por tipo de norma y búsqueda
 const repoQ = $('#repo-q');
 if (repoQ) {
   const repo = $('#repo');
-  const plain = (v) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const plain = (v) => v.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const items = $$('.norma', repo).map((it) => [it, plain(`${$('.norma-tipo', it).textContent} ${$('.norma-body', it).textContent}`)]);
   const chips = $$('.chip', repo);
   let tipo = '';

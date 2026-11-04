@@ -1,14 +1,15 @@
 ---
 import { DICTS } from '../i18n/index.js';
+import { paras } from '../lib/rich.js';
 const { lang } = Astro.props;
 const t = DICTS[lang].servicios;
 ---
 <section id="servicios" class="band" data-guide={DICTS[lang].guide.servicios} data-nav="servicios">
 <div class="wrap stack">
-<div class="head">
+<div class="head head-wide">
 <p class="eyebrow">{t.eyebrow}</p>
 <h2 class="h2">{t.title}</h2>
-<p class="lead">{t.lead}</p>
+{paras(t.lead).map((p) => <p class="lead">{p}</p>)}
 </div>
 <div class="areas">
 {t.areas.map((a, i) => (
