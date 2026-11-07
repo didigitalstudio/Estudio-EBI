@@ -15,8 +15,12 @@ const es = lang === 'es' ? undefined : 'es';
 <p class="eyebrow">{a.eyebrow}</p>
 <h2 class="h2">{a.title}</h2>
 <p class="lead">{a.lead}</p>
-</div>
 <a href="/actualidad" class="btn btn-out" hreflang={es}>{a.all}</a>
+</div>
+<div class="act-pics" aria-hidden="true">
+<img class="act-pic act-pic-a" src="/img/aeropuerto.webp" alt="" width="1200" height="900" loading="lazy" decoding="async">
+<img class="act-pic act-pic-b" src="/img/frontera.webp" alt="" width="1200" height="900" loading="lazy" decoding="async">
+</div>
 </div>
 <div id="pub-grid" class="pub-grid" aria-live="polite" data-empty={a.empty}>
 <div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>

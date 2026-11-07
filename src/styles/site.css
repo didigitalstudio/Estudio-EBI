@@ -274,7 +274,16 @@ a.sit:hover{border-color:var(--green);color:var(--ink)}
 .rev-text{margin:0;color:var(--text);display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
 
 /* Actualidad en el inicio: las tres publicaciones más recientes y la normativa migratoria */
-.act-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px}
+/* Encabezado con fotos decorativas (aeropuerto y paso fronterizo) a la derecha */
+.act-head,.emp-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
+.act-head .btn{align-self:flex-start;margin-top:12px}
+.act-pics{display:flex;gap:16px;align-items:flex-start}
+.act-pic,.emp-pic{display:block;width:100%;height:auto;object-fit:cover;border-radius:14px;background:var(--sand)}
+.act-pic-a{flex:3 1 0;min-width:0;aspect-ratio:4/3}
+.act-pic-b{flex:2 1 0;min-width:0;aspect-ratio:1/1;margin-top:40px}
+/* Empresas: vista aérea de Catalinas Norte junto al título */
+.emp-head{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.emp-pic{aspect-ratio:4/3;object-position:62% center}
 .pub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .pub-grid[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
 .pub-grid[data-n="1"],.pub-grid[data-n="0"]{grid-template-columns:minmax(0,1fr)}
@@ -496,6 +505,7 @@ body{top:0!important}
 }
 @media (max-width:1000px){.modes,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:860px){.pub-grid,.pub-grid[data-n="2"]{grid-template-columns:minmax(0,1fr)}.pub-card{min-height:0}}
+@media (max-width:860px){.act-head,.emp-head{grid-template-columns:minmax(0,1fr);gap:32px}.emp-pic{aspect-ratio:16/9}}
 @media (max-width:960px){
   .areas,.grid-sit{grid-template-columns:repeat(2,minmax(0,1fr))}
   .about{grid-template-columns:minmax(0,1fr);gap:40px}

@@ -151,7 +151,7 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <ul>
 <li><a href={contactHref}>{t.footer.formLink}</a></li>
 {SITIO.email && <li><a href={`mailto:${SITIO.email}`}>{SITIO.email}</a></li>}
-{SITIO.whatsapp && <li><a href={`https://wa.me/${SITIO.whatsapp}`} target="_blank" rel="noopener">WhatsApp {SITIO.whatsappTexto}</a></li>}
+{SITIO.whatsappLineas.map((w) => <li><a href={`https://wa.me/${w.numero}`} target="_blank" rel="noopener">WhatsApp {w.texto}</a></li>)}
 </ul>
 </div>
 </div>

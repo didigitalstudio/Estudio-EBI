@@ -31,7 +31,7 @@ const social = [
 <ul class="inst-list">
 <li><svg class="ic" aria-hidden="true"><use href="#i-pin" /></svg><span>{c.place}</span></li>
 <li><svg class="ic" aria-hidden="true"><use href="#i-mail" /></svg><span><span class="inst-k">{c.email}</span>{SITIO.email ? <a href={`mailto:${SITIO.email}`}>{SITIO.email}</a> : <span>{c.emailPending}</span>}</span></li>
-{SITIO.whatsapp && <li><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg><span><span class="inst-k">{c.wa}</span><a href={`https://wa.me/${SITIO.whatsapp}`} target="_blank" rel="noopener">{SITIO.whatsappTexto}</a></span></li>}
+{SITIO.whatsappLineas.length > 0 && <li><svg class="ic" aria-hidden="true"><use href="#i-chat" /></svg><span><span class="inst-k">{c.wa}</span>{SITIO.whatsappLineas.map((w) => <a href={`https://wa.me/${w.numero}`} target="_blank" rel="noopener">{w.texto}</a>)}</span></li>}
 </ul>
 {social.length > 0 && (
   <ul class="inst-social">

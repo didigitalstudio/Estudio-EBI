@@ -13,10 +13,13 @@ const modIcons = ['i-file', 'i-clock', 'i-shield'];
 ---
 <section id="empresas" class="band" data-guide={t.guide.empresas} data-nav="empresas">
 <div class="wrap stack">
+<div class="emp-head">
 <div class:list={['head', { 'head-wide': intro }]}>
 <p class="eyebrow">{intro ? p.hero.eyebrow : p.cards.eyebrow}</p>
 <h2 class="h2">{intro ? p.hero.title : p.cards.title}</h2>
 {paras(intro ? p.hero.lead : p.cards.lead).map((x) => <p class="lead">{x}</p>)}
+</div>
+<img class="emp-pic" src="/img/catalinas.webp" alt="" width="1280" height="720" loading="lazy" decoding="async">
 </div>
 <div class="grid-3">
 {p.cards.items.map((c, i) => (
