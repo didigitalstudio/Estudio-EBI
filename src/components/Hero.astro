@@ -1,6 +1,7 @@
 ---
 // Portada de cada página: foto de la ciudad difusa de fondo (o la silueta, si no hay foto), título, bajada y
-// accesos. El slot opcional va en una tarjeta a la derecha (ej. la lista de empresas).
+// accesos. El slot opcional va en una tarjeta a la derecha (ej. la lista de empresas); pics, en lugar de la
+// tarjeta, muestra dos fotos decorativas a la derecha (ej. aeropuerto y paso fronterizo en /actualidad).
 // variant="monument" (inicio): composición centrada sobre el eje de la foto (el Congreso al final de la
 // avenida), con la línea de lugar entre filetes dorados, la parte `accent` del título en cursiva y un
 // indicador para bajar hasta `next`. El texto va dentro de .mon-body, que lleva su propio velo.
@@ -9,8 +10,9 @@ import Skyline from './Skyline.astro';
 import { SITIO } from '../data/sitio.js';
 import { rich, paras } from '../lib/rich.js';
 
-const { eyebrow = '', title, accent = '', lead, primary, links = [], size = 'lg', variant = '', next = '' } = Astro.props;
-const hasPanel = Astro.slots.has('default');
+const { eyebrow = '', title, accent = '', lead, primary, links = [], size = 'lg', variant = '', next = '', pics = [] } = Astro.props;
+const hasSlot = Astro.slots.has('default');
+const hasPanel = hasSlot || pics.length > 0;
 const monument = variant === 'monument' && !hasPanel;
 const leads = paras(lead);
 // El destacado se busca dentro del título; si no está, el título va entero. Si cierra el título va en su
@@ -56,7 +58,12 @@ const glue = parts && !split ? parts[2].slice(0, 1) : '';
   </div>
 )}
 </div>
-{hasPanel && <div class="panel"><slot /></div>}
+{hasSlot && <div class="panel"><slot /></div>}
+{!hasSlot && pics.length > 0 && (
+  <div class="act-pics hero-pics" aria-hidden="true">
+    {pics.slice(0, 2).map((src, i) => <img class:list={['act-pic', i ? 'act-pic-b' : 'act-pic-a']} src={src} alt="" width="1200" height="900" decoding="async">)}
+  </div>
+)}
 </div>
 )}
 </section>

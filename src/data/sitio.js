@@ -10,9 +10,8 @@ const WHATSAPP = [
 
 export const SITIO = {
   whatsappLineas: WHATSAPP,
-  // La primera línea recibe las consultas del botón "Consultar por WhatsApp" del formulario
-  whatsapp: WHATSAPP[0].numero,
-  whatsappTexto: WHATSAPP[0].texto,
+  // Número que recibe las consultas del botón "Consultar por WhatsApp" del formulario (pedido del estudio del 11/11)
+  whatsapp: '541156209763',
   // Correo institucional: se muestra en Contacto y en el pie. Las consultas del formulario llegan a la casilla
   // de la variable CONSULTAS_EMAIL (ver README).
   email: 'contacto@estudioebi.com',

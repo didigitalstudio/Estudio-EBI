@@ -21,7 +21,8 @@ Sitio del estudio hecho con [Astro](https://astro.build) y publicado en Cloudfla
 Lo que todavía no pasó el estudio queda con un marcador entre corchetes ([EMAIL]). En `src/data/sitio.js` se cargan:
 
 - `email`: correo institucional (se muestra en Contacto y en el pie; mientras esté vacío, Contacto muestra [EMAIL]). Las consultas del formulario llegan a la casilla de la variable `CONSULTAS_EMAIL` (ver más abajo).
-- `WHATSAPP` (arriba de `SITIO`): las tres líneas de WhatsApp de los integrantes, en formato de wa.me (sin + ni espacios) y como se leen en la página. Se muestran en Contacto y en el pie, sin nombres. La primera recibe el botón "Consultar por WhatsApp" del formulario.
+- `WHATSAPP` (arriba de `SITIO`): las tres líneas de WhatsApp de los integrantes, en formato de wa.me (sin + ni espacios) y como se leen en la página. Se muestran en Contacto y en el pie, sin nombres.
+- `whatsapp`: el número que recibe el botón "Consultar por WhatsApp" del formulario (hoy el +54 11 5620-9763), en formato de wa.me.
 - `facebook`, `facebookGrupo`, `linkedin`: los íconos del pie aparecen solo si tienen dirección.
 - `logo`: archivo en `public/` (hoy `'/logo.png'`, el sello recortado sobre fondo transparente). Si se deja vacío, el encabezado muestra el logo de texto.
 - `portada`: foto de fondo de la portada en `public/` (hoy `'/portada.jpg'`, el Congreso al atardecer visto desde la Avenida de Mayo). Se muestra difuminada bajo un velo verde; si se deja vacía se ve una silueta de Buenos Aires. Conviene que sea de al menos 2000 px de ancho y con licencia de uso.
@@ -39,7 +40,7 @@ Textos de la portada (en los cinco diccionarios, dentro de `hero`):
 - `place`: la línea de lugar sobre el título («Buenos Aires · Argentina»).
 - `accent`: la parte del título que va en cursiva dorada. Tiene que aparecer tal cual dentro de `title` (si no, el título se muestra entero sin cursiva; `npm test` lo controla). Si cierra el título va en su propia línea; si queda en el medio (en chino) se marca sin cortar la frase y queda pegado al carácter siguiente, para que ninguna línea empiece con 的.
 
-Fotos de las secciones, en `public/img/` (decorativas, sin texto alternativo): `aeropuerto.webp` y `frontera.webp` junto al título de Actualidad, y `catalinas.webp` (vista aérea de Catalinas Norte) junto al título de Empresas, en el inicio y en `/empresas`. Para cambiarlas alcanza con reemplazar el archivo con el mismo nombre.
+Fotos de las secciones, en `public/img/` (decorativas, sin texto alternativo): `aeropuerto.webp` y `frontera.webp` junto al título de Actualidad (en el inicio y en la portada de `/actualidad`), y `catalinas.webp` (vista aérea de Catalinas Norte) junto al título de Empresas, en el inicio y en `/empresas`. Para cambiarlas alcanza con reemplazar el archivo con el mismo nombre.
 
 En `public/` también están `favicon.png`, `apple-touch-icon.png` y `og.jpg` (la imagen que aparece al compartir el link: la foto de portada difusa, con velo verde y el logo). Si cambian el logo o la foto, hay que regenerarlos.
 
