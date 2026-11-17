@@ -57,7 +57,10 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content={description}>
-{noindex && <meta name="robots" content="noindex, nofollow">}
+{noindex ? <meta name="robots" content="noindex, nofollow"> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">}
+<meta name="author" content="Estudio EBI">
+<meta name="geo.region" content="AR-C">
+<meta name="geo.placename" content="Buenos Aires">
 {!noindex && abs(canonical) && <link rel="canonical" href={abs(canonical)}>}
 {site && translated && LANGS.map((l) => <link rel="alternate" hreflang={l.hreflang} href={abs(localePath(l.code, path))}>)}
 {site && translated && <link rel="alternate" hreflang="x-default" href={abs(localePath('es', path))}>}
@@ -65,6 +68,7 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <meta property="og:title" content={title}>
 <meta property="og:description" content={description}>
 <meta property="og:locale" content={info.locale.replace('-', '_')}>
+{translated && LANGS.filter((l) => l.code !== lang).map((l) => <meta property="og:locale:alternate" content={l.locale.replace('-', '_')}>)}
 <meta property="og:site_name" content="Estudio EBI">
 {abs(canonical) && <meta property="og:url" content={abs(canonical)}>}
 <meta property="og:image" content={abs('/og.jpg') || '/og.jpg'}>
@@ -72,6 +76,9 @@ const ui = { ...t.ui, cats: t.cats, lang, locale: info.locale, wa: SITIO.whatsap
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Estudio EBI">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={abs('/og.jpg') || '/og.jpg'}>
 <meta name="theme-color" content="#FAF6EC">
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">

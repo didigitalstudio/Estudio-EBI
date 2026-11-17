@@ -1,0 +1,11 @@
+---
+// Fondo fotográfico con una o dos fotos lado a lado (la segunda se funde sobre la primera), difuminado
+// y con el velo verde de la portada. Lo usan la franja de Actualidad del inicio y la portada de /actualidad.
+const { pics = [] } = Astro.props;
+const list = pics.filter(Boolean).slice(0, 2);
+---
+{list.length > 0 && (
+  <div class:list={['photo-bg', { 'photo-bg-duo': list.length > 1 }]} aria-hidden="true">
+    {list.map((src) => <span style={`background-image:url('${src}')`}></span>)}
+  </div>
+)}

@@ -40,7 +40,7 @@ Textos de la portada (en los cinco diccionarios, dentro de `hero`):
 - `place`: la línea de lugar sobre el título («Buenos Aires · Argentina»).
 - `accent`: la parte del título que va en cursiva dorada. Tiene que aparecer tal cual dentro de `title` (si no, el título se muestra entero sin cursiva; `npm test` lo controla). Si cierra el título va en su propia línea; si queda en el medio (en chino) se marca sin cortar la frase y queda pegado al carácter siguiente, para que ninguna línea empiece con 的.
 
-Fotos de las secciones, en `public/img/` (decorativas, sin texto alternativo): `aeropuerto.webp` y `frontera.webp` junto al título de Actualidad (en el inicio y en la portada de `/actualidad`), y `catalinas.webp` (vista aérea de Catalinas Norte) junto al título de Empresas, en el inicio y en `/empresas`. Para cambiarlas alcanza con reemplazar el archivo con el mismo nombre.
+Fotos de las secciones, en `public/img/` (decorativas, sin texto alternativo): `aeropuerto.webp` y `frontera.webp` como fondo de la franja de Actualidad del inicio y de la portada de `/actualidad`, lado a lado y fundidas, con el velo verde de la portada (pedido del 13/11; la lista está en `fotosActualidad` de `src/data/sitio.js`), y `catalinas.webp` (vista aérea de Catalinas Norte) junto al título de Empresas, en el inicio y en `/empresas`. Para cambiarlas alcanza con reemplazar el archivo con el mismo nombre.
 
 En `public/` también están `favicon.png`, `apple-touch-icon.png` y `og.jpg` (la imagen que aparece al compartir el link: la foto de portada difusa, con velo verde y el logo). Si cambian el logo o la foto, hay que regenerarlos.
 
@@ -86,7 +86,7 @@ Tests: `npm test`.
    - Node: lo toma de `.nvmrc` (22).
 4. Asignar el dominio en Workers → estudio-ebi → Settings → Domains & Routes. La caché de reseñas y noticias funciona en el dominio propio, no en la dirección `workers.dev`.
 
-En el build conviene definir `SITE_URL` con el dominio final (por ejemplo `https://estudioebi.com.ar`), o mientras tanto con el link de workers.dev, para que las páginas tengan su URL canónica, las alternativas por idioma y la imagen para compartir con dirección completa (WhatsApp y las redes la necesitan así para mostrar la vista previa).
+El dominio es `https://estudioebi.com` (valor por defecto en `astro.config.mjs`; la variable `SITE_URL` del build lo reemplaza). Se usa para que las páginas tengan su URL canónica, las alternativas por idioma y la imagen para compartir con dirección completa (WhatsApp y las redes la necesitan así para mostrar la vista previa).
 
 | Variable | Para qué | |
 | --- | --- | --- |
@@ -134,3 +134,19 @@ Debajo del formulario va el aviso de protección de datos personales (Ley 25.326
 ## Noticias de medios (`/api/noticias`)
 
 Las últimas notas de Google News sobre migraciones en Argentina, con un área según palabras del título, guardadas 30 minutos en la caché. Si el feed falla, se muestra un link a las novedades oficiales de la DNM.
+
+## Dominio, correo y envío de consultas
+
+- **Dominio** `estudioebi.com`, registrado en Cloudflare (cuenta de Di Digital). En Workers → estudio-ebi → Settings → Domains & Routes están `estudioebi.com` y `www.estudioebi.com`; una Redirect Rule de la zona manda `www` al dominio sin `www` (301).
+- **Casilla `contacto@estudioebi.com`**: Cloudflare Email Routing (gratis) reenvía lo que llega a esa dirección a la casilla del estudio. Para responder *desde* `contacto@estudioebi.com` en Gmail: Configuración → Cuentas → Enviar como → servidor SMTP `smtp.resend.com`, puerto 465, usuario `resend`, contraseña una API key de Resend con permiso de envío.
+- **Resend** (cuenta de Di Digital): dominio `estudioebi.com` verificado (registros DKIM/SPF en el subdominio `send` y DMARC en la zona). Variables del Worker: `RESEND_API_KEY`, `CONSULTAS_EMAIL=contacto@estudioebi.com`, `CONSULTAS_FROM=Web Estudio EBI <web@estudioebi.com>`.
+- El email de cada consulta llega en HTML (con botones para responder por WhatsApp o por correo) y en texto plano.
+
+## SEO y GEO
+
+- Cada página tiene título y descripción propios, canonical, hreflang para los cinco idiomas, Open Graph/Twitter y `robots` con vista previa grande.
+- Datos estructurados (JSON-LD, `src/lib/seo.js`): el estudio como `LegalService` con áreas de práctica, contacto y redes; `WebSite`, `FAQPage` en el inicio y en Empresas, `BreadcrumbList` en las páginas internas y `Article` en cada publicación.
+- `/sitemap.xml` con las páginas en cada idioma y las publicaciones; `/robots.txt` invita de forma explícita a los buscadores con IA (GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, etc.).
+- `/llms.txt`: resumen del estudio, servicios, preguntas frecuentes y contacto en texto plano para asistentes con IA (se arma en el build con los textos de `es.js`).
+- En Cloudflare, en la zona: **AI Crawl Control / Bots → dejar desactivado "Block AI bots" y el robots.txt administrado**, porque si no Cloudflare bloquea a los buscadores con IA y pisa el robots del sitio.
+- Pendiente del lado del estudio: alta en Google Search Console y Bing Webmaster Tools (verificación por DNS en Cloudflare, se envía el sitemap) y mantener el perfil de Google Business del estudio con el link a la web.

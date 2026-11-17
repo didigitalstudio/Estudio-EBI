@@ -8,12 +8,21 @@ import Why from './Why.astro';
 import Faq from './Faq.astro';
 import Contacto from './Contacto.astro';
 import { DICTS, localePath } from '../i18n/index.js';
+import { graph, estudio, webpage, breadcrumb, faqPage } from '../lib/seo.js';
 
 const { lang } = Astro.props;
 const t = DICTS[lang];
 const p = t.pages.empresas;
+const site = Astro.site;
+const path = localePath(lang, '/empresas');
+const jsonLd = graph(
+  estudio(lang, site),
+  webpage({ lang, site, path, title: t.meta.empresas.title, description: t.meta.empresas.description }),
+  breadcrumb(lang, site, [{ name: t.nav.empresas, path }]),
+  faqPage(p.faq, { site, path }),
+);
 ---
-<Base lang={lang} path="/empresas" title={t.meta.empresas.title} description={t.meta.empresas.description}>
+<Base lang={lang} path="/empresas" title={t.meta.empresas.title} description={t.meta.empresas.description} jsonLd={jsonLd}>
 <Hero
   eyebrow={p.hero.eyebrow}
   title={p.hero.title}

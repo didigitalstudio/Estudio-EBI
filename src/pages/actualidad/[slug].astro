@@ -5,6 +5,7 @@ import { getPublished } from '../../lib/articulos.js';
 import { renderMarkdown } from '../../lib/markdown.js';
 import { fechaLarga } from '../../lib/fechas.js';
 import es from '../../i18n/es.js';
+import { graph, estudio, breadcrumb, orgId } from '../../lib/seo.js';
 
 export const prerender = false;
 
@@ -19,17 +20,23 @@ else Astro.response.headers.set('Cache-Control', 'public, max-age=60');
 
 const url = Astro.url.href;
 const enc = encodeURIComponent;
-const jsonLd = a && {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: a.titulo,
-  description: a.resumen || undefined,
-  datePublished: a.publicado_en,
-  dateModified: a.actualizado_en,
-  author: { '@type': a.autor && a.autor !== 'Estudio EBI' ? 'Person' : 'Organization', name: a.autor || 'Estudio EBI' },
-  publisher: { '@type': 'Organization', name: 'Estudio EBI' },
-  mainEntityOfPage: url,
-};
+const site = Astro.site;
+const jsonLd = a && graph(
+  {
+    '@type': 'Article',
+    headline: a.titulo,
+    description: a.resumen || undefined,
+    datePublished: a.publicado_en,
+    dateModified: a.actualizado_en || a.publicado_en,
+    inLanguage: 'es',
+    image: new URL('/og.jpg', site).href,
+    author: a.autor && a.autor !== 'Estudio EBI' ? { '@type': 'Person', name: a.autor, worksFor: { '@id': orgId(site) } } : { '@id': orgId(site) },
+    publisher: { '@id': orgId(site) },
+    mainEntityOfPage: new URL(`/actualidad/${a.slug}`, site).href,
+  },
+  estudio('es', site),
+  breadcrumb('es', site, [{ name: 'Actualidad Migratoria', path: '/actualidad' }, { name: a.titulo, path: `/actualidad/${a.slug}` }]),
+);
 ---
 {a ? (
   <Base lang="es" path={`/actualidad/${a.slug}`} translated={false} hasContact={false} ogType="article" title={`${a.titulo} | Actualidad Migratoria`} description={a.resumen || a.titulo} jsonLd={jsonLd}>

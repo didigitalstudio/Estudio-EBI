@@ -11,23 +11,20 @@ import Opiniones from '../../components/Opiniones.astro';
 import Faq from '../../components/Faq.astro';
 import Contacto from '../../components/Contacto.astro';
 import { DICTS, langPaths, localePath } from '../../i18n/index.js';
-import { SITIO } from '../../data/sitio.js';
+import { graph, estudio, website, webpage, faqPage } from '../../lib/seo.js';
 
 export const prerender = true;
 export const getStaticPaths = langPaths;
 
 const { lang } = Astro.props;
 const t = DICTS[lang];
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'LegalService',
-  name: 'Estudio EBI',
-  description: t.meta.home.description,
-  url: Astro.site ? new URL(localePath(lang, '/'), Astro.site).href : undefined,
-  areaServed: { '@type': 'Country', name: 'Argentina' },
-  knowsLanguage: ['es', 'en'],
-  sameAs: [SITIO.facebook, SITIO.linkedin].filter(Boolean),
-};
+const site = Astro.site;
+const jsonLd = graph(
+  estudio(lang, site),
+  website(lang, site),
+  webpage({ lang, site, path: localePath(lang, '/'), title: t.meta.home.title, description: t.meta.home.description }),
+  faqPage(t.faq.items, { site, path: localePath(lang, '/') }),
+);
 ---
 <Base lang={lang} path="/" title={t.meta.home.title} description={t.meta.home.description} jsonLd={jsonLd}>
 <Hero

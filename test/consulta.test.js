@@ -101,3 +101,12 @@ test('responde 400 si faltan datos o el JSON está roto, y 502 si Resend falla',
   assert.equal((await handleConsulta(broken, env, down)).status, 400);
   assert.equal((await handleConsulta(post(persona), env, down)).status, 502);
 });
+
+test('el email HTML escapa lo que escribió la persona y ofrece responder por WhatsApp', () => {
+  const c = buildInquiry({ nombre: 'Ana <b>', email: 'ana@mail.com', tel: '+54 9 11 5555-1234', tipo: 'Residencia', msg: '<script>alert(1)</script>' });
+  assert.doesNotMatch(c.html, /<script>alert/);
+  assert.match(c.html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+  assert.match(c.html, /Ana &lt;b&gt;/);
+  assert.match(c.html, /https:\/\/wa\.me\/5491155551234\?text=/);
+  assert.match(c.html, /mailto:ana@mail\.com/);
+});

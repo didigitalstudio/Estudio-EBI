@@ -21,6 +21,8 @@ export const SITIO = {
   // Archivos en public/: logo del encabezado (ej. '/logo.png') y foto de fondo de la portada (ej. '/portada.jpg')
   logo: '/logo.png',
   portada: '/portada.jpg',
+  // Fondo de la franja de Actualidad (inicio) y de la portada de /actualidad: aeropuerto y paso fronterizo
+  fotosActualidad: ['/img/aeropuerto.webp', '/img/frontera.webp'],
   googleMaps: 'https://www.google.com/maps/search/?api=1&query=Estudio%20EBI%20derecho%20migratorio',
 };
 

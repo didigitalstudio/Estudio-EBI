@@ -5,7 +5,8 @@ import { json } from './http.js';
 export async function getResenas(env, fetchImpl = fetch) {
   const key = env.GOOGLE_PLACES_API_KEY;
   const placeId = env.GOOGLE_PLACE_ID;
-  if (!key || !placeId) return json({ configured: false }, 503, { 'Cache-Control': 'no-store' });
+  // Sin configurar responde 200 (no es un error del sitio): la página muestra solo el botón "Ver reseñas en Google"
+  if (!key || !placeId) return json({ configured: false }, 200, { 'Cache-Control': 'no-store' });
   try {
     const r = await fetchImpl(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}?languageCode=es&regionCode=AR`, {
       headers: {

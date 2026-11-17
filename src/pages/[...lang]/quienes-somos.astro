@@ -4,14 +4,22 @@ import Hero from '../../components/Hero.astro';
 import QuienesSomos from '../../components/QuienesSomos.astro';
 import Contacto from '../../components/Contacto.astro';
 import { DICTS, langPaths, localePath } from '../../i18n/index.js';
+import { graph, estudio, webpage, breadcrumb } from '../../lib/seo.js';
 
 export const prerender = true;
 export const getStaticPaths = langPaths;
 
 const { lang } = Astro.props;
 const t = DICTS[lang];
+const site = Astro.site;
+const path = localePath(lang, '/quienes-somos');
+const jsonLd = graph(
+  estudio(lang, site),
+  webpage({ lang, site, path, title: t.meta.quienes.title, description: t.meta.quienes.description, type: 'AboutPage' }),
+  breadcrumb(lang, site, [{ name: t.nav.nosotros, path }]),
+);
 ---
-<Base lang={lang} path="/quienes-somos" title={t.meta.quienes.title} description={t.meta.quienes.description}>
+<Base lang={lang} path="/quienes-somos" title={t.meta.quienes.title} description={t.meta.quienes.description} jsonLd={jsonLd}>
 <Hero
   size="sm"
   eyebrow={t.nosotros.eyebrow}

@@ -2,26 +2,28 @@
 // Actualidad en el inicio: las tres publicaciones más recientes del estudio (las trae el script de
 // /api/articulos, así una nota nueva aparece sola) y, debajo, la normativa migratoria con enlaces a la
 // fuente oficial (/api/normas). Las noticias de medios quedan solo en la página de Actualidad.
+// El título va sobre una franja con las fotos de aeropuerto y paso fronterizo de fondo (pedido del 13/11).
 import { DICTS } from '../i18n/index.js';
+import PhotoBg from './PhotoBg.astro';
+import { SITIO } from '../data/sitio.js';
 const { lang } = Astro.props;
 const t = DICTS[lang];
 const a = t.actualidad;
 const es = lang === 'es' ? undefined : 'es';
 ---
 <section id="actualidad" data-guide={t.guide.actualidad} data-nav="actualidad">
-<div class="wrap stack">
-<div class="act-head">
+<div class="act-band">
+<PhotoBg pics={SITIO.fotosActualidad} />
+<div class="wrap act-band-in">
 <div class="head">
 <p class="eyebrow">{a.eyebrow}</p>
 <h2 class="h2">{a.title}</h2>
 <p class="lead">{a.lead}</p>
-<a href="/actualidad" class="btn btn-out" hreflang={es}>{a.all}</a>
-</div>
-<div class="act-pics" aria-hidden="true">
-<img class="act-pic act-pic-a" src="/img/aeropuerto.webp" alt="" width="1200" height="900" loading="lazy" decoding="async">
-<img class="act-pic act-pic-b" src="/img/frontera.webp" alt="" width="1200" height="900" loading="lazy" decoding="async">
+<a href="/actualidad" class="btn btn-light" hreflang={es}>{a.all}</a>
 </div>
 </div>
+</div>
+<div class="wrap stack act-body">
 <div id="pub-grid" class="pub-grid" aria-live="polite" data-empty={a.empty}>
 <div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div><div class="skel" aria-hidden="true"></div>
 </div>

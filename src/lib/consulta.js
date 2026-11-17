@@ -39,11 +39,38 @@ export function buildInquiry(body = {}) {
     ['Página', d.pagina],
   ].filter(([, value]) => value);
 
+  const subject = `Consulta web: ${d.tipo || 'General'} · ${company ? d.empresa : d.nombre}`;
   return {
-    subject: `Consulta web: ${d.tipo || 'General'} · ${company ? d.empresa : d.nombre}`,
+    subject,
     text: `${rows.map(([key, value]) => `${key}: ${value}`).join('\n')}\n\n${msg}\n`,
+    html: inquiryHtml({ rows, msg, email: d.email, tel: d.tel, nombre: d.nombre, tipo: d.tipo || 'General' }),
     replyTo: d.email,
   };
+}
+
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// Versión HTML del email (la de texto va igual, para los clientes de correo que no muestran HTML).
+// Tablas y estilos en línea porque Gmail y Outlook no respetan otra cosa.
+function inquiryHtml({ rows, msg, email, tel, nombre, tipo }) {
+  const digits = tel ? tel.replace(/\D/g, '') : '';
+  const btn = (href, label, fill) => `<a href="${esc(href)}" style="display:inline-block;margin:0 8px 8px 0;padding:11px 18px;border-radius:6px;font-weight:700;font-size:14px;text-decoration:none;${fill ? 'background:#123F2F;color:#ffffff' : 'border:1.5px solid #123F2F;color:#123F2F'}">${label}</a>`;
+  const actions = [
+    digits ? btn(`https://wa.me/${digits}?text=${encodeURIComponent(`Hola ${nombre}, te escribimos del Estudio EBI por tu consulta (${tipo}).`)}`, 'Responder por WhatsApp', true) : '',
+    email ? btn(`mailto:${email}?subject=${encodeURIComponent(`Re: tu consulta al Estudio EBI (${tipo})`)}`, 'Responder por correo', !digits) : '',
+  ].join('');
+  const trs = rows.map(([k, v]) => `<tr><td width="1%" style="padding:8px 20px 8px 0;color:#6B5430;font-size:13px;white-space:nowrap;vertical-align:top">${esc(k)}</td><td style="padding:8px 0;color:#1E2A24;font-size:15px">${esc(v)}</td></tr>`).join('');
+  return `<!doctype html><html lang="es"><body style="margin:0;background:#F4F0E6;font-family:Arial,Helvetica,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F0E6;padding:24px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #E4DCCB">
+<tr><td style="background:#123F2F;padding:20px 24px;color:#F4F0E6"><div style="font-family:Georgia,serif;font-size:20px;font-weight:bold">Estudio EBI</div><div style="font-size:13px;color:#E2CB9B;letter-spacing:.08em;text-transform:uppercase;margin-top:4px">Nueva consulta desde la web</div></td></tr>
+<tr><td style="padding:24px"><table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse">${trs}</table>
+<div style="margin:20px 0 8px;color:#6B5430;font-size:13px">Mensaje</div>
+<div style="background:#F8F5EE;border-left:3px solid #C9A86B;border-radius:4px;padding:14px 16px;color:#1E2A24;font-size:15px;line-height:1.55;white-space:pre-wrap">${esc(msg)}</div>
+${actions ? `<div style="margin-top:22px">${actions}</div>` : ''}
+</td></tr>
+<tr><td style="padding:14px 24px;border-top:1px solid #E4DCCB;color:#6E6A60;font-size:12px">${email ? 'Si respondés este correo, la respuesta le llega directamente a quien consultó.' : 'La persona no dejó correo: respondé por WhatsApp.'}</td></tr>
+</table></td></tr></table></body></html>`;
 }
 
 // Señales de envío automático: el campo trampa completo, el formulario mandado en menos de 3 segundos desde
@@ -93,6 +120,7 @@ export async function handleConsulta(request, env, fetchImpl = fetch) {
         ...(inquiry.replyTo ? { reply_to: inquiry.replyTo } : {}),
         subject: inquiry.subject,
         text: inquiry.text,
+        html: inquiry.html,
       }),
     });
     if (!r.ok) throw new Error(`resend ${r.status}`);

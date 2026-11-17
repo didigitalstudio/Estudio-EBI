@@ -1,16 +1,18 @@
 ---
 // Portada de cada página: foto de la ciudad difusa de fondo (o la silueta, si no hay foto), título, bajada y
 // accesos. El slot opcional va en una tarjeta a la derecha (ej. la lista de empresas); pics, en lugar de la
-// tarjeta, muestra dos fotos decorativas a la derecha (ej. aeropuerto y paso fronterizo en /actualidad).
+// tarjeta, muestra dos fotos decorativas a la derecha. bgPics reemplaza la foto de portada por una o dos
+// fotos de fondo (ej. aeropuerto y paso fronterizo en /actualidad).
 // variant="monument" (inicio): composición centrada sobre el eje de la foto (el Congreso al final de la
 // avenida), con la línea de lugar entre filetes dorados, la parte `accent` del título en cursiva y un
 // indicador para bajar hasta `next`. El texto va dentro de .mon-body, que lleva su propio velo.
 // lead puede ser un texto o una lista de párrafos; **así** marca negrita.
 import Skyline from './Skyline.astro';
+import PhotoBg from './PhotoBg.astro';
 import { SITIO } from '../data/sitio.js';
 import { rich, paras } from '../lib/rich.js';
 
-const { eyebrow = '', title, accent = '', lead, primary, links = [], size = 'lg', variant = '', next = '', pics = [] } = Astro.props;
+const { eyebrow = '', title, accent = '', lead, primary, links = [], size = 'lg', variant = '', next = '', pics = [], bgPics = [] } = Astro.props;
 const hasSlot = Astro.slots.has('default');
 const hasPanel = hasSlot || pics.length > 0;
 const monument = variant === 'monument' && !hasPanel;
@@ -24,7 +26,7 @@ const split = !!parts && !parts[2].trim();
 const glue = parts && !split ? parts[2].slice(0, 1) : '';
 ---
 <section class:list={['hero', `hero-${size}`, { 'hero-mon': monument }]}>
-{SITIO.portada ? <div class="hero-bg" style={`background-image:url('${SITIO.portada}')`}></div> : <Skyline />}
+{bgPics.length > 0 ? <PhotoBg pics={bgPics} /> : SITIO.portada ? <div class="hero-bg" style={`background-image:url('${SITIO.portada}')`}></div> : <Skyline />}
 {monument ? (
   <>
   <div class="wrap hero-in">
