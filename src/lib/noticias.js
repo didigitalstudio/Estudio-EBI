@@ -7,7 +7,8 @@ const QUERY = '("Dirección Nacional de Migraciones" OR "ley de migraciones" OR 
 const QUERY_SIMPLE = 'migraciones Argentina residencia extranjeros';
 const feedUrl = (q) => `https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=es-419&gl=AR&ceid=AR:es-419`;
 export const FEED = feedUrl(QUERY);
-export const FEEDS = [FEED, feedUrl(QUERY_SIMPLE)];
+// Google responde de forma intermitente a los servidores de Cloudflare: se alternan las dos búsquedas hasta 4 veces
+export const FEEDS = [FEED, feedUrl(QUERY_SIMPLE), FEED, feedUrl(QUERY_SIMPLE)];
 
 // Últimas notas de Google News sobre migraciones en Argentina.
 export async function getNoticias(fetchImpl = fetch) {
