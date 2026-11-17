@@ -11,6 +11,7 @@ export async function getNoticias(fetchImpl = fetch) {
     if (!r.ok) throw new Error(`feed ${r.status}`);
     return json({ items: parseRss(await r.text(), { limit: 6 }) });
   } catch (e) {
+    console.error('noticias', e?.message || e);
     return json({ items: [], error: 'No se pudieron obtener las noticias' }, 502, { 'Cache-Control': 'no-store' });
   }
 }
