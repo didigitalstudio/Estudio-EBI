@@ -138,7 +138,7 @@ Las últimas notas de Google News sobre migraciones en Argentina, con un área s
 ## Dominio, correo y envío de consultas
 
 - **Dominio** `estudioebi.com`, registrado en Cloudflare (cuenta de Di Digital). En Workers → estudio-ebi → Settings → Domains & Routes están `estudioebi.com` y `www.estudioebi.com`; una Redirect Rule de la zona manda `www` al dominio sin `www` (301).
-- **Casilla `contacto@estudioebi.com`**: Cloudflare Email Routing (gratis) reenvía lo que llega a esa dirección a la casilla del estudio. Para responder *desde* `contacto@estudioebi.com` en Gmail: Configuración → Cuentas → Enviar como → servidor SMTP `smtp.resend.com`, puerto 465, usuario `resend`, contraseña una API key de Resend con permiso de envío.
+- **Casilla `contacto@estudioebi.com`**: Google Workspace (Business Starter). DNS en Cloudflare: MX `smtp.google.com`, SPF `include:_spf.google.com`, DKIM `google._domainkey` y la verificación `google-site-verification`.
 - **Resend** (cuenta de Di Digital): dominio `estudioebi.com` verificado (registros DKIM/SPF en el subdominio `send` y DMARC en la zona). Variables del Worker: `RESEND_API_KEY`, `CONSULTAS_EMAIL=contacto@estudioebi.com`, `CONSULTAS_FROM=Web Estudio EBI <web@estudioebi.com>`.
 - El email de cada consulta llega en HTML (con botones para responder por WhatsApp o por correo) y en texto plano.
 
@@ -149,4 +149,5 @@ Las últimas notas de Google News sobre migraciones en Argentina, con un área s
 - `/sitemap.xml` con las páginas en cada idioma y las publicaciones; `/robots.txt` invita de forma explícita a los buscadores con IA (GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, etc.).
 - `/llms.txt`: resumen del estudio, servicios, preguntas frecuentes y contacto en texto plano para asistentes con IA (se arma en el build con los textos de `es.js`).
 - En Cloudflare, en la zona: **AI Crawl Control / Bots → dejar desactivado "Block AI bots" y el robots.txt administrado**, porque si no Cloudflare bloquea a los buscadores con IA y pisa el robots del sitio.
+- IndexNow (Bing, Yandex y otros; Bing alimenta a ChatGPT Search y Copilot): la clave es el archivo `public/dd1d0eed7caddb3e6e522432bb3584d0.txt`. Para avisar URLs nuevas o cambiadas: `POST https://api.indexnow.org/indexnow` con `{"host":"estudioebi.com","key":"dd1d0eed7caddb3e6e522432bb3584d0","urlList":[...]}`.
 - Pendiente del lado del estudio: alta en Google Search Console y Bing Webmaster Tools (verificación por DNS en Cloudflare, se envía el sitemap) y mantener el perfil de Google Business del estudio con el link a la web.
