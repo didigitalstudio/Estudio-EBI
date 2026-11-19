@@ -14,7 +14,7 @@ const t = DICTS[lang].opiniones;
 <div id="rev-summary" class="rev-summary" hidden></div>
 </div>
 <div class="ctas">
-<a id="rev-all" class="btn btn-out" href={SITIO.googleMaps} target="_blank" rel="noopener">{t.all}</a>
+<a id="rev-all" class="btn btn-out" href={SITIO.googleMaps || '#'} target="_blank" rel="noopener" hidden={!SITIO.googleMaps}>{t.all}</a>
 <a id="rev-write" class="btn btn-fill" href="#" target="_blank" rel="noopener" hidden>{t.write}</a>
 </div>
 </div>

@@ -23,7 +23,12 @@ export const SITIO = {
   portada: '/portada.jpg',
   // Fondo de la franja de Actualidad (inicio) y de la portada de /actualidad: aeropuerto y paso fronterizo
   fotosActualidad: ['/img/aeropuerto.webp', '/img/frontera.webp'],
-  googleMaps: 'https://www.google.com/maps/search/?api=1&query=Estudio%20EBI%20derecho%20migratorio',
+  // Opiniones de Google: el estudio todavía no tiene su perfil de empresa en Google, así que la sección no se
+  // muestra (pedido del 19/11). Cuando lo tenga, cargar GOOGLE_PLACE_ID (ver README) y pasar esto a true.
+  opiniones: false,
+  // Link directo al perfil de Google del estudio. Nunca una búsqueda por nombre: buscar "Estudio EBI" en Maps
+  // abría el perfil de otro estudio. Vacío, el botón "Ver reseñas en Google" aparece solo si la API manda el link.
+  googleMaps: '',
 };
 
 // Firma de las publicaciones de Actualidad Migratoria

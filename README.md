@@ -50,7 +50,7 @@ En los textos largos de los diccionarios, `**así**` marca una parte en negrita 
 
 ## Recorrido del inicio
 
-Portada → Servicios → Personas y familias → Empresas → Actualidad (las tres publicaciones más recientes del estudio y, debajo, la normativa migratoria) → Opiniones de Google → Preguntas frecuentes → Contacto. Quiénes somos tiene su página propia. Mientras se recorre la página, el menú marca la sección y una franja debajo del encabezado muestra su nombre (cada sección lo define con `data-guide`). Las consultas entran por el formulario; el WhatsApp del estudio figura en Contacto y en el pie.
+Portada → Servicios → Personas y familias → Empresas → Actualidad (las tres publicaciones más recientes del estudio y, debajo, la normativa migratoria) → Opiniones de Google → Preguntas frecuentes → Contacto. Opiniones de Google está oculta por ahora (ver abajo). Quiénes somos tiene su página propia. Mientras se recorre la página, el menú marca la sección y una franja debajo del encabezado muestra su nombre (cada sección lo define con `data-guide`). Las consultas entran por el formulario; el WhatsApp del estudio figura en Contacto y en el pie.
 
 Actualidad en el inicio muestra solo notas del estudio (las noticias de medios quedan en `/actualidad`). La grilla toma las tres más recientes de `/api/articulos` cada vez que se abre la página, así una nota nueva aparece sola, y ocupa todo el ancho con las que haya (con una sola, la tarjeta va a lo ancho). Debajo, Normativa migratoria muestra las primeras cuatro normas de `/api/normas` con su enlace a la fuente oficial y un acceso a la lista completa.
 
@@ -99,7 +99,17 @@ El dominio es `https://estudioebi.com` (valor por defecto en `astro.config.mjs`;
 | `GOOGLE_PLACES_API_KEY` | Clave de Google Cloud con Places API (New) habilitada | Reseñas |
 | `GOOGLE_PLACE_ID` | ID del perfil de Google del estudio | Reseñas |
 
-Sin las variables del formulario, el botón "Enviar consulta" no se muestra y queda solo "Consultar por WhatsApp". Sin las de reseñas, la sección muestra solo el botón "Ver reseñas en Google".
+Sin las variables del formulario, el botón "Enviar consulta" no se muestra y queda solo "Consultar por WhatsApp".
+
+### Opiniones de Google (oculta)
+
+El estudio todavía no tiene su perfil de empresa en Google, así que la sección Opiniones no se publica (`opiniones: false` en `src/data/sitio.js`, pedido del 19/11). Antes el botón "Ver reseñas en Google" buscaba "Estudio EBI derecho migratorio" en Maps y Google abría el perfil de otro estudio, por eso ya no se usa ninguna búsqueda por nombre.
+
+Para activarla cuando exista el perfil:
+
+1. Cargar `GOOGLE_PLACE_ID` (el ID de ese perfil, no de una búsqueda) y `GOOGLE_PLACES_API_KEY` en el Worker.
+2. Abrir `/api/resenas` y confirmar que las reseñas y el link `mapsUrl` son del estudio.
+3. Pasar `opiniones` a `true` (y, si se quiere, cargar en `googleMaps` el link directo al perfil).
 
 ## Panel de Actualidad Migratoria (`/admin`)
 

@@ -1,5 +1,6 @@
 ---
 // Inicio: portada → servicios → personas y familias → empresas → actualidad → opiniones → preguntas → contacto.
+// Opiniones queda oculta mientras SITIO.opiniones sea false (el estudio todavía no tiene perfil de Google).
 // Quiénes somos tiene su propia página y no aparece en este recorrido.
 import Base from '../../layouts/Base.astro';
 import Hero from '../../components/Hero.astro';
@@ -11,6 +12,7 @@ import Opiniones from '../../components/Opiniones.astro';
 import Faq from '../../components/Faq.astro';
 import Contacto from '../../components/Contacto.astro';
 import { DICTS, langPaths, localePath } from '../../i18n/index.js';
+import { SITIO } from '../../data/sitio.js';
 import { graph, estudio, website, webpage, faqPage } from '../../lib/seo.js';
 
 export const prerender = true;
@@ -44,7 +46,7 @@ const jsonLd = graph(
 <Personas lang={lang} />
 <EmpresasSection lang={lang} />
 <Actualidad lang={lang} />
-<Opiniones lang={lang} />
+{SITIO.opiniones && <Opiniones lang={lang} />}
 <Faq lang={lang} items={t.faq.items} lead={t.faq.lead} />
 <Contacto lang={lang} />
 </Base>

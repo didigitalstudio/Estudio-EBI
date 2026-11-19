@@ -256,7 +256,8 @@ if (revList) {
   const summary = $('#rev-summary');
   getJSON('/api/resenas').then((d) => {
     if (!d.reviews?.length) throw d;
-    if (safe(d.mapsUrl)) $('#rev-all').href = d.mapsUrl;
+    const all = $('#rev-all');
+    if (safe(d.mapsUrl)) { all.href = d.mapsUrl; all.hidden = false; }
     const wr = $('#rev-write');
     wr.href = d.writeReviewUrl;
     wr.hidden = false;
